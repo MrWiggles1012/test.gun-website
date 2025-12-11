@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Fullscreen Resolution Fix – MOHAA / Spearhead</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Rechsboven login-strip + follow-us (kopieer desnoods van andere pagina) -->
+    <div class="login-strip">
+      <div class="login-top">
+        <span id="login-user-label" class="login-user-label hidden"></span>
+        <button id="login-toggle" class="login-button">Login</button>
+      </div>
+
+      <div class="follow-us">
+        <span class="follow-label">Follow us on</span>
+        <div class="social-icons">
+          <a
+            href="https://www.youtube.com/@gunclan-d4m"
+            class="social-icon youtube"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="YouTube"
+          >
+            <span class="social-icon-inner">▶</span>
+          </a>
+          <a
+            href="https://t.me/gunserver123"
+            class="social-icon telegram"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Telegram"
+          >
+            <span class="social-icon-inner">✈</span>
+          </a>
+          <a
+            href="https://discord.com/invite/8n9tPUZ6zA"
+            class="social-icon discord"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Discord"
+          >
+            <span class="social-icon-inner">💬</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div id="login-panel" class="login-panel hidden">
+      <div class="login-dialog">
+        <div class="login-dialog-header">
+          <h2>Admin login</h2>
+          <button type="button" id="login-close" class="login-close">✕</button>
+        </div>
+
+        <form id="login-form">
+          <input
+            type="text"
+            id="login-username"
+            placeholder="Username"
+            autocomplete="username"
+          />
+          <input
+            type="password"
+            id="login-password"
+            placeholder="Password"
+            autocomplete="current-password"
+          />
+          <button type="submit">Login</button>
+          <div id="login-error" class="login-error"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="container fullscreen-container">
+      <!-- Logo + slogan -->
+      <header class="home-header">
+        <div class="home-logo">
+          <img
+            src="images/gun-header.png"
+            alt="G|u|N - MoHAA Spearhead Rifle Only Clan"
+          />
+        </div>
+        <div class="home-header-text">
+          <h1>G|u|N - MoHAA Spearhead Rifle Only Clan</h1>
+          <p class="home-tagline">
+            Last living hub for Spearhead, and it will live forever...
+          </p>
+        </div>
+      </header>
+
+      <div class="home-button-row main-nav">
+        <a class="primary-button nav-home" href="index.html">Home</a>
+        <a class="primary-button nav-stats" href="players.html">Statistics</a>
+        <a 
+          class="primary-button"
+          href="https://forum.gunclan.org/?_gl=1*qjszyy*_ga*NDUwNTc2NTAyLjE3NjM3NTg4ODM.*_ga_9EZKX8FRY9*czE3NjUyODc5NzckbzQkZzEkdDE3NjUyODk3NTYkajYwJGwwJGgw"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Forum</a>
+        <a class="primary-button" href="upload.html">Upload screenshot</a>
+        <a class="primary-button" href="members.html">Members</a>
+        <a class="primary-button" href="history.html">Our history</a>
+        <a class="primary-button" href="downloads.html">Downloads</a>
+        <a class="primary-button" href="join.html">Join us</a>
+
+        <a class="primary-button nav-sessions hidden" href="sessions.html">Sessions</a>
+        <a class="primary-button nav-chat hidden" href="chatlogs.html">Chat logs</a>
+      </div>
+
+      <div class="stats-card">
+        <!-- Taalkeuze -->
+        <p class="lang-flags">
+          <strong>Translations Available:</strong><br />
+
+          <span class="lang-item active" data-lang="en">
+            <img src="images/flags/us.png" alt="English" class="flag-icon" />
+            English
+          </span> |
+
+          <span class="lang-item" data-lang="ar">
+            <img src="images/flags/eg.png" alt="Arabic" class="flag-icon" />
+            Arabic
+          </span> |
+
+          <span class="lang-item" data-lang="de">
+            <img src="images/flags/de.png" alt="German" class="flag-icon" />
+            German
+          </span> |
+
+          <span class="lang-item" data-lang="ru">
+            <img src="images/flags/ru.png" alt="Russian" class="flag-icon" />
+            Russian
+          </span> |
+
+          <span class="lang-item" data-lang="am">
+            <img src="images/flags/am.png" alt="Armenian" class="flag-icon" />
+            Armenian
+          </span> |
+
+          <span class="lang-item" data-lang="es">
+            <img src="images/flags/es.png" alt="Spanish" class="flag-icon" />
+            Spanish
+          </span>
+        </p>
+
+        <!-- ENGLISH -->
+        <div class="howto-lang lang-block" data-lang="en">
+          <p>
+            Is your game stuck in a small window, low resolution, or showing black bars on the sides?
+          </p>
+          <p>
+            Here’s a simple way to fix it using the <code>unnamedsoldier.cfg</code> config file.
+          </p>
+          <p>
+            This works perfectly on <strong>MOHAA Revival Edition</strong>
+            (which you can <a href="https://gunclan.org/downloads/download-mohaa-revival-edition/" target="_blank" rel="noopener noreferrer">download on our website</a>)
+            and is tested on <strong>Windows 10 and 11</strong>.
+          </p>
+
+          <h2>Step 1: Find Your Screen Resolution</h2>
+          <ul>
+            <li>Right-click your desktop → choose <strong>Display settings</strong></li>
+            <li>Look for <strong>Display resolution</strong> (example: <strong>1920 x 1080</strong>)</li>
+            <li>Write down or remember these two numbers: width and height</li>
+          </ul>
+
+          <h2>Step 2: Edit <code>unnamedsoldier.cfg</code></h2>
+          <p><strong>For Spearhead</strong> go to this folder:</p>
+          <p><span class="code-pill">C:\Games\MOHAA\mainta\configs\</span></p>
+
+          <p><strong>For Breakthrough</strong> the correct folder is:</p>
+          <p><span class="code-pill">C:\Games\MOHAA\maintt\configs\</span></p>
+
+          <ol>
+            <li>Find the file <strong>unnamedsoldier.cfg</strong><br />
+              <em>If it doesn't exist, just run the game once — it will be created automatically.</em>
+            </li>
+            <li>Right-click the file → <strong>Open with Notepad</strong></li>
+            <li>Scroll to the bottom and add or replace the following lines:</li>
+          </ol>
+
+          <pre class="code-block"><code>seta r_mode "-1"          // Enables custom resolution mode
+seta r_customwidth "1920" // Set this to your screen width
+seta r_customheight "1080"// Set this to your screen height</code></pre>
+
+          <p>
+            Example: For a <strong>1920×1080</strong> monitor, copy the settings exactly.<br />
+            If your screen is for example <strong>1366×768</strong>, change those numbers accordingly.
+          </p>
+
+          <h2>Step 3: Save and Launch the Game</h2>
+          <ul>
+            <li>Click <strong>File &gt; Save</strong> in Notepad</li>
+            <li>Launch <strong>Medal of Honor: Spearhead</strong></li>
+            <li>It should now run in <strong>true fullscreen</strong> using your correct resolution</li>
+          </ul>
+
+          <h2>That’s It!</h2>
+          <p>This fix solves:</p>
+          <ul>
+            <li>Fullscreen not working</li>
+            <li>Wrong or low resolution</li>
+            <li>Widescreen issues on Windows 10 / 11</li>
+          </ul>
+          <p>
+            Tested and working on <strong>MOHAA Revival Edition</strong>.<br />
+            Feel free to share this guide with other players!
+          </p>
+
+          <h2>Useful Links &amp; Info</h2>
+          <ul>
+            <li>
+              <strong>Download MOHAA Revival Edition</strong><br />
+              Full game with Spearhead &amp; Breakthrough, patched and ready to play.<br />
+              <a href="https://gunclan.org/downloads/download-mohaa-revival-edition/" target="_blank" rel="noopener noreferrer">
+                Open download page
+              </a>
+            </li>
+            <li>
+              <strong>Fix Fullscreen &amp; Resolution Issues (Windows 10/11)</strong><br />
+              Guide to get widescreen and fullscreen working properly.<br />
+              (You’re reading it now!)
+            </li>
+            <li>
+              <strong>Visit the G|u|N Clan Website</strong><br />
+              <a href="https://gunclan.org/" target="_blank" rel="noopener noreferrer">gunclan.org</a>
+            </li>
+            <li>
+              <strong>Forum Help &amp; Tutorials</strong><br />
+              <a href="https://forum.gunclan.org/" target="_blank" rel="noopener noreferrer">forum.gunclan.org</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- ARABIC -->
+        <div class="howto-lang lang-block hidden" data-lang="ar" dir="rtl" lang="ar">
+          <p>
+            هل لعبتك عالقة في نافذة صغيرة، أو بدقة منخفضة، أو تظهر أشرطة سوداء على الجوانب؟
+          </p>
+          <p>
+            إليك طريقة بسيطة لحل المشكلة باستخدام ملف الإعداد <code>unnamedsoldier.cfg</code>.
+          </p>
+          <p>
+            تعمل هذه الطريقة بشكل مثالي على <strong>MOHAA Revival Edition</strong>
+            (يمكنك تحميله من موقعنا) وتم اختبارها على <strong>Windows 10 و11</strong>.
+          </p>
+
+          <h2>الخطوة 1: اعرف دقة شاشتك</h2>
+          <ul>
+            <li>انقر بزر الماوس الأيمن على سطح المكتب → اختر <strong>إعدادات العرض</strong></li>
+            <li>ابحث عن <strong>دقة العرض</strong> (مثال: <strong>1920 x 1080</strong>)</li>
+            <li>اكتب أو احفظ هذين الرقمين: عرض الشاشة وارتفاعها</li>
+          </ul>
+
+          <h2>الخطوة 2: تعديل <code>unnamedsoldier.cfg</code></h2>
+          <p><strong>للعبة Spearhead</strong> انتقل إلى هذا المجلد:</p>
+          <p><span class="code-pill" dir="ltr">C:\Games\MOHAA\mainta\configs\</span></p>
+
+          <p><strong>للعبة Breakthrough</strong> إذا كنت تلعب Medal of Honor: Breakthrough فالمجلد الصحيح هو:</p>
+          <p><span class="code-pill" dir="ltr">C:\Games\MOHAA\maintt\configs\</span></p>
+
+          <ol>
+            <li>
+              ابحث عن الملف <strong>unnamedsoldier.cfg</strong><br />
+              <em>→ إذا لم يكن موجودًا، فقط شغّل اللعبة مرة واحدة — سيتم إنشاؤه تلقائيًا.</em>
+            </li>
+            <li>انقر بزر الماوس الأيمن على الملف → افتحه باستخدام المفكرة (Notepad)</li>
+            <li>مرّر إلى الأسفل وأضف أو استبدل الأسطر التالية:</li>
+          </ol>
+
+          <pre class="code-block" dir="ltr"><code>seta r_mode "-1" // يشغّل وضع الدقة المخصصة
+seta r_customwidth "1920" // ضع هنا عرض الشاشة
+seta r_customheight "1080" // ضع هنا ارتفاع الشاشة</code></pre>
+
+          <p>
+            مثال: إذا كانت شاشتك بدقة <strong>1920×1080</strong> انسخ الإعدادات كما هي.<br />
+            إذا كانت مثلاً <strong>1366×768</strong>، غيّر الأرقام حسب شاشتك.
+          </p>
+
+          <h2>الخطوة 3: احفظ وشغّل اللعبة</h2>
+          <ul>
+            <li>انقر على <strong>ملف &gt; حفظ</strong></li>
+            <li>شغّل <strong>Medal of Honor: Spearhead</strong></li>
+            <li>يجب أن تعمل اللعبة الآن بوضع ملء الشاشة الحقيقي وبدقة صحيحة</li>
+          </ul>
+
+          <h2>انتهى!</h2>
+          <p>هذا الحل يعالج:</p>
+          <ul>
+            <li>عدم عمل ملء الشاشة</li>
+            <li>دقة عرض خاطئة أو منخفضة</li>
+            <li>مشاكل العرض العريض على Windows 10 / 11</li>
+          </ul>
+          <p>
+            تم اختباره ويعمل على <strong>MOHAA Revival Edition</strong>.<br />
+            لا تتردد في مشاركة هذا الدليل مع لاعبين آخرين!
+          </p>
+
+          <h2>روابط ومعلومات مفيدة</h2>
+          <ul>
+            <li>
+              <strong>تحميل MOHAA Revival Edition</strong><br />
+              لعبة كاملة مع Spearhead وBreakthrough، جاهزة ومحدثة.
+            </li>
+            <li>
+              <strong>حل مشاكل ملء الشاشة ودقة العرض (Windows 10/11)</strong><br />
+              هذا هو الدليل الذي تقرأه الآن.
+            </li>
+            <li>
+              <strong>زيارة موقع G|u|N Clan</strong><br />
+              معلومات الكلان والسيرفر، تحميلات، والمزيد.
+            </li>
+            <li>
+              <strong>مساعدة ودروس في المنتدى</strong><br />
+              اطرح الأسئلة، اعثر على الأدلة، أو شارك النصائح.
+            </li>
+          </ul>
+        </div>
+
+        <!-- GERMAN -->
+        <div class="howto-lang lang-block hidden" data-lang="de" lang="de">
+          <p>
+            Ist dein Spiel in einem kleinen Fenster, mit niedriger Auflösung oder mit schwarzen Balken an den Seiten?
+          </p>
+          <p>
+            Hier ist eine einfache Lösung mit der Datei <code>unnamedsoldier.cfg</code>.
+          </p>
+          <p>
+            Das funktioniert perfekt mit der <strong>MOHAA Revival Edition</strong>
+            (du kannst sie auf unserer Website herunterladen) und wurde auf <strong>Windows 10 und 11</strong> getestet.
+          </p>
+
+          <h2>Schritt 1: Finde deine Bildschirmauflösung heraus</h2>
+          <ul>
+            <li>Rechtsklick auf den Desktop → <strong>Anzeigeeinstellungen</strong> auswählen</li>
+            <li>Suche nach <strong>Anzeigeauflösung</strong> (Beispiel: <strong>1920 x 1080</strong>)</li>
+            <li>Schreibe dir Breite und Höhe deines Bildschirms auf</li>
+          </ul>
+
+          <h2>Schritt 2: Bearbeite <code>unnamedsoldier.cfg</code></h2>
+          <p><strong>Für Spearhead</strong> öffne diesen Ordner:</p>
+          <p><span class="code-pill">C:\Games\MOHAA\mainta\configs\</span></p>
+
+          <p><strong>Für Breakthrough</strong>, wenn du Medal of Honor: Breakthrough spielst, lautet der richtige Ordner:</p>
+          <p><span class="code-pill">C:\Games\MOHAA\maintt\configs\</span></p>
+
+          <ol>
+            <li>
+              Finde die Datei <strong>unnamedsoldier.cfg</strong><br />
+              <em>→ Wenn sie nicht existiert, starte das Spiel einmal — die Datei wird automatisch erstellt.</em>
+            </li>
+            <li>Rechtsklick auf die Datei → <strong>Mit Notepad öffnen</strong></li>
+            <li>Scrolle nach unten und füge die folgenden Zeilen hinzu oder ersetze sie:</li>
+          </ol>
+
+          <pre class="code-block"><code>seta r_mode "-1"         // Aktiviert benutzerdefinierte Auflösung
+seta r_customwidth "1920" // Bildschirmbreite eingeben
+seta r_customheight "1080"// Bildschirmhöhe eingeben</code></pre>
+
+          <p>
+            Beispiel: Für einen Monitor mit <strong>1920×1080</strong> kopiere die Einstellungen genau so.<br />
+            Wenn dein Bildschirm z. B. <strong>1366×768</strong> ist, ändere die Zahlen entsprechend.
+          </p>
+
+          <h2>Schritt 3: Speichern und Spiel starten</h2>
+          <ul>
+            <li>Klicke auf <strong>Datei &gt; Speichern</strong></li>
+            <li>Starte <strong>Medal of Honor: Spearhead</strong></li>
+            <li>Das Spiel sollte nun im echten Vollbildmodus mit der richtigen Auflösung starten</li>
+          </ul>
+
+          <h2>Das war’s!</h2>
+          <p>Diese Lösung behebt:</p>
+          <ul>
+            <li>Kein funktionierender Vollbildmodus</li>
+            <li>Falsche oder niedrige Auflösung</li>
+            <li>Breitbild-Probleme unter Windows 10 / 11</li>
+          </ul>
+          <p>
+            Getestet und funktioniert mit der <strong>MOHAA Revival Edition</strong>.<br />
+            Gerne diesen Guide mit anderen Spielern teilen!
+          </p>
+
+          <h2>Nützliche Links &amp; Infos</h2>
+          <ul>
+            <li><strong>MOHAA Revival Edition herunterladen</strong></li>
+            <li><strong>Vollbild- &amp; Auflösungsprobleme beheben (Windows 10/11)</strong> – dieser Guide</li>
+            <li><strong>G|u|N Clan-Website besuchen</strong></li>
+            <li><strong>Forum: Hilfe &amp; Anleitungen</strong></li>
+          </ul>
+        </div>
+
+        <!-- RUSSIAN -->
+        <div class="howto-lang lang-block hidden" data-lang="ru" lang="ru">
+          <p>
+            Ваша игра запускается в маленьком окне, с низким разрешением или с чёрными полосами по бокам?
+          </p>
+          <p>
+            Вот простой способ исправить это с помощью файла конфигурации <code>unnamedsoldier.cfg</code>.
+          </p>
+          <p>
+            Этот способ отлично работает в <strong>MOHAA Revival Edition</strong> (можно скачать на нашем сайте)
+            и протестирован на <strong>Windows 10 и 11</strong>.
+          </p>
+
+          <h2>Шаг 1: Узнайте разрешение вашего экрана</h2>
+          <ul>
+            <li>Кликните правой кнопкой мыши на рабочем столе → выберите <strong>Параметры экрана</strong></li>
+            <li>Найдите <strong>Разрешение экрана</strong> (например: <strong>1920 x 1080</strong>)</li>
+            <li>Запомните ширину и высоту экрана</li>
+          </ul>
+
+          <h2>Шаг 2: Отредактируйте <code>unnamedsoldier.cfg</code></h2>
+          <p><strong>Для Spearhead</strong> перейдите в папку:</p>
+          <p><span class="code-pill">C:\Games\MOHAA\mainta\configs\</span></p>
+
+          <p><strong>Для Breakthrough</strong>, если вы играете Medal of Honor: Breakthrough, используйте папку:</p>
+          <p><span class="code-pill">C:\Games\MOHAA\maintt\configs\</span></p>
+
+          <ol>
+            <li>
+              Найдите файл <strong>unnamedsoldier.cfg</strong><br />
+              <em>→ Если файл не существует, просто запустите игру один раз — он создастся автоматически.</em>
+            </li>
+            <li>Кликните правой кнопкой по файлу → <strong>Открыть с помощью</strong> → Notepad</li>
+            <li>Прокрутите в самый низ и добавьте / замените строки:</li>
+          </ol>
+
+          <pre class="code-block"><code>seta r_mode "-1"         // Включает пользовательский режим разрешения
+seta r_customwidth "1920" // Укажите ширину экрана
+seta r_customheight "1080"// Укажите высоту экрана</code></pre>
+
+          <p>
+            Пример: для монитора <strong>1920×1080</strong> скопируйте настройки как есть.<br />
+            Если у вас, например, <strong>1366×768</strong>, измените цифры соответственно.
+          </p>
+
+          <h2>Шаг 3: Сохраните файл и запустите игру</h2>
+          <ul>
+            <li>Файл → <strong>Сохранить</strong></li>
+            <li>Запустите <strong>Medal of Honor: Spearhead</strong></li>
+            <li>Игра должна открыться в полноэкранном режиме с нужным разрешением</li>
+          </ul>
+
+          <h2>Готово!</h2>
+          <p>Этот способ решает:</p>
+          <ul>
+            <li>Не работает полноэкранный режим</li>
+            <li>Неверное или низкое разрешение</li>
+            <li>Проблемы с широким экраном на Windows 10 / 11</li>
+          </ul>
+          <p>
+            Проверено и работает на <strong>MOHAA Revival Edition</strong>.<br />
+            Не стесняйтесь делиться этим гайдом с другими игроками!
+          </p>
+
+          <h2>Полезные ссылки и информация</h2>
+          <ul>
+            <li><strong>Скачать MOHAA Revival Edition</strong></li>
+            <li><strong>Решение проблем с полноэкранным режимом и разрешением (Windows 10/11)</strong> – этот гайд</li>
+            <li><strong>Сайт G|u|N Clan</strong></li>
+            <li><strong>Форум: помощь и руководства</strong></li>
+          </ul>
+        </div>
+
+        <!-- ARMENIAN -->
+        <div class="howto-lang lang-block hidden" data-lang="am" lang="hy">
+          <p>
+            Ձեր խաղը բացվում է փոքր պատուհանում, ցածր բանաձևով կամ սև եզրերով կողմերում՞:
+          </p>
+          <p>
+            Ահա մի պարզ լուծում՝ օգտագործելով <code>unnamedsoldier.cfg</code> կոնֆիգուրացիոն ֆայլը։
+          </p>
+          <p>
+            Սա հրաշալի աշխատում է <strong>MOHAA Revival Edition</strong>-ում (կարող եք ներբեռնել մեր կայքից)
+            և փորձարկված է <strong>Windows 10 և 11</strong> համակարգերում։
+          </p>
+
+          <h2>Քայլ 1․ Գտեք ձեր էկրանի բանաձևը</h2>
+          <ul>
+            <li>Աջ քլիք արեք Desktop-ի վրա → ընտրեք <strong>Display settings</strong></li>
+            <li>Փնտրեք <strong>Display resolution</strong> (օրինակ՝ <strong>1920 x 1080</strong>)</li>
+            <li>Գրեք ձեր էկրանի լայնությունն ու բարձրությունը</li>
+          </ul>
+
+          <h2>Քայլ 2․ Խմբագրեք <code>unnamedsoldier.cfg</code> ֆայլը</h2>
+          <p><strong>Spearhead-ի համար</strong> բացեք այս պանակը՝</p>
+          <p><span class="code-pill">C:\Games\MOHAA\mainta\configs\</span></p>
+
+          <p><strong>Breakthrough-ի համար</strong>, եթե խաղում եք Medal of Honor: Breakthrough, ճիշտ պանակն է՝</p>
+          <p><span class="code-pill">C:\Games\MOHAA\maintt\configs\</span></p>
+
+          <ol>
+            <li>
+              Գտեք <strong>unnamedsoldier.cfg</strong> ֆայլը<br />
+              <em>→ Եթե այն գոյություն չունի, պարզապես բացեք խաղը մեկ անգամ — ֆայլը ավտոմատ կստեղծվի։</em>
+            </li>
+            <li>Աջ քլիք ֆայլի վրա → <strong>Open with Notepad</strong></li>
+            <li>Գնացեք ֆայլի վերջ և ավելացրեք/փոխարինեք հետևյալ տողերը․</li>
+          </ol>
+
+          <pre class="code-block"><code>seta r_mode "-1"         // Միացնում է անհատական բանաձևը
+seta r_customwidth "1920" // Այստեղ տեղադրեք էկրանի լայնությունը
+seta r_customheight "1080"// Այստեղ տեղադրեք էկրանի բարձրությունը</code></pre>
+
+          <p>
+            Օրինակ՝ եթե ձեր էկրանը <strong>1920×1080</strong> է, պատճենեք այս կարգավորումները։<br />
+            Եթե օրինակ՝ <strong>1366×768</strong> է, փոփոխեք թվերը համապատասխանաբար։
+          </p>
+
+          <h2>Քայլ 3․ Պահպանեք և բացեք խաղը</h2>
+          <ul>
+            <li>Սեղմեք <strong>File &gt; Save</strong></li>
+            <li>Բացեք <strong>Medal of Honor: Spearhead</strong></li>
+            <li>Խաղը այժմ կբացվի իրական լիաէկրան ռեժիմով և ճիշտ բանաձևով</li>
+          </ul>
+
+          <h2>Ամբողջը սա էր</h2>
+          <p>Այս լուծումը շտկում է․</p>
+          <ul>
+            <li>Լիաէկրան ռեժիմը չի աշխատում</li>
+            <li>Սխալ կամ ցածր բանաձև</li>
+            <li>Լայնէկրան խնդիրներ Windows 10 / 11 համակարգում</li>
+          </ul>
+          <p>
+            Փորձարկված և հաստատված է <strong>MOHAA Revival Edition</strong>-ում։<br />
+            Կիսվեք այս ուղեցույցով ձեր ընկերների հետ։
+          </p>
+
+          <h2>Օգտակար հղումներ և ինֆո</h2>
+          <ul>
+            <li><strong>Ներբեռնել MOHAA Revival Edition</strong></li>
+            <li><strong>Լիաէկրան և բանաձևի խնդիրների լուծում (Windows 10/11)</strong> – այս ուղեցույց</li>
+            <li><strong>Այցելեք G|u|N Clan կայքը</strong></li>
+            <li><strong>Օգնություն և դասընթացներ ֆորումում</strong></li>
+          </ul>
+        </div>
+
+        <!-- SPANISH -->
+        <div class="howto-lang lang-block hidden" data-lang="es" lang="es">
+          <p>
+            ¿Tu juego se queda atascado en una ventana pequeña, con baja resolución o con barras negras a los lados?
+          </p>
+          <p>
+            Aquí tienes una solución sencilla usando el archivo de configuración <code>unnamedsoldier.cfg</code>.
+          </p>
+          <p>
+            Esto funciona perfectamente en la <strong>MOHAA Revival Edition</strong>
+            (puedes descargarla desde nuestro sitio web) y está probado en <strong>Windows 10 y 11</strong>.
+          </p>
+
+          <h2>Paso 1: Encuentra la resolución de tu pantalla</h2>
+          <ul>
+            <li>Haz clic derecho en tu escritorio → selecciona <strong>Configuración de pantalla</strong></li>
+            <li>Busca la opción <strong>Resolución de pantalla</strong> (ejemplo: <strong>1920 x 1080</strong>)</li>
+            <li>Anota el ancho y la altura de tu pantalla</li>
+          </ul>
+
+          <h2>Paso 2: Edita el archivo <code>unnamedsoldier.cfg</code></h2>
+          <p><strong>Para Spearhead</strong> ve a esta carpeta:</p>
+          <p><span class="code-pill">C:\Games\MOHAA\mainta\configs\</span></p>
+
+          <p><strong>Para Breakthrough</strong>, si estás jugando Medal of Honor: Breakthrough, la carpeta correcta es:</p>
+          <p><span class="code-pill">C:\Games\MOHAA\maintt\configs\</span></p>
+
+          <ol>
+            <li>
+              Busca el archivo <strong>unnamedsoldier.cfg</strong><br />
+              <em>→ Si no existe, simplemente ejecuta el juego una vez — el archivo se creará automáticamente.</em>
+            </li>
+            <li>Haz clic derecho en el archivo → <strong>Abrir con</strong> → Bloc de notas (Notepad)</li>
+            <li>Desplázate hasta el final y añade o reemplaza las siguientes líneas:</li>
+          </ol>
+
+          <pre class="code-block"><code>seta r_mode "-1"         // Activa el modo de resolución personalizada
+seta r_customwidth "1920" // Introduce aquí el ancho de tu pantalla
+seta r_customheight "1080"// Introduce aquí la altura de tu pantalla</code></pre>
+
+          <p>
+            Ejemplo: para una pantalla de <strong>1920×1080</strong>, copia la configuración tal cual.<br />
+            Si tu pantalla es, por ejemplo, <strong>1366×768</strong>, cambia los números según corresponda.
+          </p>
+
+          <h2>Paso 3: Guarda y ejecuta el juego</h2>
+          <ul>
+            <li>Haz clic en <strong>Archivo &gt; Guardar</strong></li>
+            <li>Ejecuta <strong>Medal of Honor: Spearhead</strong></li>
+            <li>El juego debería ejecutarse ahora en pantalla completa real con la resolución correcta</li>
+          </ul>
+
+          <h2>¡Eso es todo!</h2>
+          <p>Esta solución corrige:</p>
+          <ul>
+            <li>Pantalla completa que no funciona</li>
+            <li>Resolución incorrecta o baja</li>
+            <li>Problemas de pantalla panorámica en Windows 10 / 11</li>
+          </ul>
+          <p>
+            Probado y funcionando en <strong>MOHAA Revival Edition</strong>.<br />
+            ¡No dudes en compartir esta guía con otros jugadores!
+          </p>
+
+          <h2>Enlaces útiles e información</h2>
+          <ul>
+            <li><strong>Descargar MOHAA Revival Edition</strong></li>
+            <li><strong>Corregir pantalla completa y resolución (Windows 10/11)</strong> – esta guía</li>
+            <li><strong>Visita el sitio web de G|u|N Clan</strong></li>
+            <li><strong>Foro de ayuda y tutoriales</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script src="nav.js" defer></script>
+    <script src="login.js" defer></script>
+    <script src="auth.js" defer></script>
+    <!-- Zelfde script als de andere howto, hij werkt generiek op .lang-item / .lang-block -->
+    <script src="howto.js" defer></script>
+  </body>
+</html>

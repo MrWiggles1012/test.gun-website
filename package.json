@@ -1,0 +1,17 @@
+{
+  "name": "moh-stats-v2",
+  "version": "1.0.1",
+  "description": "Medal of Honor Spearhead stats viewer with main page and player list (fixed HTML)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^1.13.2",
+    "dotenv": "^17.2.3",
+    "express": "^4.22.1",
+    "form-data": "^4.0.5",
+    "multer": "^2.0.2",
+    "node-fetch": "^2.7.0"
+  }
+}

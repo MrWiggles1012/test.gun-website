@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Upload screenshot - G|u|N</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Balkje rechtsboven: Logged in as ... + knop -->
+    <div class="login-strip">
+      <div class="login-top">
+        <span id="login-user-label" class="login-user-label hidden"></span>
+        <button id="login-toggle" class="login-button">Login</button>
+      </div>
+
+      <div class="follow-us">
+        <span class="follow-label">Follow us on</span>
+        <div class="social-icons">
+          <!-- YouTube -->
+          <a
+            href="https://www.youtube.com/@gunclan-d4m"
+            class="social-icon youtube"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="YouTube"
+          >
+            <span class="social-icon-inner">▶</span>
+          </a>
+
+          <!-- Telegram -->
+          <a
+            href="https://t.me/gunserver123"
+            class="social-icon telegram"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Telegram"
+          >
+            <span class="social-icon-inner">✈</span>
+          </a>
+
+          <!-- Discord -->
+          <a
+            href="https://discord.com/invite/8n9tPUZ6zA"
+            class="social-icon discord"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Discord"
+          >
+            <span class="social-icon-inner">💬</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div id="login-panel" class="login-panel hidden">
+      <div class="login-dialog">
+        <div class="login-dialog-header">
+          <h2>Admin login</h2>
+          <button type="button" id="login-close" class="login-close">✕</button>
+        </div>
+        <p class="login-subtitle">
+          Log in om toegang te krijgen tot Sessions en Chat logs.
+        </p>
+        <form id="login-form">
+          <input
+            type="text"
+            id="login-username"
+            placeholder="Username"
+            autocomplete="username"
+          />
+          <input
+            type="password"
+            id="login-password"
+            placeholder="Password"
+            autocomplete="current-password"
+          />
+          <button type="submit">Login</button>
+          <div id="login-error" class="login-error"></div>
+        </form>
+      </div>
+    </div>
+
+    <div class="container upload-container">
+      <!-- Logo + slogan -->
+      <header class="home-header">
+        <div class="home-logo">
+          <img
+            src="images/gun-header.png"
+            alt="G|u|N - MoHAA Spearhead Rifle Only Clan"
+          />
+        </div>
+        <div class="home-header-text">
+          <h1>G|u|N - MoHAA Spearhead Rifle Only Clan</h1>
+          <p class="home-tagline">
+            Last living hub for Spearhead, and it will live forever...
+          </p>
+        </div>
+      </header>
+
+      <div class="home-button-row main-nav">
+        <a class="primary-button nav-home" href="index.html">Home</a>
+        <a class="primary-button nav-stats" href="players.html">Statistics</a>
+        <a 
+          class="primary-button"
+          href="https://forum.gunclan.org/?_gl=1*qjszyy*_ga*NDUwNTc2NTAyLjE3NjM3NTg4ODM.*_ga_9EZKX8FRY9*czE3NjUyODc5NzckbzQkZzEkdDE3NjUyODk3NTYkajYwJGwwJGgw"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Forum</a>
+        <a class="primary-button active" href="upload.html">Upload screenshot</a>
+        <a class="primary-button" href="members.html">Members</a>
+        <a class="primary-button" href="history.html">Our history</a>
+        <a class="primary-button" href="downloads.html">Downloads</a>
+        <a class="primary-button" href="join.html">Join us</a>
+
+        <a class="primary-button nav-sessions hidden" href="sessions.html">Sessions</a>
+        <a class="primary-button nav-chat hidden" href="chatlogs.html">Chat logs</a>
+      </div>
+
+
+<section class="upload-section">
+  <h1 class="page-title">Upload a screenshot</h1>
+
+  <p class="upload-intro">
+    This page is used to upload <strong style="color: #FFD700;">forced screenshots (.tga)</strong> from the
+    Medal of Honor: Spearhead server. These screenshots are reviewed by admins to check
+    for cheats.
+  </p>
+
+  <ol class="upload-steps">
+    <li>
+      After a screenshot has been forced, it is saved locally on your PC
+      in your <strong style="color: #FFD700;">MOHAA game folder</strong>.
+    </li>
+
+    <li>
+      Find the correct <strong style="color: #FFD700;">screenshots</strong> folder:
+      <ul class="upload-steps-sub">
+        <li>
+          If you are playing <strong style="color: #FFD700;">Spearhead</strong>:  
+          look in your <span class="code-pill">mainta\screenshots</span> folder.
+        </li>
+        <li>
+          If you are playing <strong style="color: #FFD700;">Breakthrough</strong>:  
+          look in your <span class="code-pill">maintt\screenshots</span> folder.
+        </li>
+      </ul>
+    </li>
+
+    <li>
+      Select the appropriate <strong style="color: #FFD700;">.tga</strong> file that the server
+      automatically created and click <strong style="color: #FFD700;">"Upload screenshot"</strong>.
+    </li>
+  </ol>
+
+
+  <div class="upload-card">
+    <form
+      id="upload-form"
+      class="upload-form"
+      action="/api/upload-screenshot"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <div class="upload-field">
+        <label for="screenshot">Forced screenshot (.tga)</label>
+          <input
+            type="file"
+            id="screenshot"
+            name="screenshot"
+            accept=".tga"
+            required
+          />
+          <small class="upload-hint">
+            Only <strong>.tga</strong> files are allowed.
+          </small>
+        </div>
+
+      <div class="upload-actions">
+        <button type="submit" class="primary-button upload-submit">
+          Upload screenshot
+        </button>
+      </div>
+
+      <div id="upload-message" class="upload-message"></div>
+    </form>
+  </div>
+</section>
+
+
+
+    <script src="nav.js" defer></script>
+    <script src="upload.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Forum - G|u|N</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Balkje rechtsboven: Logged in as ... + knop -->
+    <div class="login-strip">
+      <div class="login-top">
+        <span id="login-user-label" class="login-user-label hidden"></span>
+        <button id="login-toggle" class="login-button">Login</button>
+      </div>
+
+      <div class="follow-us">
+        <span class="follow-label">Follow us on</span>
+        <div class="social-icons">
+          <!-- YouTube -->
+          <a
+            href="https://www.youtube.com/@gunclan-d4m"
+            class="social-icon youtube"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="YouTube"
+          >
+            <span class="social-icon-inner">▶</span>
+          </a>
+
+          <!-- Telegram -->
+          <a
+            href="https://t.me/gunserver123"
+            class="social-icon telegram"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Telegram"
+          >
+            <span class="social-icon-inner">✈</span>
+          </a>
+
+          <!-- Discord -->
+          <a
+            href="https://discord.com/invite/8n9tPUZ6zA"
+            class="social-icon discord"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Discord"
+          >
+            <span class="social-icon-inner">💬</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div id="login-panel" class="login-panel hidden">
+      <div class="login-dialog">
+        <div class="login-dialog-header">
+          <h2>Admin login</h2>
+          <button type="button" id="login-close" class="login-close">✕</button>
+        </div>
+        <p class="login-subtitle">
+          Log in om toegang te krijgen tot Sessions en Chat logs.
+        </p>
+        <form id="login-form">
+          <input id="login-username" type="text" placeholder="Username" autocomplete="username" />
+          <input id="login-password" type="password" placeholder="Password" autocomplete="current-password" />
+          <button type="submit">Login</button>
+          <div id="login-error" class="login-error"></div>
+        </form>
+      </div>
+    </div>
+
+    <div class="container forum-container">
+      <!-- Logo + slogan -->
+      <header class="home-header">
+        <div class="home-logo">
+          <img
+            src="images/gun-header.png"
+            alt="G|u|N - MoHAA Spearhead Rifle Only Clan"
+          />
+        </div>
+        <div class="home-header-text">
+          <h1>G|u|N - MoHAA Spearhead Rifle Only Clan</h1>
+          <p class="home-tagline">
+            Last living hub for Spearhead, and it will live forever...
+          </p>
+        </div>
+      </header>
+
+      <div class="home-button-row main-nav">
+        <a class="primary-button nav-home" href="index.html">Home</a>
+        <a class="primary-button nav-stats" href="players.html">Statistics</a>
+        <a 
+          class="primary-button"
+          href="https://forum.gunclan.org/?_gl=1*qjszyy*_ga*NDUwNTc2NTAyLjE3NjM3NTg4ODM.*_ga_9EZKX8FRY9*czE3NjUyODc5NzckbzQkZzEkdDE3NjUyODk3NTYkajYwJGwwJGgw"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Forum</a>
+        <a class="primary-button" href="upload.html">Upload screenshot</a>
+        <a class="primary-button" href="members.html">Members</a>
+        <a class="primary-button" href="history.html">Our history</a>
+        <a class="primary-button" href="downloads.html">Downloads</a>
+        <a class="primary-button" href="join.html">Join us</a>
+
+        <a class="primary-button nav-sessions hidden" href="sessions.html">Sessions</a>
+        <a class="primary-button nav-chat hidden" href="chatlogs.html">Chat logs</a>
+      </div>
+
+      <p>Hier kun je later een link naar je echte forum of een embed plaatsen.</p>
+    </div>
+
+    <script src="nav.js" defer></script>
+  </body>
+</html>

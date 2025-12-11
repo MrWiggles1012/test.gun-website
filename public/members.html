@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Members - G|u|N</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Balkje rechtsboven: Logged in as ... + knop -->
+    <div class="login-strip">
+      <div class="login-top">
+        <span id="login-user-label" class="login-user-label hidden"></span>
+        <button id="login-toggle" class="login-button">Login</button>
+      </div>
+
+      <div class="follow-us">
+        <span class="follow-label">Follow us on</span>
+        <div class="social-icons">
+          <!-- YouTube -->
+          <a
+            href="https://www.youtube.com/@gunclan-d4m"
+            class="social-icon youtube"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="YouTube"
+          >
+            <span class="social-icon-inner">▶</span>
+          </a>
+
+          <!-- Telegram -->
+          <a
+            href="https://t.me/gunserver123"
+            class="social-icon telegram"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Telegram"
+          >
+            <span class="social-icon-inner">✈</span>
+          </a>
+
+          <!-- Discord -->
+          <a
+            href="https://discord.com/invite/8n9tPUZ6zA"
+            class="social-icon discord"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Discord"
+          >
+            <span class="social-icon-inner">💬</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div id="login-panel" class="login-panel hidden">
+      <div class="login-dialog">
+        <div class="login-dialog-header">
+          <h2>Admin login</h2>
+          <button type="button" id="login-close" class="login-close">✕</button>
+        </div>
+        <p class="login-subtitle">
+          Log in om toegang te krijgen tot Sessions en Chat logs.
+        </p>
+        <form id="login-form">
+          <input
+            type="text"
+            id="login-username"
+            placeholder="Username"
+            autocomplete="username"
+          />
+          <input
+            type="password"
+            id="login-password"
+            placeholder="Password"
+            autocomplete="current-password"
+          />
+          <button type="submit">Login</button>
+          <div id="login-error" class="login-error"></div>
+        </form>
+      </div>
+    </div>
+
+<div class="container members-container">
+      <!-- Logo + slogan -->
+      <header class="home-header">
+        <div class="home-logo">
+          <img
+            src="images/gun-header.png"
+            alt="G|u|N - MoHAA Spearhead Rifle Only Clan"
+          />
+        </div>
+        <div class="home-header-text">
+          <h1>G|u|N - MoHAA Spearhead Rifle Only Clan</h1>
+          <p class="home-tagline">
+            Last living hub for Spearhead, and it will live forever...
+          </p>
+        </div>
+      </header>
+
+  <div class="home-button-row main-nav">
+    <a class="primary-button nav-home" href="index.html">Home</a>
+    <a class="primary-button nav-stats" href="players.html">Statistics</a>
+    <a 
+      class="primary-button"
+      href="https://forum.gunclan.org/?_gl=1*qjszyy*_ga*NDUwNTc2NTAyLjE3NjM3NTg4ODM.*_ga_9EZKX8FRY9*czE3NjUyODc5NzckbzQkZzEkdDE3NjUyODk3NTYkajYwJGwwJGgw"
+      target="_blank"
+      rel="noopener noreferrer"
+    >Forum</a>
+    <a class="primary-button" href="upload.html">Upload screenshot</a>
+    <a class="primary-button active" href="members.html">Members</a>
+    <a class="primary-button" href="history.html">Our history</a>
+    <a class="primary-button" href="downloads.html">Downloads</a>
+    <a class="primary-button" href="join.html">Join us</a>
+
+    <a class="primary-button nav-sessions hidden" href="sessions.html">Sessions</a>
+    <a class="primary-button nav-chat hidden" href="chatlogs.html">Chat logs</a>
+  </div>
+
+  <!-- Clan Leaders & Founders -->
+  <section class="members-section">
+    <h2 class="members-title leaders">Clan Leaders &amp; Founders</h2>
+    <p class="members-desc">
+      The core leadership of G|u|N Clan — from the original founder to those guiding the
+      community today. They keep our legacy strong and our standards high.
+    </p>
+    <ul class="members-list leaders">
+      <li>
+        <img src="images/flags/ee.png" alt="Estonia" class="flag-icon" />
+        G|u|N-{£ÐR}-|ƒ!A|FLAMEWAR|god|
+      </li>
+      <li>
+        <img src="images/flags/ie.png" alt="Ireland" class="flag-icon" />
+        G|u|N-{£ÐR}-|ƒ!A|Crawford|
+      </li>
+      <li>
+        <img src="images/flags/eg.png" alt="Egypt" class="flag-icon" />
+        G|u|N-{£ÐR}-|ƒ!A|Billy|
+      </li>
+    </ul>
+  </section>
+
+  <!-- 𝒇!A Members -->
+  <section class="members-section">
+    <h2 class="members-title fia">𝒇!A Members (Flames Immortal Army)</h2>
+    <p class="members-desc">
+      𝒇!A represents the most dedicated members of the G|u|N Clan. These players have
+      shown exceptional loyalty, skill, and impact within the community.
+    </p>
+    <ul class="members-list fia">
+      <li>
+        <img src="images/flags/gr.png" alt="Greece" class="flag-icon" />
+        G|u|N-|ƒ!A|{G|R}TzAnStOnE
+      </li>
+      <li>
+        <img src="images/flags/eg.png" alt="Egypt" class="flag-icon" />
+        G|u|N-LEO|ƒ!A|
+      </li>
+      <li>
+        <img src="images/flags/pt.png" alt="Portugal" class="flag-icon" />
+        G|u|N-Scorp’Emin€m
+      </li>
+      <li>
+        <img src="images/flags/pl.png" alt="Poland" class="flag-icon" />
+        G|u|N-boolvA
+      </li>
+      <li>
+        <img src="images/flags/am.png" alt="Armenia" class="flag-icon" />
+        G|u|N-|MR.V|-|ƒ!A|
+      </li>
+    </ul>
+  </section>
+
+  <!-- Members -->
+  <section class="members-section">
+    <h2 class="members-title members">Members</h2>
+    <p class="members-desc">
+      The heart of the clan. These are our players, community supporters, and brothers
+      in arms. They carry the G|u|N tag with pride every time they enter the server.
+    </p>
+    <ul class="members-list members">
+      <li>
+        <img src="images/flags/hu.png" alt="Hungary" class="flag-icon" />
+        G|u|N-PLAZMANE[oss]
+      </li>
+      <li>
+        <img src="images/flags/pt.png" alt="Portugal" class="flag-icon" />
+        G|u|N-[NG]-Kamoto_PT
+      </li>
+      <li>
+        <img src="images/flags/es.png" alt="Spain" class="flag-icon" />
+        G|u|N-Felix
+      </li>
+      <li>
+        <img src="images/flags/us.png" alt="USA" class="flag-icon" />
+        G|u|N-YuMa
+      </li>
+      <li>
+        <img src="images/flags/hr.png" alt="Croatia" class="flag-icon" />
+        G|u|N-GENERALXXXL
+      </li>
+      <li>
+        <img src="images/flags/eg.png" alt="Egypt" class="flag-icon" />
+        G|u|N-Green
+      </li>
+      <li>
+        <img src="images/flags/eg.png" alt="Egypt" class="flag-icon" />
+        G|u|N-Taha
+      </li>
+      <li>
+        <img src="images/flags/ru.png" alt="Russia" class="flag-icon" />
+        G|u|N-CheChenski®
+      </li>
+      <li>
+        <img src="images/flags/eg.png" alt="Egypt" class="flag-icon" />
+        G|u|N-KhaleD
+      </li>
+      <li>
+        <img src="images/flags/nl.png" alt="Netherlands" class="flag-icon" />
+        G|u|N-Dond3r!
+      </li>
+      <li>
+        <img src="images/flags/it.png" alt="Italy" class="flag-icon" />
+        G|u|N-Delta
+      </li>
+      <li>
+        <img src="images/flags/am.png" alt="Armenia" class="flag-icon" />
+        G|u|N-†YourDeath†
+      </li>
+      <li>
+        <img src="images/flags/nl.png" alt="Netherlands" class="flag-icon" />
+        G|u|N-V@cC!3.nl
+      </li>
+      <li>
+        <img src="images/flags/eg.png" alt="Egypt" class="flag-icon" />
+        G|u|N-YonGZee.808
+      </li>
+      <li>
+        <img src="images/flags/nl.png" alt="Netherlands" class="flag-icon" />
+        G|u|N-Biggles
+      </li>
+      <li>
+        <img src="images/flags/eg.png" alt="Egypt" class="flag-icon" />
+        G|u|N-Boda
+      </li>
+      <li>
+        <img src="images/flags/iq.png" alt="Iraq" class="flag-icon" />
+        G|u|N-Death_Row
+      </li>
+      <li>
+        <img src="images/flags/fr.png" alt="France" class="flag-icon" />
+        G|u|N-*@zum* B@rt*
+      </li>
+    </ul>
+  </section>
+
+  <!-- Legends Never Fade -->
+  <section class="members-section">
+    <h2 class="members-title legends">Legends Never Fade</h2>
+    <p class="members-desc">
+      Honoring our retired founders, leaders, and true members — the ones who built and
+      shaped the G|u|N Clan. Though no longer active, their legacy lives on in every
+      battle we fight. They shall always be remembered — and we hope to see them on the
+      battlefield once more…
+    </p>
+    <ul class="members-list legends">
+      <li>
+        <img src="images/flags/us.png" alt="USA" class="flag-icon" />
+        G|u|N-{£ÐR}-|EFF|Silent
+      </li>
+      <li>
+        <img src="images/flags/us.png" alt="USA" class="flag-icon" />
+        G|u|N-{£ÐR}-SgtSlaughter
+      </li>
+      <li>
+        <img src="images/flags/us.png" alt="USA" class="flag-icon" />
+        G|u|N-{£ÐR}-Fire|USA|
+      </li>
+      <li>
+        <img src="images/flags/ca.png" alt="Canada" class="flag-icon" />
+        G|u|N-{£ÐR}-BigDaddy
+      </li>
+      <li>
+        <img src="images/flags/nl.png" alt="Netherlands" class="flag-icon" />
+        G|u|N-{£ÐR}-|ƒ!A|Brunox
+      </li>
+      <li>
+        <img src="images/flags/be.png" alt="Belgium" class="flag-icon" />
+        G|u|N-{£ÐR}-Appelpitje
+      </li>
+      <li>
+        <img src="images/flags/it.png" alt="Italy" class="flag-icon" />
+        G|u|N-Acab-|ƒ!A|
+      </li>
+      <li>
+        <img src="images/flags/si.png" alt="Slovenia" class="flag-icon" />
+        G|u|N-Un!¤N-|ƒ!A|
+      </li>
+      <li>
+        <img src="images/flags/de.png" alt="Germany" class="flag-icon" />
+        G|u|N-Go0gle-|ƒ!A|
+      </li>
+      <li>
+        <img src="images/flags/pl.png" alt="Poland" class="flag-icon" />
+        G|u|N-Kamikaze-|ƒ!A|
+      </li>
+      <li>
+        <img src="images/flags/pl.png" alt="Poland" class="flag-icon" />
+        G|u|N-ŞĦĬИ-|ƒ!A|
+      </li>
+      <li>
+        <img src="images/flags/si.png" alt="Slovenia" class="flag-icon" />
+        G|u|N-Primož-|ƒ!A|
+      </li>
+      <li>
+        <img src="images/flags/be.png" alt="Belgium" class="flag-icon" />
+        G|u|N-Catgirl-|ƒ!A|
+      </li>
+      <li>
+        <img src="images/flags/eg.png" alt="Egypt" class="flag-icon" />
+        G|u|N-ZєžØ-|ƒ!A|
+      </li>
+      <li>
+        <img src="images/flags/pl.png" alt="Poland" class="flag-icon" />
+        G|u|N-Dede-|ƒ!A|
+      </li>
+      <li>
+        <img src="images/flags/eg.png" alt="Egypt" class="flag-icon" />
+        G|u|N-Bulent-|ƒ!A|
+      </li>
+      <li>
+        <img src="images/flags/eg.png" alt="Egypt" class="flag-icon" />
+        G|u|N-Sniper-|ƒ!A|
+      </li>
+      <li>
+        <img src="images/flags/eg.png" alt="Egypt" class="flag-icon" />
+        G|u|N-Nightman-|ƒ!A|
+      </li>
+    </ul>
+  </section>
+
