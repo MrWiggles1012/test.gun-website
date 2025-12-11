@@ -112,20 +112,29 @@
         <a class="primary-button nav-chat active hidden" href="chatlogs.html">Chat logs</a>
       </div>
 
+      <div id="chatlogs-error" class="error"></div>
 
-
-      <p class="subtitle">
-        Here you can later show the chat logs from the server.
-      </p>
-
-      <!-- back-link mag weg, is nu dubbel -->
-      <!-- <a href="index.html" class="back-link">&larr; Terug naar hoofdscherm</a> -->
-
-      <p>Chat logs page is still empty, but the link is already working.</p>
+      <div class="table-wrapper">
+        <table class="chatlogs-table">
+          <thead>
+            <tr>
+              <th data-sort-key="message">Message</th>
+              <th data-sort-key="sender">Sender</th>
+              <th data-sort-key="recipient">Recipient</th>
+              <th data-sort-key="scope">Scope</th>
+              <th data-sort-key="date" data-sort-default="desc">Date</th>
+            </tr>
+          </thead>
+          <tbody id="chatlogs-body">
+            <!-- Wordt gevuld door chatlogs.js -->
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- login / nav logic -->
+    <!-- Onderaan de pagina, vóór </body> -->
     <script src="nav.js" defer></script>
+    <script src="chatlogs.js" defer></script>
   </body>
 </html>
 

@@ -1657,4 +1657,105 @@ h1 {
 }
 
 
+/* ===== CHATLOGS PAGE ===== */
+
+/* Chatlogs pagina mag net zo breed zijn als Sessions */
+.chatlogs-container {
+  max-width: 2000px;
+}
+
+/* Basis styling van de tabel */
+.chatlogs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  table-layout: fixed;     /* nodig om kolombreedtes met nth-child te laten werken */
+}
+
+.chatlogs-table th,
+.chatlogs-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #1f2937;
+  text-align: left;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+/* Kopregel */
+.chatlogs-table th {
+  background: #020617;
+  color: #9ca3af;
+  position: sticky;
+  top: 0;
+}
+
+
+
+
+/* 🔹 Afwisselende rij-kleuren (zebra) */
+.chatlogs-table tbody tr:nth-child(odd) {
+  background-color: #334155
+}
+
+.chatlogs-table tbody tr:nth-child(even) {
+  background-color: #111827;  /* duidelijk lichter */
+}
+
+/* Hover-effect */
+.chatlogs-table tbody tr:hover {
+  background: rgba(37, 99, 235, 0.45);
+}
+
+
+
+/* Links in de tabel (voor als we later klikbare dingen maken) */
+.chatlogs-table a {
+  color: #38bdf8;
+  text-decoration: none;
+}
+
+.chatlogs-table a:hover {
+  text-decoration: underline;
+}
+
+/* Kolombreedtes chatlogs:
+   1 = Message
+   2 = Sender
+   3 = Recipient
+   4 = Scope
+   5 = Date
+*/
+
+/* Message – mag het breedst zijn */
+.chatlogs-table th:nth-child(1),
+.chatlogs-table td:nth-child(1) {
+  width: 54%;   /* pas aan naar smaak, bijv. 45% of 60% */
+}
+
+/* Sender */
+.chatlogs-table th:nth-child(2),
+.chatlogs-table td:nth-child(2) {
+  width: 15%;   /* vrij smal */
+}
+
+/* Recipient */
+.chatlogs-table th:nth-child(3),
+.chatlogs-table td:nth-child(3) {
+  width: 15%;
+}
+
+/* Scope (all/team) */
+.chatlogs-table th:nth-child(4),
+.chatlogs-table td:nth-child(4) {
+  width: 6%;
+}
+
+/* Date */
+.chatlogs-table th:nth-child(5),
+.chatlogs-table td:nth-child(5) {
+  width: 8%;
+}
+
+
+
 
