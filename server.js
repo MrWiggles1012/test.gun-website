@@ -10,8 +10,6 @@ const multer = require("multer");
 const axios = require("axios");          
 const FormData = require("form-data");   
 
-console.log("Discord webhook:", process.env.DISCORD_WEBHOOK_URL);
-
 
 const app = express();
 const PORT = process.env.PORT || 3000;
