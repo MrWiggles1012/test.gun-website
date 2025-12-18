@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Unnamedsoldier.cfg – MOHAA Guide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <!-- Balkje rechtsboven: Logged in as ... + knop -->
+    <div class="login-strip">
+      <div class="login-top">
+        <span id="login-user-label" class="login-user-label hidden"></span>
+        <div class="login-pill-wrap">
+          <button
+          id="login-toggle"
+          class="social-icon login-btn"
+          type="button"
+          aria-label="Login"        >
+          <span class="icon icon-login" aria-hidden="true"></span>
+          <span class="icon icon-logout" aria-hidden="true"></span>
+        </button>       
+        </div>  
+      </div>
+
+      <div class="follow-us">
+        <span class="follow-label">Follow us on</span>
+        <div class="social-icons">
+          <!-- YouTube -->
+          <a
+            href="https://www.youtube.com/@gunclan-d4m"
+            class="social-icon youtube"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="YouTube"
+          >
+            <span class="icon icon-youtube" aria-hidden="true"></span>
+          </a>
+
+          <!-- Telegram -->
+          <a
+            href="https://t.me/gunserver123"
+            class="social-icon telegram"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Telegram"
+          >
+            <span class="icon icon-telegram" aria-hidden="true"></span>
+          </a>
+
+          <!-- Discord -->
+          <a
+            href="https://discord.com/invite/8n9tPUZ6zA"
+            class="social-icon discord"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Discord"
+          >
+            <span class="icon icon-discord" aria-hidden="true"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div id="login-panel" class="login-panel hidden">
+      <div class="login-dialog">
+        <div class="login-dialog-header">
+          <h2>Admin login</h2>
+          <button type="button" id="login-close" class="login-close">✕</button>
+        </div>
+
+        <form id="login-form">
+          <input
+            type="text"
+            id="login-username"
+            placeholder="Username"
+            autocomplete="username"
+          />
+          <input
+            type="password"
+            id="login-password"
+            placeholder="Password"
+            autocomplete="current-password"
+          />
+          <button type="submit">Login</button>
+          <div id="login-error" class="login-error"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="container fullscreen-container">
+      <!-- Logo + slogan -->
+      <header class="home-header">
+        <div class="home-logo">
+          <img
+            src="images/gun-header.png"
+            alt="G|u|N - MoHAA Spearhead Rifle Only Clan"
+          />
+        </div>
+        <div class="home-header-text">
+          <h1>G|u|N - MoHAA Spearhead Rifle Only Clan</h1>
+          <p class="home-tagline">
+            Last living hub for Spearhead, and it will live forever...
+          </p>
+        </div>
+      </header>
+
+<!-- Navigatie knoppen -->
+<nav class="main-nav nav-video" aria-label="Main navigation">
+  <a class="nav-link nav-home" href="index.html">Home</a>
+  <a class="nav-link nav-stats" href="players.html">Statistics</a>
+
+  <a class="nav-link nav-forum"
+     href="https://forum.gunclan.org/"
+     target="_blank" rel="noopener noreferrer">Forum</a>
+
+  <a class="nav-link nav-upload" href="upload.html">Upload screenshot</a>
+  <a class="nav-link nav-members" href="members.html">Members</a>
+  <a class="nav-link nav-history" href="history.html">Our history</a>
+  <a class="nav-link nav-downloads" href="downloads.html">Downloads</a>
+  <a class="nav-link nav-join" href="join.html">Join us</a>
+
+  <div class="dropdown nav-dropdown active">
+    <button class="nav-link nav-guides dropdown-toggle" type="button" aria-haspopup="true">
+      Guides <span class="nav-caret" aria-hidden="true">▾</span>
+    </button>
+
+    <ul class="dropdown-menu" role="menu" aria-label="Guides">
+      <li><a href="unnamedsoldier-cfg.html" role="menuitem">Unnamedsoldier.cfg</a></li>
+      <li><a href="console.html" role="menuitem">Console</a></li>
+      <li><a href="binds.html" role="menuitem">Binds</a></li>
+      <li><a href="cvars.html" role="menuitem">CVARS</a></li>
+    </ul>
+  </div>
+    <div class="nav-admin-group">
+      <a class="nav-link nav-sessions hidden" href="sessions.html">Sessions</a>
+      <a class="nav-link nav-chat hidden" href="chatlogs.html">Chat logs</a>
+    </div>
+</nav>
+
+      <!-- CARD -->
+      <div class="stats-card">
+        <!-- ✅ TITEL LINKS + TRANSLATIONS RECHTS (in de card) -->
+        <div class="guide-topbar">
+          <div class="guide-header">
+            <h2 class="guide-title">Unnamedsoldier.cfg</h2>
+            <p class="guide-subtitle">
+              Find, edit, and protect your MOHAA config file (bonds, CVARs, and more).
+            </p>
+          </div>
+
+          <p class="lang-flags">
+            <strong>Translations Available:</strong><br />
+
+            <span class="lang-item active" data-lang="en">
+              <img src="images/flags/us.png" alt="English" class="flag-icon" />
+              English
+            </span>
+            |
+
+            <span class="lang-item" data-lang="ar">
+              <img src="images/flags/eg.png" alt="Arabic" class="flag-icon" />
+              Arabic
+            </span>
+            |
+
+            <span class="lang-item" data-lang="de">
+              <img src="images/flags/de.png" alt="German" class="flag-icon" />
+              German
+            </span>
+            |
+
+            <span class="lang-item" data-lang="ru">
+              <img src="images/flags/ru.png" alt="Russian" class="flag-icon" />
+              Russian
+            </span>
+            |
+
+            <span class="lang-item" data-lang="am">
+              <img src="images/flags/am.png" alt="Armenian" class="flag-icon" />
+              Armenian
+            </span>
+            |
+
+            <span class="lang-item" data-lang="es">
+              <img src="images/flags/es.png" alt="Spanish" class="flag-icon" />
+              Spanish
+            </span>
+            |
+
+            <span class="lang-item" data-lang="nl">
+              <img src="images/flags/nl.png" alt="Dutch" class="flag-icon" />
+              Dutch
+            </span>
+          </p>
+        </div>
+
+        <!-- ENGLISH -->
+        <div class="howto-lang lang-block" data-lang="en">
+          <p>
+            <br>
+            <br>
+            <span class="code-pill">unnamedsoldier.cfg</span> is the configuration file that stores all of your personal settings.
+            You can find it in <span class="code-pill">mohaa\main\configs</span>.
+          </p>
+          <p>
+            It contains your <strong style="color: #FFD700;">binds</strong> (keys),
+            <strong style="color: #FFD700;">CVARs</strong> (settings), and other options that affect how you play the game.
+          </p>
+
+          <h2>Protect unnamedsoldier.cfg from unwanted changes</h2>
+          <p>
+            Some servers may modify or “mess up” your config file. To prevent that, you can set the file to
+            <strong style="color: #FFD700;">Read-only</strong>.
+          </p>
+          <ol>
+            <li>Right-click <strong style="color: #FFD700;">unnamedsoldier.cfg</strong></li>
+            <li>Click <strong style="color: #FFD700;">Properties</strong></li>
+            <li>Enable <strong style="color: #FFD700;">Read-only</strong></li>
+            <li>Click <strong style="color: #FFD700;">Apply</strong></li>
+          </ol>
+          <p>
+            If you want to edit or add something later, temporarily disable <strong style="color: #FFD700;">Read-only</strong>,
+            make your changes, then enable it again.
+          </p>
+
+          <h2>Remove forced aliases (Foresight and similar tools)</h2>
+          <p>
+            In some cases, <strong style="color: #FFD700;">Foresight</strong> (or another program) may insert certain
+            <strong style="color: #FFD700;">aliases</strong> into your config. These are sometimes used to block cheat commands by
+            forcing the game to quit or by making you announce in chat that you’re cheating.
+          </p>
+
+          <p>Examples:</p>
+          <pre class="code-block code-block--wide"><code>alias wb_item_esp "quit"
+alias r_loadmap "say I'm trying to crash the server! KICK ME! KICK ME!"</code></pre>
+
+          <p>
+            These aliases can conflict with <strong style="color: #FFD700;">MOHAAC</strong> (and possibly other anti-cheats),
+            so it’s recommended to remove them from <span class="code-pill">unnamedsoldier.cfg</span>.
+          </p>
+
+          <h2>Clean up other config files</h2>
+          <p>
+            You can delete other config files in the same folder (such as <span class="code-pill">newconfig.cfg</span> or
+            <span class="code-pill">player.cfg</span>), because they may overwrite or conflict with
+            <span class="code-pill">unnamedsoldier.cfg</span>.
+          </p>
+
+          <h2>Optional: Lock down foresight.cfg</h2>
+          <p>
+            If there is a <span class="code-pill">foresight.cfg</span> file in the folder, you can prevent it from messing with your settings:
+          </p>
+          <ol>
+            <li>Open <span class="code-pill">foresight.cfg</span> in Notepad</li>
+            <li>Delete everything inside the file</li>
+            <li>Save the file</li>
+            <li>Set it to <strong style="color: #FFD700;">Read-only</strong> as well</li>
+          </ol>
+          <p>This helps prevent servers running Foresight from changing your configuration.</p>
+        </div>
+
+        <!-- ARABIC (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="ar" dir="rtl" lang="ar">
+          <h2>Translation coming soon</h2>
+          <p>Arabic translation for this guide will be added later.</p>
+        </div>
+
+        <!-- GERMAN (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="de" lang="de">
+          <h2>Übersetzung folgt</h2>
+          <p>Die deutsche Übersetzung für diesen Guide wird später hinzugefügt.</p>
+        </div>
+
+        <!-- RUSSIAN (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="ru" lang="ru">
+          <h2>Перевод скоро</h2>
+          <p>Русский перевод этого гайда будет добавлен позже.</p>
+        </div>
+
+        <!-- ARMENIAN (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="am" lang="hy">
+          <h2>Թարգմանությունը շուտով</h2>
+          <p>Այս ուղեցույցի հայերեն տարբերակը կհավելվի ավելի ուշ։</p>
+        </div>
+
+        <!-- SPANISH (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="es" lang="es">
+          <h2>Traducción próximamente</h2>
+          <p>La traducción al español de esta guía se añadirá más adelante.</p>
+        </div>
+
+        <!-- DUTCH -->
+        <div class="howto-lang lang-block hidden" data-lang="nl" lang="nl">
+          <p>
+            <span class="code-pill">unnamedsoldier.cfg</span> is het configuratiebestand met al je persoonlijke instellingen.
+            Je vindt het in <span class="code-pill">mohaa\main\configs</span>.
+          </p>
+          <p>
+            Het bevat je <strong style="color: #FFD700;">binds</strong> (toetsen),
+            <strong style="color: #FFD700;">CVARs</strong> (instellingen) en andere opties die bepalen hoe je speelt.
+          </p>
+
+          <h2>Bescherm unnamedsoldier.cfg tegen ongewenste wijzigingen</h2>
+          <p>
+            Sommige servers kunnen dit bestand aanpassen of “verknallen”. Om dat te voorkomen kun je het bestand op
+            <strong style="color: #FFD700;">Alleen-lezen (Read-only)</strong> zetten.
+          </p>
+          <ol>
+            <li>Klik met rechts op <strong style="color: #FFD700;">unnamedsoldier.cfg</strong></li>
+            <li>Kies <strong style="color: #FFD700;">Eigenschappen</strong></li>
+            <li>Vink <strong style="color: #FFD700;">Alleen-lezen</strong> aan</li>
+            <li>Klik op <strong style="color: #FFD700;">Toepassen</strong></li>
+          </ol>
+          <p>
+            Wil je later iets wijzigen? Zet Alleen-lezen tijdelijk uit, pas je config aan en zet Alleen-lezen daarna weer aan.
+          </p>
+
+          <h2>Verwijder geforceerde aliases (Foresight en vergelijkbaar)</h2>
+          <p>
+            Het kan gebeuren dat <strong style="color: #FFD700;">Foresight</strong> (of een ander programma)
+            <strong style="color: #FFD700;">aliases</strong> toevoegt. Dit wordt soms gebruikt om cheat-commando’s te blokkeren
+            door de game te laten afsluiten of door je in chat te laten “bekennen”.
+          </p>
+
+          <p>Voorbeelden:</p>
+          <pre class="code-block code-block--wide"><code>alias wb_item_esp "quit"
+alias r_loadmap "say I'm trying to crash the server! KICK ME! KICK ME!"</code></pre>
+
+          <p>
+            Deze aliases kunnen conflicteren met <strong style="color: #FFD700;">MOHAAC</strong> (en mogelijk andere anti-cheats),
+            dus het is aan te raden om ze uit <span class="code-pill">unnamedsoldier.cfg</span> te verwijderen.
+          </p>
+
+          <h2>Andere configbestanden opschonen</h2>
+          <p>
+            Je kunt ook andere configbestanden in dezelfde map verwijderen (zoals
+            <span class="code-pill">newconfig.cfg</span> of <span class="code-pill">player.cfg</span>),
+            omdat ze instellingen kunnen overschrijven of conflicten kunnen veroorzaken met
+            <span class="code-pill">unnamedsoldier.cfg</span>.
+          </p>
+
+          <h2>Optioneel: foresight.cfg “locken”</h2>
+          <p>
+            Zie je een <span class="code-pill">foresight.cfg</span> in de map? Dan kun je voorkomen dat servers met Foresight
+            je instellingen blijven aanpassen:
+          </p>
+          <ol>
+            <li>Open <span class="code-pill">foresight.cfg</span> in Notepad</li>
+            <li>Verwijder alles in het bestand</li>
+            <li>Sla het bestand op</li>
+            <li>Zet het ook op <strong style="color: #FFD700;">Alleen-lezen</strong></li>
+          </ol>
+        </div>
+      </div>
+      <!-- /stats-card -->
+    </div>
+    <!-- /container -->
+
+    <script src="nav.js" defer></script>
+    <script src="login.js" defer></script>
+    <script src="auth.js" defer></script>
+    <script src="unnamedsoldier-cfg.js" defer></script>
+  </body>
+</html>

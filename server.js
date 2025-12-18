@@ -3,250 +3,609 @@ require("dotenv").config();
 
 const express = require("express");
 const path = require("path");
-const fs = require("fs").promises;
+const fs = require("fs");
+const fsp = fs.promises;
+
 const { parsePlayerFile } = require("./playerParser");
 
-const multer = require("multer");        
-const axios = require("axios");          
-const FormData = require("form-data");   
-
+const multer = require("multer");
+const axios = require("axios");
+const FormData = require("form-data");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DATA_DIR = path.join(__dirname, "data");
 
-// Multer-configuratie voor uploaden van screenshots (.tga) in geheugen
-const upload = multer({
-  storage: multer.memoryStorage(),             // sla bestand in RAM op, niet op schijf
-  limits: { fileSize: 10 * 1024 * 1024 },      // max 10 MB
-  fileFilter: (req, file, cb) => {
-    const name = file.originalname.toLowerCase();
-    if (!name.endsWith(".tga")) {
-      // alleen .tga toestaan
-      return cb(new Error("Only .tga files are allowed"));
-    }
-    cb(null, true);
-  },
-});
+// ✅ Map waar de GAME de spelersbestanden (.txt) schrijft
+const PLAYERFILES_DIR = process.env.PLAYERFILES_DIR
+  ? path.resolve(process.env.PLAYERFILES_DIR)
+  : path.join(__dirname, "data"); // fallback voor testen
 
-// Lees de Discord webhook-URL uit .env
-const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
+// ✅ App data (sessions_log.json + chat_logs.json) bewaren in je projectmap
+const APP_DATA_DIR = path.join(__dirname, "data");
+const SESSIONS_LOG_PATH = path.join(APP_DATA_DIR, "sessions_log.json");
+const CHAT_LOG_PATH = path.join(APP_DATA_DIR, "chat_logs.json");
 
+// ✅ Intervals
+const STATS_REFRESH_MS = Number(process.env.STATS_REFRESH_MS || 5 * 60 * 1000);     // 5 min
+const SESSIONS_REFRESH_MS = Number(process.env.SESSIONS_REFRESH_MS || 5 * 1000);   // 5 sec
 
 // Serve static frontend files from /public
 app.use(express.static(path.join(__dirname, "public")));
 
+// ---------------------------
+// Discord screenshot upload
+// ---------------------------
+const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
 
-
-// API: list all players (based on .txt files in /data)
-app.get("/api/players", async (req, res) => {
-  try {
-    const files = await fs.readdir(DATA_DIR);
-    const players = files
-      .filter((file) => file.toLowerCase().endsWith(".txt"))
-      .map((file) => path.basename(file, ".txt"));
-    res.json(players);
-  } catch (err) {
-    console.error("Error in /api/players:", err);
-    res.status(500).json({ error: "Could not load player list" });
-  }
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+  fileFilter: (req, file, cb) => {
+    const name = file.originalname.toLowerCase();
+    if (!name.endsWith(".tga")) return cb(new Error("Only .tga files are allowed"));
+    cb(null, true);
+  },
 });
 
-// API: single player stats
-app.get("/api/player/:name", async (req, res) => {
-  const playerName = req.params.name;
-  const filePath = path.join(DATA_DIR, `${playerName}.txt`);
+// ---------------------------
+// Helpers
+// ---------------------------
+function ensureDir(p) {
+  if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
+}
 
-  try {
-    const raw = await fs.readFile(filePath, "utf-8");
-    const data = parsePlayerFile(raw);
-    res.json(data);
-  } catch (err) {
-    if (err.code === "ENOENT") {
-      return res.status(404).json({ error: "Player not found" });
+function safeLower(v) {
+  return String(v || "").toLowerCase().trim();
+}
+
+function isConnectedState(connection_state) {
+  return safeLower(connection_state) === "connected";
+}
+
+function joinFromFile(session) {
+  const a = [];
+  if (session.join_date) a.push(session.join_date);
+  if (session.join_time) a.push(session.join_time);
+  return a.join(" ").trim();
+}
+
+function leaveFromFile(session) {
+  const a = [];
+  if (session.leave_date) a.push(session.leave_date);
+  if (session.leave_time) a.push(session.leave_time);
+  const leave = a.join(" ").trim();
+  if (leave) return leave;
+
+  const b = [];
+  if (session.last_seen_date) b.push(session.last_seen_date);
+  if (session.last_seen_time) b.push(session.last_seen_time);
+  return b.join(" ").trim();
+}
+
+function nowStamp() {
+  const d = new Date();
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} ${pad(
+    d.getHours()
+  )}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+async function writeJsonAtomic(filePath, obj) {
+  const tmp = filePath + ".tmp";
+  await fsp.writeFile(tmp, JSON.stringify(obj, null, 2), "utf-8");
+  await fsp.rename(tmp, filePath);
+}
+
+// Medal of Honor "typed wrapper" -> plain JS (werkt ook als het al plain JSON is)
+function unwrap(node) {
+  if (node == null) return node;
+  if (Array.isArray(node)) return node.map(unwrap);
+
+  if (typeof node === "object" && "type" in node && "content" in node) {
+    const { type, content } = node;
+
+    if (type === "integer" || type === "float") return Number(content);
+    if (type === "string") return String(content);
+    if (type === "boolean") return Boolean(content);
+
+    if (type === "array_object" || type === "object") {
+      const out = {};
+      for (const [k, v] of Object.entries(content || {})) out[k] = unwrap(v);
+      return out;
     }
-    console.error("Error in /api/player:", err);
-    res.status(500).json({ error: "Internal server error" });
+
+    return unwrap(content);
   }
-});
 
-// ✅ API: sessions overview per player
-app.get("/api/sessions", async (req, res) => {
+  if (typeof node === "object") {
+    const out = {};
+    for (const [k, v] of Object.entries(node)) out[k] = unwrap(v);
+    return out;
+  }
+
+  return node;
+}
+
+// ---------------------------
+// Parsed file cache (mtime-based)
+// ---------------------------
+const fileCache = new Map(); // fileName -> {mtimeMs, parsed}
+
+async function readParsed(fileName) {
+  const fullPath = path.join(PLAYERFILES_DIR, fileName);
+  const st = await fsp.stat(fullPath);
+
+  const cached = fileCache.get(fileName);
+  if (cached && cached.mtimeMs === st.mtimeMs) return cached.parsed;
+
+  const raw = await fsp.readFile(fullPath, "utf-8");
+  const parsed = parsePlayerFile(raw);
+
+  fileCache.set(fileName, { mtimeMs: st.mtimeMs, parsed });
+  return parsed;
+}
+
+// ---------------------------
+// API caches
+// ---------------------------
+let cachePlayers = []; // statistics tabel (GET /api/getplayers)
+
+let lastStatsRefreshMs = 0;
+let lastSessionsRefreshMs = 0;
+let lastChatWriteMs = 0;
+let lastError = null;
+
+let statsRefreshing = false;
+let sessionsRefreshing = false;
+
+// ---------------------------
+// Sessions log (persistent)
+// ---------------------------
+let sessionsLog = []; // array rows (history)
+
+const activeLogIdByFile = new Map();
+const prevConnectedByFile = new Map();
+const prevPlayCountByFile = new Map();
+
+async function loadSessionsLog() {
   try {
-    const files = await fs.readdir(DATA_DIR);
-    const txtFiles = files.filter((file) =>
-      file.toLowerCase().endsWith(".txt")
-    );
+    if (!fs.existsSync(SESSIONS_LOG_PATH)) return;
 
-    const sessions = [];
+    const raw = await fsp.readFile(SESSIONS_LOG_PATH, "utf-8");
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) return;
 
-    for (const file of txtFiles) {
-      try {
-        const fullPath = path.join(DATA_DIR, file);
-        const raw = await fs.readFile(fullPath, "utf-8");
-        const data = parsePlayerFile(raw);
+    sessionsLog = arr;
 
-        const userinfo = data.userinfo || {};
-        const session = data.session || {};
+    activeLogIdByFile.clear();
+    prevConnectedByFile.clear();
+    prevPlayCountByFile.clear();
 
-        const joinParts = [];
-        if (session.join_date) joinParts.push(session.join_date);
-        if (session.join_time) joinParts.push(session.join_time);
-        const join = joinParts.join(" ").trim();
+    for (const row of sessionsLog) {
+      if (!row || !row.filename) continue;
 
-        const leaveParts = [];
-        if (session.leave_date) leaveParts.push(session.leave_date);
-        if (session.leave_time) leaveParts.push(session.leave_time);
-        const leave = leaveParts.join(" ").trim();
-
-        sessions.push({
-          filename: path.basename(file, ".txt"),
-          name: userinfo.name || path.basename(file, ".txt"),
-          connection_state: userinfo.connection_state || "",
-          ip: userinfo.ip || "",
-          rate:
-            typeof userinfo.rate !== "undefined" ? userinfo.rate : "",
-          snaps:
-            typeof userinfo.snaps !== "undefined" ? userinfo.snaps : "",
-          ping:
-            typeof userinfo.ping !== "undefined" ? userinfo.ping : "",
-          allies_model: userinfo.allies_model || "",
-          axis_model: userinfo.axis_model || "",
-          game_version: userinfo.game_version || "",
-          join,
-          leave,
-        });
-      } catch (innerErr) {
-        console.error(
-          "Error parsing file for /api/sessions:",
-          file,
-          innerErr
-        );
-        // we slaan deze speler over, maar crashen niet
+      if (row.connection_state === "connected" && row.leave === "Online") {
+        activeLogIdByFile.set(row.filename, row.id);
+        prevConnectedByFile.set(row.filename, true);
+        prevPlayCountByFile.set(row.filename, Number(row.number_of_times_played || 0));
       }
     }
-
-    res.json(sessions);
-  } catch (err) {
-    console.error("Error in /api/sessions:", err);
-    res.status(500).json({ error: "Could not load sessions overview" });
+  } catch (e) {
+    console.error("Failed to load sessions_log.json:", e);
   }
-});
+}
 
-// API: overzicht met stats per speler voor de Statistics-tabel
-app.get("/api/player-overview", async (req, res) => {
+function startSessionRow(snap) {
+  const id = `${snap.filename}:${snap.play_count}:${Date.now()}`;
+
+  sessionsLog.unshift({
+    id,
+    filename: snap.filename,
+    name: snap.name,
+    connection_state: "connected",
+    ip: snap.ip,
+    rate: snap.rate,
+    snaps: snap.snaps,
+    ping: snap.ping,
+    allies_model: snap.allies_model,
+    axis_model: snap.axis_model,
+    game_version: snap.game_version,
+    join: nowStamp(),
+    leave: "Online",
+    join_from_file: snap.join_from_file,
+    number_of_times_played: snap.play_count,
+  });
+
+  activeLogIdByFile.set(snap.filename, id);
+}
+
+function updateOpenSessionRowWhileConnected(snap) {
+  const id = activeLogIdByFile.get(snap.filename);
+  if (!id) return;
+
+  const row = sessionsLog.find((x) => x.id === id);
+  if (!row) return;
+
+  row.connection_state = "connected";
+  row.ip = snap.ip;
+  row.rate = snap.rate;
+  row.snaps = snap.snaps;
+  row.ping = snap.ping;
+  row.allies_model = snap.allies_model;
+  row.axis_model = snap.axis_model;
+  row.game_version = snap.game_version;
+  row.leave = "Online";
+}
+
+function endSessionRow(filename, leaveVal) {
+  const id = activeLogIdByFile.get(filename);
+  if (!id) return;
+
+  const row = sessionsLog.find((x) => x.id === id);
+  if (row) {
+    row.connection_state = "disconnected";
+    row.leave = leaveVal || nowStamp();
+  }
+  activeLogIdByFile.delete(filename);
+}
+
+// ---------------------------
+// Chat logs (persistent + SSE live stream)
+// ---------------------------
+let chatLogs = []; // {message,sender,recipient,scope,team,date,time?}
+const chatSseClients = new Set();
+
+async function loadChatLogs() {
   try {
-    const files = await fs.readdir(DATA_DIR);
-    const txtFiles = files.filter((file) =>
-      file.toLowerCase().endsWith(".txt")
-    );
+    if (!fs.existsSync(CHAT_LOG_PATH)) return;
+    const raw = await fsp.readFile(CHAT_LOG_PATH, "utf-8");
+    const arr = JSON.parse(raw);
+    if (Array.isArray(arr)) chatLogs = arr;
+  } catch (e) {
+    console.error("Failed to load chat_logs.json:", e);
+  }
+}
 
+async function saveChatLogs() {
+  ensureDir(APP_DATA_DIR);
+  await writeJsonAtomic(CHAT_LOG_PATH, chatLogs);
+  lastChatWriteMs = Date.now();
+}
+
+function broadcastChat(log) {
+  const payload = `event: chat\ndata: ${JSON.stringify(log)}\n\n`;
+  for (const res of chatSseClients) {
+    try { res.write(payload); } catch (_) {}
+  }
+}
+
+// keepalive ping (handig voor proxies/idle timeouts)
+setInterval(() => {
+  for (const res of chatSseClients) {
+    try { res.write(`: ping\n\n`); } catch (_) {}
+  }
+}, 25000);
+
+// ---------------------------
+// Refresh loops
+// ---------------------------
+async function listTxtFiles(dir) {
+  const files = await fsp.readdir(dir);
+  return files.filter((f) => f.toLowerCase().endsWith(".txt"));
+}
+
+async function refreshSessionsFromFiles() {
+  if (sessionsRefreshing) return;
+  sessionsRefreshing = true;
+
+  try {
+    lastError = null;
+    ensureDir(PLAYERFILES_DIR);
+
+    const txtFiles = await listTxtFiles(PLAYERFILES_DIR);
+    let dirty = false;
+
+    for (const key of fileCache.keys()) {
+      if (!txtFiles.includes(key)) fileCache.delete(key);
+    }
+
+    for (const file of txtFiles) {
+      const filename = path.basename(file, ".txt");
+
+      const data = await readParsed(file);
+      const userinfo = data.userinfo || {};
+      const session = data.session || {};
+
+      const connected = isConnectedState(userinfo.connection_state);
+      const playCount = Number(session.number_of_times_played || 0);
+
+      const snap = {
+        filename,
+        name: userinfo.name || filename,
+        ip: userinfo.ip || "",
+        rate: typeof userinfo.rate !== "undefined" ? userinfo.rate : "",
+        snaps: typeof userinfo.snaps !== "undefined" ? userinfo.snaps : "",
+        ping: typeof userinfo.ping !== "undefined" ? userinfo.ping : "",
+        allies_model: userinfo.allies_model || "",
+        axis_model: userinfo.axis_model || "",
+        game_version: userinfo.game_version || "",
+        join_from_file: joinFromFile(session),
+        leave_from_file: leaveFromFile(session),
+        connected,
+        play_count: playCount,
+      };
+
+      const prevConnected = prevConnectedByFile.get(filename) ?? false;
+      const prevPlayCount = prevPlayCountByFile.get(filename) ?? playCount;
+
+      const shouldStart =
+        (connected && !prevConnected) ||
+        (connected && playCount > prevPlayCount);
+
+      if (shouldStart) {
+        endSessionRow(filename, nowStamp());
+        startSessionRow(snap);
+        dirty = true;
+      }
+
+      if (connected && (prevConnected || activeLogIdByFile.has(filename))) {
+        updateOpenSessionRowWhileConnected(snap);
+      }
+
+      if (!connected && prevConnected) {
+        endSessionRow(filename, snap.leave_from_file || nowStamp());
+        dirty = true;
+      }
+
+      prevConnectedByFile.set(filename, connected);
+      prevPlayCountByFile.set(filename, playCount);
+    }
+
+    const MAX_LOG = 5000;
+    if (sessionsLog.length > MAX_LOG) {
+      sessionsLog = sessionsLog.slice(0, MAX_LOG);
+      dirty = true;
+    }
+
+    if (dirty) {
+      ensureDir(APP_DATA_DIR);
+      await writeJsonAtomic(SESSIONS_LOG_PATH, sessionsLog);
+    }
+
+    lastSessionsRefreshMs = Date.now();
+  } catch (e) {
+    lastError = String(e?.message || e);
+    console.error("refreshSessionsFromFiles failed:", e);
+  } finally {
+    sessionsRefreshing = false;
+  }
+}
+
+async function refreshStatsFromFiles() {
+  if (statsRefreshing) return;
+  statsRefreshing = true;
+
+  try {
+    lastError = null;
+    ensureDir(PLAYERFILES_DIR);
+
+    const txtFiles = await listTxtFiles(PLAYERFILES_DIR);
     const players = [];
 
     for (const file of txtFiles) {
-      try {
-        const fullPath = path.join(DATA_DIR, file);
-        const raw = await fs.readFile(fullPath, "utf-8");
-        const data = parsePlayerFile(raw);
+      const filename = path.basename(file, ".txt");
 
-        const userinfo = data.userinfo || {};
-        const session = data.session || {};
-        const combat = data.combat || {};
-        const bodyLocations = data["body_locations"] || {};
-        const freezeTag = data["freeze_tag"] || {};
+      const data = await readParsed(file);
+      const userinfo = data.userinfo || {};
+      const session = data.session || {};
+      const combat = data.combat || {};
+      const bodyLocations = data["body_locations"] || {};
+      const freezeTag = data["freeze_tag"] || {};
 
-        players.push({
-          filename: path.basename(file, ".txt"),
-          name: userinfo.name || path.basename(file, ".txt"),
-          kills: combat.kills ?? 0,
-          deaths: combat.deaths ?? 0,
-          kdr: combat.kdr ?? 0,
-          headshots: bodyLocations.headshots ?? 0,
-          damage: combat.damage ?? 0,
-          melts: freezeTag.melts ?? 0,
-          total_play_time: session.total_play_time || "",
-        });
-      } catch (innerErr) {
-        console.error("Error parsing file for /api/player-overview:", file, innerErr);
-        // fout in 1 speler -> sla die over maar ga door
-      }
+      players.push({
+        filename,
+        name: userinfo.name || filename,
+        kills: combat.kills ?? 0,
+        deaths: combat.deaths ?? 0,
+        kdr: combat.kdr ?? 0,
+        headshots: bodyLocations.headshots ?? 0,
+        damage: combat.damage ?? 0,
+        melts: freezeTag.melts ?? 0,
+        total_play_time: session.total_play_time || "",
+      });
     }
 
-    res.json(players);
-  } catch (err) {
-    console.error("Error in /api/player-overview:", err);
-    res.status(500).json({ error: "Could not load player overview" });
+    players.sort((a, b) => (b.kills ?? 0) - (a.kills ?? 0));
+    cachePlayers = players;
+    lastStatsRefreshMs = Date.now();
+  } catch (e) {
+    lastError = String(e?.message || e);
+    console.error("refreshStatsFromFiles failed:", e);
+  } finally {
+    statsRefreshing = false;
+  }
+}
+
+// ---------------------------
+// API routes
+// ---------------------------
+app.get("/api/getplayers", (req, res) => res.json(cachePlayers));
+app.get("/api/sessions", (req, res) => res.json(sessionsLog));
+
+// Chat logs history
+app.get("/api/chatlogs", (req, res) => {
+  const limit = Math.max(1, Math.min(Number(req.query.limit || 500), 5000));
+  res.json(chatLogs.slice(0, limit));
+});
+
+// Chat logs live stream (SSE)
+app.get("/api/chatlogs/stream", (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream; charset=utf-8");
+  res.setHeader("Cache-Control", "no-cache, no-transform");
+  res.setHeader("Connection", "keep-alive");
+  res.flushHeaders?.();
+
+  res.write(`event: ready\ndata: {}\n\n`);
+
+  chatSseClients.add(res);
+  req.on("close", () => chatSseClients.delete(res));
+});
+
+// Game -> post chat log here
+app.post("/api/chatlog", express.json({ type: "*/*", limit: "2mb" }), async (req, res) => {
+  try {
+    const data = unwrap(req.body) || {};
+
+    const sender = String(data.sender || "").trim();
+    const message = String(data.message || "").trim();
+    if (!sender || !message) {
+      return res.json({ status: "success", message: "Success" });
+    }
+
+    const date = String(data.date || "").trim();
+    const time = String(data.time || "").trim();
+    const stamp = (date && time) ? `${date} ${time}` : nowStamp();
+
+    const log = {
+      message,
+      sender,
+      recipient: String(data.recipient || "").trim(),
+      scope: String(data.scope || "all").trim(),
+      team: String(data.team || "").trim(),
+      date: stamp,
+    };
+
+    chatLogs.unshift(log);
+
+    const MAX_CHAT = 5000;
+    if (chatLogs.length > MAX_CHAT) chatLogs = chatLogs.slice(0, MAX_CHAT);
+
+    await saveChatLogs();
+    broadcastChat(log);
+
+    return res.json({ status: "success", message: "Success" });
+  } catch (e) {
+    console.error("Error in /api/chatlog:", e);
+    return res.status(500).json({ status: "error", message: "Server error" });
   }
 });
 
-// ✅ API: upload screenshot en stuur naar Discord via webhook
-app.post(
-  "/api/upload-screenshot",
-  upload.single("screenshot"), // "screenshot" = naam van je <input name="screenshot">
-  async (req, res) => {
-    try {
-      // 1. Bestaat er een bestand?
-      if (!req.file) {
-        return res.status(400).json({ error: "No file uploaded." });
-      }
+// test: reset chat logs
+app.post("/api/reset-chatlogs", async (req, res) => {
+  chatLogs = [];
+  await saveChatLogs();
+  res.json({ ok: true });
+});
 
-      // 2. Hebben we een webhook?
-      if (!DISCORD_WEBHOOK_URL) {
-        console.error("No DISCORD_WEBHOOK_URL set in .env");
-        return res
-          .status(500)
-          .json({ error: "Server misconfigured (no webhook URL)." });
-      }
+app.get("/api/cache-status", (req, res) => {
+  res.json({
+    playerfiles_dir: PLAYERFILES_DIR,
+    stats_refresh_ms: STATS_REFRESH_MS,
+    sessions_refresh_ms: SESSIONS_REFRESH_MS,
 
-      // 3. Form-data voor Discord opbouwen
-      const form = new FormData();
+    last_stats_refresh_ms: lastStatsRefreshMs,
+    last_stats_refresh_iso: lastStatsRefreshMs ? new Date(lastStatsRefreshMs).toISOString() : null,
 
-      // Berichtje dat bij de upload in Discord komt
-      form.append(
-        "payload_json",
-        JSON.stringify({
-          content: `📸 New forced screenshot uploaded: **${req.file.originalname}**`,
-        })
-      );
+    last_sessions_refresh_ms: lastSessionsRefreshMs,
+    last_sessions_refresh_iso: lastSessionsRefreshMs ? new Date(lastSessionsRefreshMs).toISOString() : null,
 
-      // Het daadwerkelijke bestand (buffer uit Multer)
-      form.append("file", req.file.buffer, {
-        filename: req.file.originalname,
-        contentType: "image/tga",
-      });
+    chat_logs_count: chatLogs.length,
+    last_chat_write_iso: lastChatWriteMs ? new Date(lastChatWriteMs).toISOString() : null,
 
-      // 4. Naar Discord sturen
-      await axios.post(DISCORD_WEBHOOK_URL, form, {
-        headers: form.getHeaders(),
-      });
+    players_count: cachePlayers.length,
+    sessions_log_count: sessionsLog.length,
+    error: lastError,
+  });
+});
 
-      // 5. Klaar → frontend krijgt een JSON-antwoord
-      res.json({ ok: true, message: "Screenshot uploaded successfully." });
-    } catch (err) {
-      console.error("Error in /api/upload-screenshot:", err);
+// test: handmatig refreshen
+app.post("/api/refresh-now", async (req, res) => {
+  await refreshSessionsFromFiles();
+  await refreshStatsFromFiles();
+  res.json({ ok: true });
+});
 
-      // Specifieke foutjes die we herkennen
-      if (err.message === "Only .tga files are allowed") {
-        return res.status(400).json({ error: err.message });
-      }
-      if (err.code === "LIMIT_FILE_SIZE") {
-        return res
-          .status(400)
-          .json({ error: "File is too large (max 10 MB)." });
-      }
+// test: sessions log resetten
+app.post("/api/reset-sessions-log", async (req, res) => {
+  sessionsLog = [];
+  activeLogIdByFile.clear();
+  prevConnectedByFile.clear();
+  prevPlayCountByFile.clear();
 
-      // Algemene fallback
-      res.status(500).json({ error: "Something went wrong while uploading." });
+  ensureDir(APP_DATA_DIR);
+  await writeJsonAtomic(SESSIONS_LOG_PATH, sessionsLog);
+
+  res.json({ ok: true });
+});
+
+// --------------------------------------------------
+// STUB endpoints (zodat gamescript "Success" krijgt)
+// --------------------------------------------------
+app.post("/api/player", express.json({ type: "*/*", limit: "2mb" }), (req, res) => {
+  return res.json({ status: "success", message: "Success" });
+});
+
+app.post("/api/session", express.json({ type: "*/*", limit: "2mb" }), (req, res) => {
+  return res.json({ status: "success", message: "Success" });
+});
+
+// --------------------------------------------------
+// Upload screenshot → Discord
+// --------------------------------------------------
+app.post("/api/upload-screenshot", upload.single("screenshot"), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: "No file uploaded." });
+    if (!DISCORD_WEBHOOK_URL) {
+      console.error("No DISCORD_WEBHOOK_URL set in .env");
+      return res.status(500).json({ error: "Server misconfigured (no webhook URL)." });
     }
-  }
-);
 
+    const form = new FormData();
+    form.append(
+      "payload_json",
+      JSON.stringify({
+        content: `📸 New forced screenshot uploaded: **${req.file.originalname}**`,
+      })
+    );
+
+    form.append("file", req.file.buffer, {
+      filename: req.file.originalname,
+      contentType: "image/tga",
+    });
+
+    await axios.post(DISCORD_WEBHOOK_URL, form, { headers: form.getHeaders() });
+    res.json({ ok: true, message: "Screenshot uploaded successfully." });
+  } catch (err) {
+    console.error("Error in /api/upload-screenshot:", err);
+    if (err.message === "Only .tga files are allowed") return res.status(400).json({ error: err.message });
+    if (err.code === "LIMIT_FILE_SIZE") return res.status(400).json({ error: "File is too large (max 10 MB)." });
+    res.status(500).json({ error: "Something went wrong while uploading." });
+  }
+});
 
 // Main page -> index.html
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+// ---------------------------
+// Boot
+// ---------------------------
+(async () => {
+  ensureDir(APP_DATA_DIR);
+  await loadSessionsLog();
+  await loadChatLogs();
+
+  await refreshSessionsFromFiles();
+  await refreshStatsFromFiles();
+
+  setInterval(() => refreshSessionsFromFiles().catch(console.error), SESSIONS_REFRESH_MS);
+  setInterval(() => refreshStatsFromFiles().catch(console.error), STATS_REFRESH_MS);
+
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Reading player files from: ${PLAYERFILES_DIR}`);
+    console.log(`Status: http://localhost:${PORT}/api/cache-status`);
+    console.log(`Chat stream: http://localhost:${PORT}/api/chatlogs/stream`);
+  });
+})();

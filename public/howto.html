@@ -6,17 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="styles.css" />
   </head>
+  
   <body>
-    <!-- Balkje rechtsboven: login + socials (kopie van andere pagina's) -->
+    <!-- Balkje rechtsboven: Logged in as ... + knop -->
     <div class="login-strip">
       <div class="login-top">
         <span id="login-user-label" class="login-user-label hidden"></span>
-        <button id="login-toggle" class="login-button">Login</button>
+        <div class="login-pill-wrap">
+          <button
+          id="login-toggle"
+          class="social-icon login-btn"
+          type="button"
+          aria-label="Login"        >
+          <span class="icon icon-login" aria-hidden="true"></span>
+          <span class="icon icon-logout" aria-hidden="true"></span>
+        </button>       
+        </div>  
       </div>
 
       <div class="follow-us">
         <span class="follow-label">Follow us on</span>
         <div class="social-icons">
+          <!-- YouTube -->
           <a
             href="https://www.youtube.com/@gunclan-d4m"
             class="social-icon youtube"
@@ -24,8 +35,10 @@
             rel="noopener noreferrer"
             aria-label="YouTube"
           >
-            <span class="social-icon-inner">▶</span>
+            <span class="icon icon-youtube" aria-hidden="true"></span>
           </a>
+
+          <!-- Telegram -->
           <a
             href="https://t.me/gunserver123"
             class="social-icon telegram"
@@ -33,8 +46,10 @@
             rel="noopener noreferrer"
             aria-label="Telegram"
           >
-            <span class="social-icon-inner">✈</span>
+            <span class="icon icon-telegram" aria-hidden="true"></span>
           </a>
+
+          <!-- Discord -->
           <a
             href="https://discord.com/invite/8n9tPUZ6zA"
             class="social-icon discord"
@@ -42,38 +57,60 @@
             rel="noopener noreferrer"
             aria-label="Discord"
           >
-            <span class="social-icon-inner">💬</span>
+            <span class="icon icon-discord" aria-hidden="true"></span>
           </a>
         </div>
       </div>
     </div>
 
-    <!-- Login overlay (ook kopiëren van bestaande pagina) -->
-    <div id="login-panel" class="login-panel hidden">
-      <div class="login-dialog">
-        <div class="login-dialog-header">
-          <h2>Admin login</h2>
-          <button type="button" id="login-close" class="login-close">✕</button>
-        </div>
+<!-- ADMIN LOGIN OVERLAY (achtergrond/overlay) -->
+<div id="login-panel" class="auth-overlay hidden" aria-hidden="true">
 
-        <form id="login-form">
-          <input
-            type="text"
-            id="login-username"
-            placeholder="Username"
-            autocomplete="username"
-          />
-          <input
-            type="password"
-            id="login-password"
-            placeholder="Password"
-            autocomplete="current-password"
-          />
-          <button type="submit">Login</button>
-          <div id="login-error" class="login-error"></div>
-        </form>
+  <!-- MODAL (het venster zelf) -->
+  <div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title" aria-describedby="auth-desc">
+
+    <!-- SLUITKNOP (X) -->
+    <button id="login-close" class="auth-close" type="button" aria-label="Close login">✕</button>
+
+    <!-- HEADER (badge/titel gebied) -->
+    <div class="auth-header">
+      <div class="auth-badge" aria-hidden="true">ADMIN LOGIN</div>
+    </div>
+
+    <!-- SUCCESS MELDING (zichtbaar bij .is-success) -->
+    <div class="auth-success-row" aria-live="polite">
+      <div class="auth-success-icon" aria-hidden="true"></div>
+      <div class="auth-success-text">
+        <div class="auth-success-title">Successfully logged in</div>
+        <div class="auth-success-sub">Welcome, <span id="auth-success-user"></span></div>
       </div>
     </div>
+
+    <!-- LOGIN FORM (username/password + submit) -->
+    <form id="login-form" class="auth-form" autocomplete="off">
+
+      <!-- USERNAME -->
+      <label class="auth-label" for="login-username">Username</label>
+      <div class="auth-input-wrap">
+        <input id="login-username" class="auth-input" type="text" inputmode="text" autocomplete="username" required />
+      </div>
+
+      <!-- PASSWORD (+ show/hide) -->
+      <label class="auth-label" for="login-password">Password</label>
+      <div class="auth-input-wrap">
+        <input id="login-password" class="auth-input" type="password" autocomplete="current-password" required />
+        <button id="toggle-password" class="auth-ghost" type="button" aria-label="Show password">Show</button>
+      </div>
+
+      <!-- ERROR TEKST -->
+      <p id="login-error" class="auth-error" role="alert" aria-live="polite"></p>
+
+      <!-- SUBMIT KNOP -->
+      <button class="auth-submit" type="submit">Log in</button>
+
+    </form>
+  </div>
+</div>
 
     <div class="container howto-container">
       <!-- Logo + slogan -->
@@ -92,25 +129,38 @@
         </div>
       </header>
 
-      <!-- zelfde navigatie als op andere pagina's -->
-      <div class="home-button-row main-nav">
-        <a class="primary-button nav-home" href="index.html">Home</a>
-        <a class="primary-button nav-stats" href="players.html">Statistics</a>
-        <a 
-          class="primary-button"
-          href="https://forum.gunclan.org/?_gl=1*qjszyy*_ga*NDUwNTc2NTAyLjE3NjM3NTg4ODM.*_ga_9EZKX8FRY9*czE3NjUyODc5NzckbzQkZzEkdDE3NjUyODk3NTYkajYwJGwwJGgw"
-          target="_blank"
-          rel="noopener noreferrer"
-        >Forum</a>
-        <a class="primary-button" href="upload.html">Upload screenshot</a>
-        <a class="primary-button" href="members.html">Members</a>
-        <a class="primary-button" href="history.html">Our history</a>
-        <a class="primary-button" href="downloads.html">Downloads</a>
-        <a class="primary-button" href="join.html">Join us</a>
+<!-- Navigatie knoppen -->
+<nav class="main-nav nav-video" aria-label="Main navigation">
+  <a class="nav-link nav-home active" href="index.html">Home</a>
+  <a class="nav-link nav-stats" href="players.html">Statistics</a>
 
-        <a class="primary-button nav-sessions hidden" href="sessions.html">Sessions</a>
-        <a class="primary-button nav-chat hidden" href="chatlogs.html">Chat logs</a>
-      </div>
+  <a class="nav-link nav-forum"
+     href="https://forum.gunclan.org/"
+     target="_blank" rel="noopener noreferrer">Forum</a>
+
+  <a class="nav-link nav-upload" href="upload.html">Upload screenshot</a>
+  <a class="nav-link nav-members" href="members.html">Members</a>
+  <a class="nav-link nav-history" href="history.html">Our history</a>
+  <a class="nav-link nav-downloads" href="downloads.html">Downloads</a>
+  <a class="nav-link nav-join" href="join.html">Join us</a>
+
+  <div class="dropdown nav-dropdown">
+    <button class="nav-link nav-guides dropdown-toggle" type="button" aria-haspopup="true">
+      Guides <span class="nav-caret" aria-hidden="true">▾</span>
+    </button>
+
+    <ul class="dropdown-menu" role="menu" aria-label="Guides">
+      <li><a href="unnamedsoldier-cfg.html" role="menuitem">Unnamedsoldier.cfg</a></li>
+      <li><a href="console.html" role="menuitem">Console</a></li>
+      <li><a href="binds.html" role="menuitem">Binds</a></li>
+      <li><a href="cvars.html" role="menuitem">CVARS</a></li>
+    </ul>
+  </div>
+    <div class="nav-admin-group">
+      <a class="nav-link nav-sessions hidden" href="sessions.html">Sessions</a>
+      <a class="nav-link nav-chat hidden" href="chatlogs.html">Chat logs</a>
+    </div>
+</nav>
 
 <div class="stats-card">
   <!-- Taal-keuze -->
@@ -151,137 +201,166 @@
   <!-- 🔹 ENGLISH -->
   <div class="howto-lang lang-block" data-lang="en">
     <p>
-      Want to play <strong>MOH: Spearhead</strong> online without CD keys, patches, or complicated setup?
+      Want to play <strong style="color: #FFD700;">MOH: Spearhead</strong> online without CD keys, patches, or complicated setup?
       Just download and go!
     </p>
 
-    <h2>Step 1: Download MOHAA Revival Edition</h2>
-    <p>The Revival Edition includes:</p>
-    <ul>
-      <li>Medal of Honor: Allied Assault, <strong>Spearhead</strong>, and <strong>Breakthrough</strong> expansions</li>
-      <li>X-null community-made online patch (GameSpy replacement)</li>
-      <li>Widescreen &amp; modern PC support</li>
-      <li>No CD or key required</li>
-    </ul>
-    <p>
-      <a
-        href="https://gunclan.org/downloads/download-mohaa-revival-edition/"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Download it here
-      </a>
-    </p>
+<h2>Step 1: Download MOHAA Revival Edition</h2>
+<p>The Revival Edition includes:</p>
+<ul>
+  <li>
+    Medal of Honor: Allied Assault,
+    <strong style="color: #FFD700;">Spearhead</strong>
+    <img class="inline-game-icon" src="images/icons/medal-of-honor-spearhead-icon.ico" alt="" aria-hidden="true" />,
+    and
+    <strong style="color: #FFD700;">Breakthrough</strong>
+    <img class="inline-game-icon" src="images/icons/medal-of-honor-breakthrough-icon.png" alt="" aria-hidden="true" />
+    expansions
+  </li>
+  <li>X-null community-made online patch (GameSpy replacement)</li>
+  <li>Widescreen &amp; modern PC support</li>
+  <li>No CD or key required</li>
+</ul>
+<p>
+  <a
+    href="https://gunclan.org/downloads/download-mohaa-revival-edition/"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    Download it here
+  </a>
+</p>
 
-    <h2>Step 2: Launch Spearhead</h2>
-    <p>After download and extraction:</p>
-    <ol>
-      <li>Run the <strong>moh_spearhead</strong> icon from the folder or desktop shortcut.</li>
-    </ol>
+<h2>
+  Step 2: Launch Spearhead
+</h2>
+<p>After download and extraction:</p>
+<ol>
+  <li>Run the <strong style="color: #FFD700;">moh_spearhead</strong> <img class="inline-game-icon" src="images/icons/medal-of-honor-spearhead-icon.ico" alt="" aria-hidden="true" /> icon from the folder or desktop shortcut.</li>
+</ol>
 
-    <h2>Step 3: Join G|u|N Clan Server — 3 Easy Ways</h2>
+<h2>Step 3: Join G|u|N Clan Server — 3 Easy Ways</h2>
 
-    <h3>1. Use the In-Game Server Browser</h3>
-    <ol>
-      <li>Launch <strong>Spearhead</strong>.</li>
-      <li>Go to <strong>Multiplayer</strong> → <strong>Browse Internet Servers</strong>.</li>
-      <li>
-        Or type our server IP in the <strong>Connect to IP Address</strong> field:
-        <strong>217.182.197.233</strong><br />
-        <small>(IP may change — you can always check it on our website banner at <strong>gunclan.org</strong>.)</small>
-      </li>
-      <li>Wait for the server list to load. If not, try <strong>Refresh</strong> (button bottom-right).</li>
-      <li>
-        Look for
-        <strong>G|u|N-.Free For All.-|RO|</strong>,
-        <strong>G|u|N-.Freez-Tag.-|RO|</strong>
-        or anything starting with <strong>G|u|N</strong>.
-      </li>
-      <li>Double click and join the fun!</li>
-    </ol>
-    <p><em>Make sure you're on the <strong>Internet</strong> tab, not <strong>LAN</strong>.</em></p>
+<h3>1. Use the In-Game Server Browser</h3>
+<ol>
+  <li>
+    Launch <strong style="color: #FFD700;">Spearhead</strong>
+    <img class="inline-game-icon" src="images/icons/medal-of-honor-spearhead-icon.ico" alt="" aria-hidden="true" />.
+  </li>
+  <li>Go to <strong style="color: #FFD700;">Multiplayer</strong> → <strong style="color: #FFD700;">Browse Internet Servers</strong>.</li>
+  <li>
+    Or type our server IP in the <strong style="color: #FFD700;">Connect to IP Address</strong> field:
+    <strong style="color: #FFD700;">217.182.197.233</strong><br />
+    <small>(IP may change — you can always check it on our website banner at <strong style="color: #FFD700;">gunclan.org</strong>.)</small>
+  </li>
+  <li>Wait for the server list to load. If not, try <strong style="color: #FFD700;">Refresh</strong> (button bottom-right).</li>
+  <li>
+    Look for
+    <strong style="color: #FFD700;">G|u|N-.Free For All.-|RO|</strong>, or anything starting with <strong style="color: #FFD700;">G|u|N</strong>.
+  </li>
+  <li>Double click and join the fun!</li>
+</ol>
+<p><em>Make sure you're on the <strong style="color: #FFD700;">Internet</strong> tab, not <strong style="color: #FFD700;">LAN</strong>.</em></p>
 
-    <h3>2. Bind a Key for 1-Click Join</h3>
-    <p>
-      Want to join the G|u|N server by pressing a single key (like <strong>F10</strong>) every time you open the game?
-      Here's how:
-    </p>
-    <ol>
-      <li>
-        Locate your <strong>unnamedsoldier.cfg</strong> file. You'll usually find it in:
-        <ul>
-          <li>
-            For <strong>Spearhead</strong>:<br />
-            <span class="code-pill">C:\Games\MOHAA\mainta\configs\</span>
-          </li>
-          <li>
-            For <strong>Breakthrough</strong>:<br />
-            <span class="code-pill">C:\Games\MOHAA\maintt\configs\</span>
-          </li>
-        </ul>
-      </li>
-      <li>Open the file with a text editor like Notepad.</li>
-      <li>Scroll to the bottom and add the following line:</li>
-    </ol>
-
-    <pre class="code-block"><code>bind F10 "connect 217.182.197.233"</code></pre>
-
-    <ol start="4">
-      <li>You can replace <strong>F10</strong> with any other unused key.</li>
-      <li>Save the file.</li>
-      <li>Launch Spearhead and press <strong>F10</strong> in-game to instantly join the G|u|N server.</li>
-    </ol>
-
-    <h2>Useful Links &amp; Info</h2>
+<h3>2. Bind a Key for 1-Click Join</h3>
+<p>
+  Want to join the G|u|N server by pressing a single key (like <strong style="color: #FFD700;">F10</strong>) every time you open the game?
+  Here's how:
+</p>
+<ol>
+  <li>
+    Locate your <strong style="color: #FFD700;">unnamedsoldier.cfg</strong> file. You'll usually find it in:
+    <br><br>
     <ul>
       <li>
-        <strong>Download MOHAA Revival Edition</strong><br />
-        Full game with Spearhead &amp; Breakthrough, patched and ready to play.<br />
-        <a
-          href="https://gunclan.org/downloads/download-mohaa-revival-edition/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Open download page
-        </a>
+        For <strong style="color: #FFD700;">Spearhead</strong>
+        <img class="inline-game-icon" src="images/icons/medal-of-honor-spearhead-icon.ico" alt="" aria-hidden="true" />:<br />
+        <span class="code-pill">C:\Games\MOHAA\mainta\configs\</span>
       </li>
+          <br>
       <li>
-        <strong>Fix Fullscreen &amp; Resolution Issues (Windows 10/11)</strong><br />
-        Guide to get widescreen and fullscreen working properly.<br />
-        <a
-          href="https://gunclan.org/downloads/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View fixes &amp; tools
-        </a>
+        For <strong style="color: #FFD700;">Breakthrough</strong>
+        <img class="inline-game-icon" src="images/icons/medal-of-honor-breakthrough-icon.png" alt="" aria-hidden="true" />:<br />
+        <span class="code-pill">C:\Games\MOHAA\maintt\configs\</span>
       </li>
-      <li>
-        <strong>Visit the G|u|N Clan Website</strong><br />
-        Clan and server info, downloads, and more.<br />
-        <a
-          href="https://gunclan.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          gunclan.org
-        </a>
-      </li>
-      <li>
-        <strong>Forum Help &amp; Tutorials</strong><br />
-        Ask questions, find guides, or share tips.<br />
-        <a
-          href="https://forum.gunclan.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          forum.gunclan.org
-        </a>
-      </li>
+          <br>
     </ul>
+  </li>
+  <li>Open the file with a text editor like Notepad.</li>
+  <li>Scroll to the bottom and add the following line:</li>
+</ol>
 
-    <p><strong>Be in touch with the last active Spearhead rifle-only community!</strong></p>
-  </div>
+<pre class="code-block"><code>bind F10 "connect 217.182.197.233"</code></pre>
+
+<ol start="4">
+  <li>You can replace <strong style="color: #FFD700;">F10</strong> with any other unused key.</li>
+  <li>Save the file.</li>
+  <li>
+    Launch Spearhead
+    <img class="inline-game-icon" src="images/icons/medal-of-honor-spearhead-icon.ico" alt="" aria-hidden="true" />
+    and press <strong style="color: #FFD700;">F10</strong> in-game to instantly join the G|u|N server.
+  </li>
+</ol>
+
+<h2>Useful Links &amp; Info</h2>
+<ul>
+  <li>
+    <strong style="color: #FFD700;">Download MOHAA Revival Edition</strong><br />
+    Full game with Spearhead
+    <img class="inline-game-icon" src="images/icons/medal-of-honor-spearhead-icon.ico" alt="" aria-hidden="true" />
+    &amp; Breakthrough
+    <img class="inline-game-icon" src="images/icons/medal-of-honor-breakthrough-icon.png" alt="" aria-hidden="true" />,
+    patched and ready to play.<br />
+    <a
+      href="https://gunclan.org/downloads/download-mohaa-revival-edition/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Open download page
+    </a>
+  </li>
+  <li>
+    <strong style="color: #FFD700;">Fix Fullscreen &amp; Resolution Issues (Windows 10/11)</strong><br />
+    Guide to get widescreen and fullscreen working properly.<br />
+    <a
+      href="https://gunclan.org/downloads/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      View fixes &amp; tools
+    </a>
+  </li>
+  <li>
+    <strong style="color: #FFD700;">Visit the G|u|N Clan Website</strong><br />
+    Clan and server info, downloads, and more.<br />
+    <a
+      href="https://gunclan.org/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      gunclan.org
+    </a>
+  </li>
+  <li>
+    <strong style="color: #FFD700;">Forum Help &amp; Tutorials</strong><br />
+    Ask questions, find guides, or share tips.<br />
+    <a
+      href="https://forum.gunclan.org/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      forum.gunclan.org
+    </a>
+  </li>
+</ul>
+
+<p>
+  <strong>
+    Be in touch with the last active Spearhead rifle-only community!
+  </strong>
+</p>
+</div>
+
 
   <!-- 🔹 ARABIC -->
   <div class="howto-lang lang-block hidden" data-lang="ar" dir="rtl" lang="ar">
@@ -985,7 +1064,6 @@
 
     <!-- kopieer dezelfde scripts als in downloads.html -->
     <script src="nav.js" defer></script>
-    <script src="login.js"></script>
     <script src="auth.js"></script>
     <script src="howto.js" defer></script>
   </body>

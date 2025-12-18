@@ -1,55 +1,65 @@
-// public/nav.js
+// nav.js
 
-// hier sla je de ingelogde user in op (in localStorage)
 const AUTH_USER_KEY = "mohstats_logged_in_user";
 
-// 🔐 lijst met accounts (voeg hier nieuwe bij)
+/**
+ * LET OP: hardcoded accounts in de frontend is alleen oké voor test/local.
+ * Voor echte security: backend login + sessions/JWT.
+ */
 const ACCOUNTS = [
   { username: "admin",  password: "admin123" },
   { username: "leader", password: "rifleonly" },
-  { username: "1", password: "1" },
-  // { username: "moderator", password: "mod123" },
+  { username: "1",      password: "1" },
 ];
 
-// helpers rond login status
+const ADMIN_USERS = new Set(["admin"]);
+
+// Guides dropdown: welke pagina's horen onder Guides
+const GUIDES_PAGES = new Set([
+  "unnamedsoldier-cfg.html",
+  "console.html",
+  "binds.html",
+  "cvars.html",
+]);
+
+function getCurrentFile() {
+  return (window.location.pathname.split("/").pop() || "index.html").toLowerCase();
+}
+
+// Body class voor per-page styling (home vs other)
+function setPageClass() {
+  const file = getCurrentFile();
+  const style = (file === "index.html") ? "home" : "other";
+  document.body.classList.add(`page-${style}`);
+}
+
 function getLoggedInUser() {
   return localStorage.getItem(AUTH_USER_KEY) || null;
 }
-
 function isLoggedIn() {
   return !!getLoggedInUser();
 }
-
-function setLoggedInUser(username) {
-  if (username) {
-    localStorage.setItem(AUTH_USER_KEY, username);
-  } else {
-    localStorage.removeItem(AUTH_USER_KEY);
-  }
+function isAdmin() {
+  const u = getLoggedInUser();
+  return !!u && ADMIN_USERS.has(u);
 }
 
-// UI updaten op basis van loginstatus
 function refreshAuthUI() {
   const loggedIn = isLoggedIn();
+  const admin = isAdmin();
   const currentUser = getLoggedInUser();
 
-  // navigatie: sessions + chat alleen tonen als ingelogd
-  const protectedLinks = document.querySelectorAll(
-    ".nav-sessions, .nav-chat"
-  );
-  protectedLinks.forEach((el) => {
-    if (loggedIn) {
-      el.classList.remove("hidden");
-    } else {
-      el.classList.add("hidden");
-    }
-  });
+  // Admin-only links zichtbaar/verborgen
+  document.querySelectorAll(".nav-sessions, .nav-chat")
+    .forEach((el) => el.classList.toggle("hidden", !admin));
 
-  // login knop label + stijl
-  const loginBtn = document.getElementById("login-toggle");
-  if (loginBtn) {
-    loginBtn.textContent = loggedIn ? "Logout" : "Login";
-    loginBtn.classList.toggle("logged-in", loggedIn);
+  // Login knop state
+  const btn = document.getElementById("login-toggle");
+  if (btn) {
+    btn.classList.toggle("logged-in", loggedIn);
+    btn.setAttribute("aria-label", loggedIn ? "Logout" : "Login");
+    btn.title = loggedIn ? "Logout" : "Login";
+    btn.setAttribute("aria-expanded", "false");
   }
 
   // "Logged in as ..."
@@ -64,95 +74,214 @@ function refreshAuthUI() {
     }
   }
 
-  // paneel dicht als niet ingelogd
-  const panel = document.getElementById("login-panel");
-  if (!loggedIn && panel) {
-    panel.classList.add("hidden");
-  }
-
-  // restrict: sessions.html + chatlogs.html niet bereikbaar zonder login
-  const path = window.location.pathname;
-  const isSessionsPage = path.endsWith("sessions.html");
-  const isChatPage = path.endsWith("chatlogs.html");
-
-  if (!loggedIn && (isSessionsPage || isChatPage)) {
+  // Restrict admin pages
+  const file = getCurrentFile();
+  if (!admin && (file === "sessions.html" || file === "chatlogs.html")) {
     window.location.href = "index.html";
   }
 }
 
 function setupLoginUI() {
-  const loginBtn  = document.getElementById("login-toggle");
-  const panel     = document.getElementById("login-panel");
-  const form      = document.getElementById("login-form");
-  const errorEl   = document.getElementById("login-error");
-  const closeBtn  = document.getElementById("login-close");
+  const btn = document.getElementById("login-toggle");
+  const panel = document.getElementById("login-panel");
+  const closeBtn = document.getElementById("login-close");
+  const form = document.getElementById("login-form");
+  const errorEl = document.getElementById("login-error");
+  const userInput = document.getElementById("login-username");
+  const passInput = document.getElementById("login-password");
+  const togglePw = document.getElementById("toggle-password");
 
-  if (!loginBtn || !panel || !form) return;
+  // Als een pagina geen login overlay heeft: geen errors
+  if (!btn || !panel) return;
 
-  // Login/Logout knop rechtsboven
-  loginBtn.addEventListener("click", () => {
+  const successUser = panel.querySelector("#auth-success-user");
+  const modal =
+    panel.querySelector(".auth-modal") ||
+    panel.querySelector(".login-dialog") ||
+    panel; // fallback
+  
+
+    const openPanel = () => {
+      modal.classList.remove("is-success");
+      panel.classList.remove("hidden");
+      panel.setAttribute("aria-hidden", "false");
+      btn.setAttribute("aria-expanded", "true");
+      if (errorEl) errorEl.textContent = "";
+      setTimeout(() => userInput?.focus(), 0);
+    };
+    
+
+  const closePanel = () => {
+    panel.classList.add("hidden");
+    panel.setAttribute("aria-hidden", "true");
+    btn.setAttribute("aria-expanded", "false");
+    if (errorEl) errorEl.textContent = "";
+  };
+
+  btn.addEventListener("click", () => {
+    // Logout via dezelfde knop
     if (isLoggedIn()) {
-      // Logout
-      setLoggedInUser(null);
+      localStorage.removeItem(AUTH_USER_KEY);
+      closePanel();
       refreshAuthUI();
+      setActiveNavFromUrl();
       return;
     }
 
-    // Login: overlay tonen/verbergen
-    panel.classList.toggle("hidden");
-    if (errorEl) errorEl.textContent = "";
+    // Toggle overlay
+    if (panel.classList.contains("hidden")) openPanel();
+    else closePanel();
   });
 
-  // X-knop sluit overlay
-  if (closeBtn) {
-    closeBtn.addEventListener("click", () => {
-      panel.classList.add("hidden");
-      if (errorEl) errorEl.textContent = "";
-    });
-  }
+  closeBtn?.addEventListener("click", closePanel);
 
-  // Klik op donkere achtergrond sluit ook overlay
+  // Klik op overlay sluit (alleen als je op de achtergrond klikt)
   panel.addEventListener("click", (e) => {
-    if (e.target === panel) {
-      panel.classList.add("hidden");
-      if (errorEl) errorEl.textContent = "";
-    }
+    if (e.target === panel) closePanel();
   });
 
-  // Form submit (checkt nu tegen ACCOUNTS)
-  form.addEventListener("submit", (e) => {
+  // ESC sluit overlay
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closePanel();
+  });
+
+  // Form submit: login check
+  form?.addEventListener("submit", (e) => {
     e.preventDefault();
-    const userInput = document
-      .getElementById("login-username")
-      .value.trim();
-    const passInput = document
-      .getElementById("login-password")
-      .value.trim();
+    const username = (userInput?.value || "").trim();
+    const password = (passInput?.value || "").trim();
 
-    // zoek een match in de ACCOUNTS lijst
-    const account = ACCOUNTS.find(
-      (acc) =>
-        acc.username === userInput &&
-        acc.password === passInput
-    );
+    const ok = ACCOUNTS.some((a) => a.username === username && a.password === password);
 
-    if (account) {
-      // success: user opslaan en UI updaten
-      setLoggedInUser(account.username);
-      panel.classList.add("hidden");
-      if (errorEl) errorEl.textContent = "";
-      form.reset();
-      refreshAuthUI();
-    } else {
-      if (errorEl) {
-        errorEl.textContent = "Invalid username or password.";
-      }
+    if (!ok) {
+      if (errorEl) errorEl.textContent = "Invalid username or password.";
+      return;
     }
+
+    localStorage.setItem(AUTH_USER_KEY, username);
+
+    // ✅ success animatie tonen
+    if (successUser) successUser.textContent = username;
+    if (modal) modal.classList.add("is-success");
+
+    // Optioneel: na 0.9 sec sluiten + UI refresh
+    setTimeout(() => {
+      if (modal) modal.classList.remove("is-success");
+      form.reset();
+      closePanel();
+      refreshAuthUI();
+      setActiveNavFromUrl();
+    }, 3000);
+
+    return; // voorkom dat er nog oude "form.reset/closePanel" code onder staat
+
+  });
+
+  // Show/hide password
+  togglePw?.addEventListener("click", () => {
+    if (!passInput) return;
+    const isPw = passInput.type === "password";
+    passInput.type = isPw ? "text" : "password";
+    togglePw.textContent = isPw ? "Hide" : "Show";
+    togglePw.setAttribute("aria-label", isPw ? "Hide password" : "Show password");
   });
 }
 
-// init
+function setupDropdowns() {
+  const dropdowns = document.querySelectorAll(".nav-dropdown");
+  if (!dropdowns.length) return;
+
+  const closeAll = () => {
+    dropdowns.forEach((dd) => {
+      dd.classList.remove("open");
+      const btn = dd.querySelector(".dropdown-toggle");
+      if (btn) btn.setAttribute("aria-expanded", "false");
+    });
+  };
+
+  dropdowns.forEach((dd) => {
+    const btn = dd.querySelector(".dropdown-toggle");
+    if (!btn) return;
+
+    btn.setAttribute("aria-expanded", "false");
+
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const isOpen = dd.classList.contains("open");
+      closeAll();
+      if (!isOpen) {
+        dd.classList.add("open");
+        btn.setAttribute("aria-expanded", "true");
+      }
+    });
+  });
+
+  // click buiten dropdown -> sluiten
+  document.addEventListener("click", () => closeAll());
+
+  // ESC -> sluiten
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeAll();
+  });
+}
+
+function clearActiveStates() {
+  document.querySelectorAll(".main-nav .nav-link.active").forEach((el) => el.classList.remove("active"));
+  document.querySelectorAll(".main-nav .nav-dropdown.active").forEach((el) => el.classList.remove("active"));
+  document.querySelectorAll(".main-nav .dropdown-menu a.active").forEach((el) => el.classList.remove("active"));
+  document.querySelectorAll(".main-nav [aria-current='page']").forEach((el) => el.removeAttribute("aria-current"));
+}
+
+function setActiveNavFromUrl() {
+  const currentFile = getCurrentFile();
+
+  clearActiveStates();
+
+  // Gewone nav links (alle anchors in main nav)
+  document.querySelectorAll(".main-nav a[href]").forEach((a) => {
+    const href = a.getAttribute("href") || "";
+    if (!href || href.includes("://")) return;
+
+    const hrefFile = href.split("#")[0].split("?")[0].split("/").pop()?.toLowerCase();
+    if (hrefFile && hrefFile === currentFile) {
+      a.classList.add("active");
+      a.setAttribute("aria-current", "page");
+    }
+  });
+
+  // Guides dropdown: active als huidige pagina in GUIDES_PAGES zit
+  const guidesBtn = document.querySelector(".main-nav .nav-dropdown .nav-guides");
+  if (guidesBtn) {
+    const dd = guidesBtn.closest(".nav-dropdown");
+    const menuLinks = dd?.querySelectorAll(".dropdown-menu a[href]") || [];
+
+    let matched = false;
+
+    menuLinks.forEach((link) => {
+      const href = link.getAttribute("href") || "";
+      const hrefFile = href.split("#")[0].split("?")[0].split("/").pop()?.toLowerCase();
+      if (hrefFile && hrefFile === currentFile) {
+        matched = true;
+        link.classList.add("active");
+        link.setAttribute("aria-current", "page");
+      }
+    });
+
+    if (!matched && GUIDES_PAGES.has(currentFile)) matched = true;
+
+    if (matched) {
+      guidesBtn.classList.add("active");
+      dd?.classList.add("active");
+    }
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  setPageClass();
+  setupDropdowns();
   setupLoginUI();
   refreshAuthUI();
+  setActiveNavFromUrl();
 });

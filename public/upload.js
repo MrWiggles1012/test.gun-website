@@ -6,21 +6,46 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("upload-form");
   const fileInput = document.getElementById("screenshot");
   const messageEl = document.getElementById("upload-message");
+  const toastEl = document.getElementById("upload-toast");
+  const submitBtn = form?.querySelector("button[type='submit']");
 
-  if (!form || !fileInput || !messageEl) return;
+  if (!form || !fileInput || !messageEl || !toastEl || !submitBtn) return;
+
+  let toastTimer = null;
+
+  function showToast(type, title, sub) {
+    clearTimeout(toastTimer);
+
+    toastEl.classList.remove("hidden", "success", "error");
+    toastEl.classList.add(type);
+
+    toastEl.innerHTML = `
+      <div class="toast-row">
+        <div class="toast-icon" aria-hidden="true"></div>
+        <div class="toast-text">
+          <div class="toast-title">${title}</div>
+          <div class="toast-sub">${sub}</div>
+        </div>
+      </div>
+    `;
+
+    toastTimer = setTimeout(() => {
+      toastEl.classList.add("hidden");
+    }, 4500);
+  }
 
   form.addEventListener("submit", async (event) => {
-    // 1) Normale form-submit (page reload) tegenhouden
     event.preventDefault();
 
-    // 2) Bericht resetten
+    // reset inline message
     messageEl.textContent = "";
     messageEl.classList.remove("success", "error");
 
-    // 3) Check: is er een bestand gekozen?
+    // validation
     if (!fileInput.files || fileInput.files.length === 0) {
       messageEl.textContent = "Please select a .tga file first.";
       messageEl.classList.add("error");
+      showToast("error", "No file selected", "Select a .tga screenshot before uploading.");
       return;
     }
 
@@ -28,45 +53,52 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!file.name.toLowerCase().endsWith(".tga")) {
       messageEl.textContent = "Only .tga files are allowed.";
       messageEl.classList.add("error");
+      showToast("error", "Invalid file type", "Only .tga screenshots are accepted.");
       return;
     }
 
-    // 4) FormData maken op basis van het formulier
     const formData = new FormData(form);
 
-    // 5) “Bezig” bericht tonen
+    // busy state
+    submitBtn.disabled = true;
+    submitBtn.classList.add("is-busy");
+    submitBtn.setAttribute("aria-busy", "true");
+
     messageEl.textContent = "Uploading screenshot…";
-    // (optioneel: andere kleur, maar we laten hem even default)
 
     try {
-      // 6) Upload naar je Node/Express API
       const res = await fetch("/api/upload-screenshot", {
         method: "POST",
         body: formData,
       });
 
-      // Proberen JSON te lezen; lukt het niet, dan een lege {} terug
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok || !data.ok) {
         const msg = data.error || "Upload failed. Please try again.";
         messageEl.textContent = msg;
         messageEl.classList.add("error");
+        showToast("error", "Upload failed", msg);
         return;
       }
 
-      // 7) Success!
-      messageEl.textContent =
-        data.message || "Screenshot uploaded successfully.";
+      // success
+      const okMsg = data.message || "Screenshot uploaded successfully.";
+      messageEl.textContent = okMsg;
       messageEl.classList.add("success");
 
-      // Input weer leeg maken
+      showToast("success", "Upload successful", "Your screenshot has been submitted for review.");
       form.reset();
     } catch (err) {
       console.error("Upload error:", err);
-      messageEl.textContent =
-        "Unexpected error while uploading. Please try again later.";
+      messageEl.textContent = "Unexpected error while uploading. Please try again later.";
       messageEl.classList.add("error");
+      showToast("error", "Unexpected error", "Please try again later.");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.classList.remove("is-busy");
+      submitBtn.removeAttribute("aria-busy");
     }
   });
 });
+

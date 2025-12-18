@@ -1,61 +1,54 @@
-// public/players.js
-function escapeHtml(str) {
-  if (str == null) return "";
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-}
+console.log("✅ players.js loaded");
 
 async function loadPlayersOverview() {
   const tbody = document.getElementById("players-body");
   const errorEl = document.getElementById("players-error");
 
+  // Alleen uitvoeren op de pagina waar de tabel bestaat
   if (!tbody) return;
 
-  tbody.innerHTML = "";
-  errorEl.textContent = "";
-
   try {
-    const res = await fetch("/api/player-overview");
-    if (!res.ok) {
-      throw new Error("Kon spelers-statistics niet ophalen.");
-    }
+    const resp = await fetch("/api/getplayers", { cache: "no-store" });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
 
-    const players = await res.json();
+    const players = await resp.json();
 
-    if (!players.length) {
-      errorEl.textContent = "Geen spelers gevonden in de data map.";
+    tbody.innerHTML = "";
+    if (errorEl) errorEl.textContent = "";
+
+    if (!Array.isArray(players) || players.length === 0) {
+      if (errorEl) errorEl.textContent = "Geen spelers gevonden.";
       return;
     }
 
-    players.forEach((p) => {
+    for (const p of players) {
       const tr = document.createElement("tr");
 
-      const nameCell = `
-        <a href="stats.html?player=${encodeURIComponent(p.filename)}">
-          ${escapeHtml(p.name || p.filename)}
-        </a>
-      `;
-
+      // kolommen: Name, Kills, Deaths, KDR, Headshots, Damage, Melts, Total time played
       tr.innerHTML = `
-        <td>${nameCell}</td>
-        <td>${escapeHtml(p.kills)}</td>
-        <td>${escapeHtml(p.deaths)}</td>
-        <td>${escapeHtml(p.kdr)}</td>
-        <td>${escapeHtml(p.headshots)}</td>
-        <td>${escapeHtml(p.damage)}</td>
-        <td>${escapeHtml(p.melts)}</td>
-        <td>${escapeHtml(p.total_play_time)}</td>
+        <td>${p.name ?? ""}</td>
+        <td>${p.kills ?? 0}</td>
+        <td>${p.deaths ?? 0}</td>
+        <td>${p.kdr ?? 0}</td>
+        <td>${p.headshots ?? 0}</td>
+        <td>${p.damage ?? 0}</td>
+        <td>${p.melts ?? 0}</td>
+        <td>${p.total_play_time ?? ""}</td>
       `;
 
       tbody.appendChild(tr);
-    });
+    }
   } catch (err) {
-    console.error(err);
-    errorEl.textContent =
-      err.message || "Onbekende fout bij laden van speler-statistics.";
+    console.error("loadPlayersOverview error:", err);
+    if (errorEl) errorEl.textContent = err.message || "Onbekende fout...";
   }
 }
 
-document.addEventListener("DOMContentLoaded", loadPlayersOverview);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", loadPlayersOverview);
+} else {
+  loadPlayersOverview();
+}
+
+// live refresh (optioneel)
+setInterval(loadPlayersOverview, 2000);

@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CVARS – MOHAA Guide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <!-- Balkje rechtsboven: Logged in as ... + knop -->
+    <div class="login-strip">
+      <div class="login-top">
+        <span id="login-user-label" class="login-user-label hidden"></span>
+        <div class="login-pill-wrap">
+          <button
+          id="login-toggle"
+          class="social-icon login-btn"
+          type="button"
+          aria-label="Login"        >
+          <span class="icon icon-login" aria-hidden="true"></span>
+          <span class="icon icon-logout" aria-hidden="true"></span>
+        </button>       
+        </div>  
+      </div>
+
+      <div class="follow-us">
+        <span class="follow-label">Follow us on</span>
+        <div class="social-icons">
+          <a href="https://www.youtube.com/@gunclan-d4m" class="social-icon youtube" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+            <span class="icon icon-youtube" aria-hidden="true"></span>
+          </a>
+
+          <a href="https://t.me/gunserver123" class="social-icon telegram" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+            <span class="icon icon-telegram" aria-hidden="true"></span>
+          </a>
+
+          <a href="https://discord.com/invite/8n9tPUZ6zA" class="social-icon discord" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+            <span class="icon icon-discord" aria-hidden="true"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div id="login-panel" class="login-panel hidden">
+      <div class="login-dialog">
+        <div class="login-dialog-header">
+          <h2>Admin login</h2>
+          <button type="button" id="login-close" class="login-close">✕</button>
+        </div>
+
+        <form id="login-form">
+          <input
+            type="text"
+            id="login-username"
+            placeholder="Username"
+            autocomplete="username"
+          />
+          <input
+            type="password"
+            id="login-password"
+            placeholder="Password"
+            autocomplete="current-password"
+          />
+          <button type="submit">Login</button>
+          <div id="login-error" class="login-error"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="container fullscreen-container">
+      <!-- Logo + slogan -->
+      <header class="home-header">
+        <div class="home-logo">
+          <img src="images/gun-header.png" alt="G|u|N - MoHAA Spearhead Rifle Only Clan" />
+        </div>
+        <div class="home-header-text">
+          <h1>G|u|N - MoHAA Spearhead Rifle Only Clan</h1>
+          <p class="home-tagline">Last living hub for Spearhead, and it will live forever...</p>
+        </div>
+      </header>
+
+<!-- Navigatie knoppen -->
+<nav class="main-nav nav-video" aria-label="Main navigation">
+  <a class="nav-link nav-home active" href="index.html">Home</a>
+  <a class="nav-link nav-stats" href="players.html">Statistics</a>
+
+  <a class="nav-link nav-forum"
+     href="https://forum.gunclan.org/"
+     target="_blank" rel="noopener noreferrer">Forum</a>
+
+  <a class="nav-link nav-upload" href="upload.html">Upload screenshot</a>
+  <a class="nav-link nav-members" href="members.html">Members</a>
+  <a class="nav-link nav-history" href="history.html">Our history</a>
+  <a class="nav-link nav-downloads" href="downloads.html">Downloads</a>
+  <a class="nav-link nav-join" href="join.html">Join us</a>
+
+  <div class="dropdown nav-dropdown">
+    <button class="nav-link nav-guides dropdown-toggle" type="button" aria-haspopup="true">
+      Guides <span class="nav-caret" aria-hidden="true">▾</span>
+    </button>
+
+    <ul class="dropdown-menu" role="menu" aria-label="Guides">
+      <li><a href="unnamedsoldier-cfg.html" role="menuitem">Unnamedsoldier.cfg</a></li>
+      <li><a href="console.html" role="menuitem">Console</a></li>
+      <li><a href="binds.html" role="menuitem">Binds</a></li>
+      <li><a href="cvars.html" role="menuitem">CVARS</a></li>
+    </ul>
+  </div>
+    <div class="nav-admin-group">
+      <a class="nav-link nav-sessions hidden" href="sessions.html">Sessions</a>
+      <a class="nav-link nav-chat hidden" href="chatlogs.html">Chat logs</a>
+    </div>
+</nav>
+
+      <!-- CARD -->
+      <div class="stats-card">
+        <!-- Topbar: titel links / translations rechts -->
+        <div class="guide-topbar">
+          <div class="guide-header">
+            <h2 class="guide-title">CVARS</h2>
+            <p class="guide-subtitle">Learn what CVARs do, how to list them, and which settings matter most for MOHAA</p>
+          </div>
+
+          <p class="lang-flags">
+            <strong>Translations Available:</strong><br />
+
+            <span class="lang-item active" data-lang="en">
+              <img src="images/flags/us.png" alt="English" class="flag-icon" />
+              English
+            </span> |
+
+            <span class="lang-item" data-lang="ar">
+              <img src="images/flags/eg.png" alt="Arabic" class="flag-icon" />
+              Arabic
+            </span> |
+
+            <span class="lang-item" data-lang="de">
+              <img src="images/flags/de.png" alt="German" class="flag-icon" />
+              German
+            </span> |
+
+            <span class="lang-item" data-lang="ru">
+              <img src="images/flags/ru.png" alt="Russian" class="flag-icon" />
+              Russian
+            </span> |
+
+            <span class="lang-item" data-lang="am">
+              <img src="images/flags/am.png" alt="Armenian" class="flag-icon" />
+              Armenian
+            </span> |
+
+            <span class="lang-item" data-lang="es">
+              <img src="images/flags/es.png" alt="Spanish" class="flag-icon" />
+              Spanish
+            </span> |
+
+            <span class="lang-item" data-lang="nl">
+              <img src="images/flags/nl.png" alt="Dutch" class="flag-icon" />
+              Dutch
+            </span>
+          </p>
+        </div>
+
+        <!-- ENGLISH -->
+        <div class="howto-lang lang-block" data-lang="en">
+          <p>
+            <br>
+            <br>
+            Basically, CVARs are the commands you enter into <strong style="color:#FFD700;">console</strong> to (de)activate or change a setting of your
+            game.
+          </p>
+
+          <p>
+            Wikipedia uses the following definition for a CVAR (which might help you understand the phrase
+            better):
+          </p>
+
+          <pre class="code-block code-block--xl"><code>CVAR and ConVar are abbreviations for Console Variable.
+Depending on the context in which the term is found, it may also stand for Client Variable, or Configuration Variable.
+This is a type of variable used in many computer games and computer 3D simulation engines that can be manipulated
+by a text based command line interface within the game or engine, often called a console.
+They commonly hold configuration parameters, but can be used for anything that may potentially be accessed and/or modified by the console.</code></pre>
+
+          <p><em>(Source: Wikipedia)</em></p>
+
+          <p>
+            To open a list of all (your) CVARS &amp; Commands, you can type in console the following:
+          </p>
+
+          <pre class="code-block code-block--wide"><code>logfile 1;cvarlist;wait;cmdlist;wait;logfile 0</code></pre>
+
+          <p>
+            When you leave the game, a file called <span class="code-pill">qconsole.log</span> will be created in your
+            <span class="code-pill">\mainta</span>, which will have all CVARS and CMD’s listed.
+            <br>
+(You can use <strong style="color:#FFD700;">Notepad</strong> or <strong style="color:#FFD700;">Word</strong> to open the log.)
+          </p>
+            <br>
+            <br>
+
+<h2>Basic Client CVAR List</h2>
+
+<p>
+  This is a list of the basic and common (but also most useful) CVARs for a client/player to use. Most of
+  these CVARs are automatically changed when you change something in your options menu in-game
+  (all these options are CVARs, and changing them, changes the value of the CVAR).
+</p>
+
+<p>
+  You can add these CVARs to your <span class="code-pill">unnamedsoldier.cfg</span>, and do not forget to place
+  <strong style="color:#FFD700;">seta</strong> in front of them. You can also change them in-game, but if your
+  <span class="code-pill">unnamedsoldier.cfg</span> is on <strong style="color:#FFD700;">Read-Only</strong>, the setting
+  will be switched back to the previous value after you leave the game. Note that <strong style="color:#FFD700;">ALL values</strong> need to
+  be between brackets in the <span class="code-pill">unnamedsoldier.cfg</span>.
+</p>
+
+<p>Example for the <strong style="color:#FFD700;">unnamedsoldier.cfg:</strong></p>
+<pre class="code-block code-block--wide"><code>seta com_maxfps "250"</code></pre>
+
+<p>Example for <strong style="color:#FFD700;">console (in-game):</strong></p>
+<pre class="code-block code-block--wide"><code>com_maxfps 250</code></pre>
+
+<h3>Basic CVARs</h3>
+
+
+<pre class="code-block code-block--xxl"><code>CVAR                     Default Value     Value Range         Information
+
+ui_console               1                 0 / 1               Enable Console (on or off)
+dm_playermodel           -                 -                   Allied Player Model
+dm_playergermanmodel     -                 -                   German Player Model
+r_fullscreen             1                 0 / 1               Full Screen Mode (on or off)
+cl_playintro             0                 0 / 1               Start-up Cinematic Intro (on or off)
+cg_smoothclients         1                 0 / 1               Smooths player movements (better accuracy)
+cg_forcemodel            0                 0 / 1               Force Models (on or off)
+sensitivity              -                 1 – 20              Mouse Sensitivity (depends on mouse, DPI, settings etc., check what feels right)
+in_mouse                 -1                -1 / 1              Mouse Support on or off. Change value if issues occur (differs per person)
+crosshair                1                 0 / 1               Show Crosshair (on or off)
+ui_hud                   1                 0 / 1               Show HUD (on or off) compass, health, ammo etc.
+cl_run                   1                 0 / 1               Always Running (on or off)</code></pre>
+
+<h3>Network &amp; FPS CVARs</h3>
+
+<pre class="code-block code-block--xxl"><code>CVAR            Default Value   Value Range                                         Information
+
+rate            30000           30000 (LAN)                                         Game rates; 30000 is the best option for everyone nowadays.
+                25000           25000 (xDSL)                                        Game rates;
+                20000           20000 (Cable)                                       Game rates;
+                5000            5000 (ISDN)                                         Game rates;
+                4000            4000 (56k modem)                                    Game rates;
+                3000            3000 (33.6k modem)                                  Game rates;
+                2500            2500 (22.8k modem)                                  Game rates;
+com_maxfps      125             60 – 250                                            Max. FPS the game will play in. Over 250 and below 60 can cause lag.
+cl_maxpackets   30              20 – 100                                            Max client packets per second; low (20) = less stable ping, high (100) = more stable ping.
+snaps           20              20                                                  Default and max. snapshots the client receives per second.
+cl_packetdup    1               0 – 5                                               If you have much packetloss set this to 2 or 3. It will increase the bandwidth though.
+                                                                                    The higher the value the more duplicate packets the client will send to the server.</code></pre>
+
+
+<h3>Audio CVARs</h3>
+
+<pre class="code-block code-block--xxl"><code>CVAR                Default Value       Value Range                   Information
+
+s_khz               44                  11 / 22 / 44                  Sound Quality (Low, Medium, High) (lowest 11 to highest 44)
+s_musicvolume       0.9                 0.0 – 1.0                     Music Volume (1.0 = 100%)
+s_volume            0.9                 0.0 – 1.0                     Sound Volume (1.0 = 100%)
+s_milesdriver       Miles Fast 2D       -                             Positional Audio - Default MOHAA Sound Driver
+cg_rain             1                   0 / 1                         Weather Effects (on or off)
+s_speaker_type      0                   0 / 1 / 2 / 3                 Speaker Mode (0 = Stereo, 1 = Headphones, 2 = Surround, 3 = Quad)
+s_ambientvolume     1                   0 / 1                         Ambient Volume (on or off), similar to the cinematic command (background noise)</code></pre>
+
+<h3>Tool CVARs</h3>
+
+<pre class="code-block code-block--xxl"><code>CVAR                Default Value         Value Range           Information
+
+cl_lagometer        0                     0 / 1                 Lagometer (on or off), shows your latency on screen
+ui_minicon          0                     0 / 1                 Mini Console (on or off), draws mini transparent console on screen
+fps                 0                     0 / 1                 FPS Meter (on or off), prints FPS on screen
+cl_greenfps         0                     0 / 1                 Colours the FPS Meter Green (on or off)
+whereami            0                     0 / 1                 Prints Coordinates and Yaw of player continuously (on or off). Needs developer to 1. Useful: ui_minicon to 1
+developer           1                     0 / 1 / 2 / 3         Developer Mode (0 = off, see 8.17 for more info)</code></pre>
+
+<h3>Misc CVARs</h3>
+
+<pre class="code-block code-block--xxl"><code>CVAR                    Default Value       Value Range           Information
+
+r_forceClampToEdge        1                   0 / 1               Unknown, every config has it set to 1</code></pre>
+
+<h3>Visual CVARs</h3>
+
+<pre class="code-block code-block--xxl"><code>CVAR                            Default Value             Value Range                                             Information
+
+r_ext_compressed_textures       1                         0 / 1                                                   Compressed Textures (on or off) - Set to 0 if unable to see custom (weapon) skins.
+r_fastdlights                   1                         0 / 1                                                   Real Dynamic Lighting (on or off)
+cg_shadows                      0                         0                                                       Shadows (should be on 0)
+r_fastentlight                  1                         0 / 1                                                   Full Entity Lighting (on or off)
+cg_drawviewmodel                2                         0 / 1 / 2                                               View Model (0 = no hands, no weapon, 1 = only show weapon, 2 = show hands & weapon)
+r_gamma                         1.0                       0.0 – 2.0                                               Video Gamma
+r_subdivisions                  3                         3 / 4 / 10 / 20                                         Curve Detail (lowest 20, to highest 3)
+r_colorbits                     32                        16 / 32                                                 Colour Depth (lowest 16 to highest 32)
+r_texturebits                   32                        16 / 32                                                 Texture Depth (lowest 16 to highest 32)
+r_picmip                        0                         0 / 1 / 2                                               Texture Quality (lowest 2 to highest 0)
+r_texturemode                   gl_linear_mipmap_linear   gl_linear_mipmap_linear / gl_linear_mipmap_nearest      Texture Detail (linear is best & smoothest, nearest is worst).
+cg_effectdetail                 1.0                       0.2 / 0.3 / 0.5 / 0.7 / 0.8 / 0.95 / 1.0                Effect Detail (lowest 0.2 to highest 1.0)
+r_drawstaticdecals              1                         0 / 1                                                   Wall Decals (on or off)
+cg_marks_add                    1                         0 / 1                                                   Show Marks on Walls (on or off)
+vss_draw                        1                         0 / 1                                                   Volumetric Smoke (on or off)</code></pre>
+
+<h3>Terrain Details (Options Menu)</h3>
+
+<p>
+  There are 2 more Visual Options, but these control several CVARs and their values. So by changing 1
+  option, you’re actually changing the values of several CVARs. These are shown below:
+</p>
+
+<pre class="code-block code-block--xxl"><code>Terrain Details         Low         Medium      High        Maximum
+
+ter_error               10          9           7           4
+ter_maxlod              3           4           5           6
+ter_maxtris             16384       16384       16384       24576</code></pre>
+
+<p>
+  (So by placing Terrain Details to Maximum in the in-game options menu, you’ll change the above 3
+  CVARs to the values in the last column (4, 6, 24576))
+</p>
+
+<h3>Model Details (Options Menu)</h3>
+
+<pre class="code-block code-block--xxl"><code>Model Details               Lowest        Low         Medium Low      Medium High     High      Highest
+
+r_lodcap                      0.25        0.35        0.35            0.50            0.90      1.00
+r_lodscale                    0.25        0.35        0.45            0.55            0.90      1.10
+r_lodviewmodelcap             0.25        0.25        0.45            0.55            0.90      1.00</code></pre>
+
+<p>
+  (So by placing Model Details to Highest in the in-game options menu, you’ll change the above 3
+  CVARs to the values in the last column (1.00, 1.10, 1.00))
+</p>
+<br>
+<br>
+<h2>Screen Resolution CVARs</h2>
+
+<p>
+  These are the CVARs needed to set your (custom) screen resolution.
+</p>
+
+<h3>Default r_mode Resolutions</h3>
+
+<pre class="code-block code-block--wide"><code>Complete CVAR                   Resolution
+
+seta r_mode "3"                 512 x 384
+seta r_mode "4"                 640 x 480
+seta r_mode "5"                 800 x 600
+seta r_mode "6"                 1024 x 768
+seta r_mode "7"                 1152 x 864
+seta r_mode "8"                 1280 x 1024
+seta r_mode "9"                 1600 x 1200</code></pre>
+
+<p>
+  Basically each resolution only needs <strong style="color:#FFD700;">ONE</strong> CVAR.
+</p>
+
+<h3>Custom Resolution (r_mode -1)</h3>
+
+<p>
+  If you want a custom resolution, you need <strong style="color:#FFD700;">3</strong> different CVARs in your
+  <span class="code-pill">unnamedsoldier.cfg</span>:
+</p>
+
+<pre class="code-block code-block--xl"><code>1. seta r_mode "-1"                  // This exact CVAR needs to be on -1 for every custom resolution
+2. seta r_customwidth "1920"         // Example width
+3. seta r_customheight "1080"        // Example height</code></pre>
+
+<h3>Common 16:9 Custom Resolutions</h3>
+
+<p>
+  With <span class="code-pill">r_mode</span> set to <span class="code-pill">-1</span>, the following 16:9 resolutions are available:
+</p>
+
+<pre class="code-block code-block--wide"><code>r_customwidth           r_customheight
+
+640                     360
+854                     480
+960                     540
+1024                    576
+1280                    720
+1360                    768
+1366                    768   (may cause issues on some systems)
+1600                    900
+1920                    1080
+2048                    1152
+2560                    1440</code></pre>
+
+<p>
+  <strong style="color:#FFD700;">Note:</strong> If the game crashes, try a lower resolution.  
+  For example, some systems may crash instantly above a certain maximum (e.g. <span class="code-pill">1152x864</span>).
+</p>
+<br>
+<br>
+<h2>Max Settings (Highest CVAR Values)</h2>
+
+<p>
+  To place your MOHAA on max (highest) settings, the following CVAR settings are recommended. You
+  can place these directly into your <span class="code-pill">unnamedsoldier.cfg</span>. When you don’t like certain settings you can
+  of course change it to something you do like.
+</p>
+
+<h3>Instructions</h3>
+
+<p>
+  Open up your <span class="code-pill">unnamedsoldier.cfg</span>.
+  Now delete everything except your <strong style="color:#FFD700;">binds</strong>.
+  Next copy and paste all the <strong style="color:#FFD700;">CVARS</strong> below and place them under your binds.
+</p>
+
+<p>
+  <em>
+    (You can edit the settings if you like; that's what the extra info after the ///// is there for.)
+  </em>
+</p>
+
+<p>
+  <strong style="color:#FFD700;">Note:</strong>
+  If you notice the CVAR in green... well that has extra max settings that were disabled in the games menu.
+  I already entered the max variable not given by the menu so you don’t have to.
+</p>
+
+<h3>CVARS (Max Settings)</h3>
+
+<pre class="code-block code-block--xl"><code>// CVARs
+seta r_ext_compressed_textures "1"                      // COMPRESSED TEXTURES - (on)
+seta cl_playintro "0"                                   // SKIP MOHAA INTRO - PLAY INTRO (off)
+seta r_fastdlights "1"                                  // REAL DYNAMIC LIGHTING - (on)
+seta cg_forcemodel "0"                                  // FORCE MODELS - (off)
+seta com_maxfps "60"                                    // MAX FRAMES ALLOWED - (60 stays fluid)
+seta cl_greenfps "1"                                    // GREEN FPS METER - (on)
+seta ui_console "1"                                     // CONSOLE ENABLED - (on)
+seta s_khz "44"                                         // SOUND QUALITY - (max)
+seta s_musicvolume "0.900000"                           // PREFERED MUSIC VOLUME
+seta s_volume "0.900000"                                // PREFERED SOUND VOLUME
+seta cg_shadows "2"                                     // SHADOWS - (max) 1-med 0-off
+seta r_fastentlight "1"                                 // FULL ENTITY LIGHTING - (on)
+seta r_lodviewmodelcap "1.0"                            // MODEL DETAIL - (max) 0.9;0.55;0.45;0.25=lowest
+seta r_lodcap "1.0"                                     // MODEL DETAIL - (max) 0.9;0.55;0.35;0.25=lowest
+seta r_lodscale "1.1"                                   // MODEL DETAIL - (highest) 0.9;0.55;0.45;0.35;0.25=lowest
+seta r_gamma "1.333333"                                 // PREFERED VIDEO GAMMA
+seta r_subdivisions "1"                                 // CURVE DETAIL - (highest) 2;3;4;10;20=lowest (1&2 disabled in options)
+seta r_mode "6"                                         // RESOLUTION - (1024/768)=best. 4=800/600
+seta r_colorbits "32"                                   // COLOR DEPTH - (max) 16=lowest
+seta r_texturebits "32"                                 // TEXTURE DEPTH - (max) 16=lowest
+seta r_picmip "0"                                       // TEXTURE QUALITY - (max) 1;2=lowest
+seta r_forceClampToEdge "1"                             // ?
+seta s_milesdriver "Miles Fast 2D Positional Audio"     // DEFAULT MOHAA SOUND DRIVER
+seta cl_maxpackets "30"                                 // PACKETS TO SEND PER SEC. - (max)
+seta rate "30000"                                       // NET RATE - (max)
+seta developer "1"                                      // DEVELOPER MODE - (on)
+seta cg_rain "1"                                        // WEATHER EFFECTS - (on)
+seta cg_drawviewmodel "2"                               // VIEW MODEL - (max) 1;0=lowest
+seta ter_error "4"                                      // TERRAIN DETAIL - (max) 7;9;10=lowest
+seta ter_maxlod "6"                                     // TERRAIN DETAIL - (max) 5;4;3=lowest
+seta ter_maxtris "24576"                                // TERRAIN DETAIL - (max) 16384=lowest
+seta cg_effectdetail "1.0"                              // EFFECTS DETAIL - (max) 0.95;0.8;0.7;0.5;0.3;0.2=lowest
+seta r_drawstaticdecals "1"                             // WALL DECALS - (on)
+seta vss_draw "1"                                       // VOLUMETRIC SMOKE - (on)
+seta s_speaker_type "2"                                 // SPEAKER MODE - (surround) 1=Headphones 3=Quad 0=Stereo
+seta snaps "20"                                         // SNAPSHOTS CLEINT RECEIVES PER SEC. - (max)</code></pre>
+
+
+<h3>Important</h3>
+
+<p>
+  Now save it.
+</p>
+
+<p>
+  After saving it, right click on <span class="code-pill">unnamedsoldier.cfg</span> (the file you just saved), go to
+  <strong style="color:#FFD700;">Properties</strong>, check <strong style="color:#FFD700;">Read-Only</strong>, click
+  <strong style="color:#FFD700;">Apply</strong>, then <strong style="color:#FFD700;">OK</strong>.
+</p>
+
+<p>
+  Last: load up MOHAAS. It may crash on the first attempt. Try again. If it works, you are done.
+</p>
+<br>
+<br>
+
+        </div>
+
+        <!-- ARABIC (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="ar" dir="rtl" lang="ar">
+          <h2>Translation coming soon</h2>
+          <p>Arabic translation for this guide will be added later.</p>
+        </div>
+
+        <!-- GERMAN (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="de" lang="de">
+          <h2>Übersetzung folgt</h2>
+          <p>Die deutsche Übersetzung für diesen Guide wird später hinzugefügt.</p>
+        </div>
+
+        <!-- RUSSIAN (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="ru" lang="ru">
+          <h2>Перевод скоро</h2>
+          <p>Русский перевод этого гайда будет добавлен позже.</p>
+        </div>
+
+        <!-- ARMENIAN (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="am" lang="hy">
+          <h2>Թարգմանությունը շուտով</h2>
+          <p>Այս ուղեցույցի հայերեն տարբերակը կհավելվի ավելի ուշ։</p>
+        </div>
+
+        <!-- SPANISH (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="es" lang="es">
+          <h2>Traducción próximamente</h2>
+          <p>La traducción al español de esta guía se añadirá más adelante.</p>
+        </div>
+
+        <!-- DUTCH (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="nl" lang="nl">
+          <h2>Nederlandse vertaling komt eraan</h2>
+          <p>De Nederlandse vertaling voor deze guide wordt later toegevoegd.</p>
+        </div>
+      </div>
+      <!-- /stats-card -->
+    </div>
+    <!-- /container -->
+
+    <script src="nav.js" defer></script>
+    <script src="auth.js" defer></script>
+    <script src="cvars.js" defer></script>
+  </body>
+</html>

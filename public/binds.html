@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Binds – MOHAA Guide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <!-- Balkje rechtsboven: Logged in as ... + knop -->
+    <div class="login-strip">
+      <div class="login-top">
+        <span id="login-user-label" class="login-user-label hidden"></span>
+        <div class="login-pill-wrap">
+          <button
+          id="login-toggle"
+          class="social-icon login-btn"
+          type="button"
+          aria-label="Login"        >
+          <span class="icon icon-login" aria-hidden="true"></span>
+          <span class="icon icon-logout" aria-hidden="true"></span>
+        </button>       
+        </div>  
+      </div>
+
+      <div class="follow-us">
+        <span class="follow-label">Follow us on</span>
+        <div class="social-icons">
+          <a
+            href="https://www.youtube.com/@gunclan-d4m"
+            class="social-icon youtube"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="YouTube"
+          >
+            <span class="icon icon-youtube" aria-hidden="true"></span>
+          </a>
+
+          <a
+            href="https://t.me/gunserver123"
+            class="social-icon telegram"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Telegram"
+          >
+            <span class="icon icon-telegram" aria-hidden="true"></span>
+          </a>
+
+          <a
+            href="https://discord.com/invite/8n9tPUZ6zA"
+            class="social-icon discord"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Discord"
+          >
+            <span class="icon icon-discord" aria-hidden="true"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div id="login-panel" class="login-panel hidden">
+      <div class="login-dialog">
+        <div class="login-dialog-header">
+          <h2>Admin login</h2>
+          <button type="button" id="login-close" class="login-close">✕</button>
+        </div>
+
+        <form id="login-form">
+          <input
+            type="text"
+            id="login-username"
+            placeholder="Username"
+            autocomplete="username"
+          />
+          <input
+            type="password"
+            id="login-password"
+            placeholder="Password"
+            autocomplete="current-password"
+          />
+          <button type="submit">Login</button>
+          <div id="login-error" class="login-error"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="container fullscreen-container">
+      <!-- Logo + slogan -->
+      <header class="home-header">
+        <div class="home-logo">
+          <img
+            src="images/gun-header.png"
+            alt="G|u|N - MoHAA Spearhead Rifle Only Clan"
+          />
+        </div>
+        <div class="home-header-text">
+          <h1>G|u|N - MoHAA Spearhead Rifle Only Clan</h1>
+          <p class="home-tagline">
+            Last living hub for Spearhead, and it will live forever...
+          </p>
+        </div>
+      </header>
+
+<!-- Navigatie knoppen -->
+<nav class="main-nav nav-video" aria-label="Main navigation">
+  <a class="nav-link nav-home active" href="index.html">Home</a>
+  <a class="nav-link nav-stats" href="players.html">Statistics</a>
+
+  <a class="nav-link nav-forum"
+     href="https://forum.gunclan.org/"
+     target="_blank" rel="noopener noreferrer">Forum</a>
+
+  <a class="nav-link nav-upload" href="upload.html">Upload screenshot</a>
+  <a class="nav-link nav-members" href="members.html">Members</a>
+  <a class="nav-link nav-history" href="history.html">Our history</a>
+  <a class="nav-link nav-downloads" href="downloads.html">Downloads</a>
+  <a class="nav-link nav-join" href="join.html">Join us</a>
+
+  <div class="dropdown nav-dropdown">
+    <button class="nav-link nav-guides dropdown-toggle" type="button" aria-haspopup="true">
+      Guides <span class="nav-caret" aria-hidden="true">▾</span>
+    </button>
+
+    <ul class="dropdown-menu" role="menu" aria-label="Guides">
+      <li><a href="unnamedsoldier-cfg.html" role="menuitem">Unnamedsoldier.cfg</a></li>
+      <li><a href="console.html" role="menuitem">Console</a></li>
+      <li><a href="binds.html" role="menuitem">Binds</a></li>
+      <li><a href="cvars.html" role="menuitem">CVARS</a></li>
+    </ul>
+  </div>
+    <div class="nav-admin-group">
+      <a class="nav-link nav-sessions hidden" href="sessions.html">Sessions</a>
+      <a class="nav-link nav-chat hidden" href="chatlogs.html">Chat logs</a>
+    </div>
+</nav>
+
+      <!-- CARD -->
+      <div class="stats-card">
+        <!-- Topbar: titel links / translations rechts -->
+        <div class="guide-topbar">
+          <div class="guide-header">
+            <h2 class="guide-title">Binds</h2>
+            <p class="guide-subtitle">
+              Quick keybinds for chat, toggles, taunts, and advanced ALT/NUMPAD setups.
+            </p>
+          </div>
+
+          <p class="lang-flags">
+            <strong>Translations Available:</strong><br />
+
+            <span class="lang-item active" data-lang="en">
+              <img src="images/flags/us.png" alt="English" class="flag-icon" />
+              English
+            </span> |
+
+            <span class="lang-item" data-lang="ar">
+              <img src="images/flags/eg.png" alt="Arabic" class="flag-icon" />
+              Arabic
+            </span> |
+
+            <span class="lang-item" data-lang="de">
+              <img src="images/flags/de.png" alt="German" class="flag-icon" />
+              German
+            </span> |
+
+            <span class="lang-item" data-lang="ru">
+              <img src="images/flags/ru.png" alt="Russian" class="flag-icon" />
+              Russian
+            </span> |
+
+            <span class="lang-item" data-lang="am">
+              <img src="images/flags/am.png" alt="Armenian" class="flag-icon" />
+              Armenian
+            </span> |
+
+            <span class="lang-item" data-lang="es">
+              <img src="images/flags/es.png" alt="Spanish" class="flag-icon" />
+              Spanish
+            </span> |
+
+            <span class="lang-item" data-lang="nl">
+              <img src="images/flags/nl.png" alt="Dutch" class="flag-icon" />
+              Dutch
+            </span>
+          </p>
+        </div>
+
+<!-- ENGLISH -->
+<div class="howto-lang lang-block" data-lang="en">
+  <br>
+  <br>
+<h2>Getting Started with Binds</h2>
+  <p>
+    You have the possibility to <strong style="color:#FFD700;">bind</strong> certain commands to certain keys. This way you can choose which
+    key on your keyboard does which action.<br>You can also bind <strong style="color:#FFD700;">CVARs</strong>, meaning you won’t have to write
+    down the complete commands in <strong style="color:#FFD700;">console</strong>.
+    <br>
+    <br>
+    Below is shown how to bind simple text phrases, which you’ll be able to send out in the server with
+    the press of one key.
+  </p>
+
+  <p>
+    You can bind things either through <strong style="color:#FFD700;">console</strong>, or by editing them directly in your
+    <span class="code-pill">unnamedsoldier.cfg</span>
+    (located in your <span class="code-pill">\mainta\configs</span>).<br>Via <strong style="color:#FFD700;">options -> controls</strong> in the in-game menu you can also set
+    your controls to certain buttons, and they will automatically get binded this way.
+  </p>
+    <br>
+    <br>
+    <h2>Bind a text message to a key</h2>
+  <p>Open <strong style="color:#FFD700;">console</strong> (or your <span class="code-pill">unnamedsoldier.cfg</span>) and type in:</p>
+
+  <pre class="code-block code-block--wide"><code>bind *key* say ’’text’’  (’’ ’’ (quotation marks) = needed when the text is more than 1 word)</code></pre>
+
+  <p>
+  Example <strong style="color:#FFD700;">console</strong>:
+  (by pressing <strong style="color:#FFD700;">L</strong>, this message will appear on screen: <strong style="color:#FFD700;">w00t w00t</strong>)
+</p>
+
+<pre class="code-block code-block--wide"><code>bind L say "w00t w00t"</code></pre>
+
+<p>
+  Example <strong style="color:#FFD700;">unnamedsoldier.cfg</strong>:
+  (Be sure to add <strong style="color:#FFD700;">seta</strong> in <span class="code-pill">unnamedsoldier.cfg</span>)
+</p>
+
+<pre class="code-block code-block--wide"><code>seta bind L say "w00t w00t"</code></pre>
+    <br>
+    <br>
+    <h2>Restore the Taunt Menu Key</h2>
+  <p>
+    If for some reason you lost the bind to use the in game taunts (e.g. v41 = Yes Sir!) you can rebind it by
+    using the following bind:
+  </p>
+
+  <pre class="code-block code-block--wide"><code>bind v instamsg_main (by doing this you can use the taunts again)</code></pre>
+    <br>
+    <br>
+    <h2>Mute Background Ambience (cinematic)</h2>
+  <p>
+    To get rid of the background noise, you can use <strong style="color:#FFD700;">cinematic</strong> (a.k.a.: <span class="code-pill">s_ambientvolume 0</span>), which can be
+    easily binded as well so that you don’t have to retype it into console again:
+  </p>
+
+  <pre class="code-block code-block--wide"><code>bind p cinematic (by pressing P, the background noise will disappear)</code></pre>
+
+  <p>
+    (Note: <span class="code-pill">s_ambientvolume 1</span> returns the sound and <span class="code-pill">s_ambientvolume 2</span> doubles the sound volume.)
+  </p>
+    <br>
+    <br>
+    <h2>View and Remove Binds</h2>
+  <p>To see all your current binds in-game, type the following into <strong style="color:#FFD700;">console</strong>:</p>
+
+  <pre class="code-block code-block--wide"><code>bindlist</code></pre>
+
+  <p>
+    To unbind something, either change it in your <span class="code-pill">unnamedsoldier.cfg</span> or type in console:
+    <span class="code-pill">unbind *key*</span>
+  </p>
+    <br>
+    <br>
+  <h2>Toggle binds</h2>
+
+  <p>
+    Next to the normal binding, you can also toggle your binds. It would be a lot easier if you could, for
+    example, turn the <span class="code-pill">cg_lagometer</span> on and off with the click of a button, instead of typing it all in
+    console.
+  </p>
+
+  <p>
+    If you would like to toggle a command use the following line in <strong style="color:#FFD700;">console</strong>, or change it in your
+    <span class="code-pill">unnamedsoldier.cfg</span>:
+  </p>
+
+  <pre class="code-block code-block--wide"><code>bind *key* toggle *command*</code></pre>
+
+  <p><strong style="color:#FFD700;">Examples:</strong></p>
+
+  <pre class="code-block code-block--wide"><code>bind p toggle cg_lagometer       // Turns the lagometer on and off
+bind q toggle fps                // Turns the FPS counter on and off 
+bind o toggle ui_minicon         // Turns the mini console on and off </code>
+</pre>
+
+    <br>
+    <br>
+  <h2>ALT and CTRL binds</h2>
+
+<p>
+  <strong style="color:#FFD700;">ALT</strong> binds and <strong style="color:#FFD700;">CTRL</strong> binds are similar to normal binds except they require the user to hold down a
+  corresponding button while simultaneously pressing another. MOHAA supports both ALT and CTRL
+  binds, but it is <strong style="color:#FFD700;">HIGHLY advisable NOT to use the CTRL binds</strong> as they conflict with the default bind on
+  the CTRL key (crouching).
+</p>
+
+<p>
+  In order to activate these addition binds, you must add the following to your
+  <span class="code-pill">unnamedsoldier.cfg</span>:
+</p>
+
+<pre class="code-block code-block--wide"><code>seta cl_altbindings "1"   // (for ALT binds, 1 = on &amp; 0 = off)
+seta cl_ctrlbindings "1"  // (for CTRL binds, 1 = on &amp; 0 = off)</code></pre>
+
+<p>
+  You can now add binds to your <span class="code-pill">unnamedsoldier.cfg</span>. They are added the same way as regular binds
+  except you add the word <strong style="color:#FFD700;">alt</strong> or <strong style="color:#FFD700;">ctrl</strong> before each bind.
+</p>
+
+<p><strong style="color:#FFD700;">Examples:</strong></p>
+
+<pre class="code-block code-block--wide code-block--xl"><code>seta altbind v say "I killed you!"  // Now, when pressing ALT + V simultaneously in-game, the message will appear.
+seta ctrlbind p say "Hello!"        // Now, when pressing CTRL + P simultaneously in-game, the message will appear.</code></pre>
+
+<p>To see the list of <strong style="color:#FFD700;">ALT</strong> binds in-game type into <strong style="color:#FFD700;">console</strong>:</p>
+<pre class="code-block code-block--wide"><code>altbindlist</code></pre>
+
+<p>To see the list of <strong style="color:#FFD700;">CTRL</strong> binds in-game type into <strong style="color:#FFD700;">console</strong>:</p>
+<pre class="code-block code-block--wide"><code>ctrlbindlist</code></pre>
+
+<p>To remove an <strong style="color:#FFD700;">ALT</strong> bind in-game type into <strong style="color:#FFD700;">console</strong>:</p>
+<pre class="code-block code-block--wide"><code>unaltbind *key* (the key you want to unbind)</code></pre>
+
+<p>To remove a <strong style="color:#FFD700;">CTRL</strong> bind in-game type into <strong style="color:#FFD700;">console</strong>:</p>
+<pre class="code-block code-block--wide"><code>unctrlbind *key* (the key you want to unbind)</code></pre>
+
+<p><strong style="color:#FFD700;">Examples:</strong></p>
+<pre class="code-block code-block--wide"><code>unaltbind v
+unctrlbind p</code></pre>
+
+<p>
+  (These changes will NOT be permanent if your <span class="code-pill">unnamedsoldier.cfg</span> is set to
+  <strong style="color:#FFD700;">Read-Only</strong>.)
+</p>
+
+<p>
+  These ALT &amp; CTRL forms of binds allow a player to add more customizable binds to keys that are
+  easily accessible and that are otherwise used for normal gameplay.
+</p>
+<br>
+<br>
+
+<h2>NUMPAD Binds</h2>
+
+<p>
+  It is also possible to bind certain commands to the <strong style="color:#FFD700;">NUMPAD</strong> keys. They are normal binds just set to a
+  special set of keys. These come in handy if you have phrases you repeat often, and run out of room
+  on the standard set of keys on the keyboard, or Taunts that are one press away.
+</p>
+
+<p>
+  The List below refers to each of the NUMPAD keys (the numbers we see) and their special key (the
+  way MOHAA sees them) you set when you bind them.
+</p>
+
+<pre class="code-block code-block--wide"><code>Keys (numbers) we see on NUMPAD    →    Keys MOHAA sees
+
+1 (End)                            →    KP_END
+2 (Down Arrow)                     →    KP_DOWNARROW
+3 (Page Down)                      →    KP_PGDN
+4 (Left Arrow)                     →    KP_LEFTARROW
+5                                  →    KP_5
+6 (Right Arrow)                    →    KP_RIGHTARROW
+7 (Home)                           →    KP_HOME
+8 (Up Arrow)                       →    KP_UPARROW
+9 (Page Up)                        →    KP_PGUP
+0 (Insert)                         →    KP_INS
+. (Del)                            →    KP_DEL
+ENTER                              →    KP_ENTER
++                                  →    KP_PLUS
+-                                  →    KP_MINUS
+*                                  →    KP_*
+/                                  →    KP_SLASH
+Num Lock                           →    KP_NUMLOCK</code></pre>
+
+<p>
+  These binds are added much the same way as regular binds (in
+  <span class="code-pill">unnamedsoldier.cfg</span> or <strong style="color:#FFD700;">console</strong>):
+</p>
+
+<p>Example <strong style="color:#FFD700;">console:</strong></p>
+<pre class="code-block code-block--wide"><code>bind KP_END say "Hello"</code></pre>
+
+<p>Example <strong style="color:#FFD700;">unnamedsoldier.cfg:</strong></p>
+<pre class="code-block code-block--wide"><code>seta bind KP_END say "Hello"</code></pre>
+
+<p>
+  Now when pressing the <strong style="color:#FFD700;">1</strong> on your NUMPAD in-game, the message
+  <strong style="color:#FFD700;">"Hello"</strong> will appear.
+</p>
+<br>
+<br>
+<h2>Taunt Binds</h2>
+
+<p>
+  You can also bind player taunts to keys. This is useful when e.g. you see an enemy and want to taunt
+  <strong style="color:#FFD700;">"Enemy Spotted."</strong> to alert your teammates, but don't have the time to remember which keys to press
+  in which order and by the time you read the screen you've already been shot and killed.
+</p>
+
+<p>
+  Works the same as any of the <strong style="color:#FFD700;">'say'</strong> binds except this time, instead of saying a message (like:
+  <strong style="color:#FFD700;">"w00t w00t"</strong>) you want to say a taunt.
+</p>
+
+<p>
+  Taunts use an asterisk <strong style="color:#FFD700;">*</strong> in front of them to tell MOHAA you’re about to send a taunt. So when you
+  open your taunt menu (pressing <strong style="color:#FFD700;">V</strong>), your game has already compiled the following command ready
+  to send:
+</p>
+
+<pre class="code-block code-block--wide"><code>say *</code></pre>
+
+<p>
+  It’s just waiting for you to press two numbers to complete the taunt. So when you bind it, just add the numbers of the taunt you wish to use.
+</p>
+
+<p><strong style="color:#FFD700;">Examples:</strong></p>
+
+<pre class="code-block code-block--xl"><code>bind L say *41                // Now when pressing L on your keyboard in-game, you will taunt the message: "Yes Sir!"
+
+bind KP_PGDN say *43          // Now when pressing 9 on your NUMPAD in-game, you will taunt the message: "Enemy Spotted."</code></pre>
+
+<p>
+  Next to the normal &amp; NUMPAD binds, you can also use <strong style="color:#FFD700;">ALT</strong> &amp;
+  <strong style="color:#FFD700;">CTRL</strong> binds for this, but basically you will be still using multiple (2) buttons for 1 taunt.
+  Though it’s still one button less to press than the original taunt system, in which you require 3 buttons to say something.
+</p>
+
+<p><strong style="color:#FFD700;">ALT/CTRL Examples:</strong></p>
+
+<pre class="code-block code-block--xl"><code>altbind L say *41             // Now when pressing ALT + L simultaneously on your keyboard in-game, you will taunt the message: "Yes Sir!"
+
+ctrlbind KP_PGDN say *43      // Now when pressing ALT + 9 simultaneously on your NUMPAD in-game, you will taunt the message: "Enemy Spotted."</code></pre>
+
+<p>
+  Remember, if you want to add binds (of any kind) to your <span class="code-pill">unnamedsoldier.cfg</span> instead of adding
+  them via <strong style="color:#FFD700;">console</strong>; be sure to add <strong style="color:#FFD700;">‘seta’</strong> in front of every bind
+  (so in front of all the examples listed above).
+</p>
+
+<p>
+  Also note that there already is a default bindlist in your <span class="code-pill">unnamedsoldier.cfg</span>, so instead of creating a
+  new bind you might be able to overwrite a current bind. If you happen to have a key binded twice in
+  the same <span class="code-pill">unnamedsoldier.cfg</span>, the game will only read/activate the one placed last in your config.
+</p>
+<br>
+<br>
+<h2>Bind List</h2>
+
+<p>
+  Below is a bindlist you can easily copy and use for other purposes. It includes the default binds
+  as well as a few extra common binds that people may want to use.
+</p>
+
+
+<p>
+  Remember; every bind below needs the word <strong style="color:#FFD700;">‘bind’</strong> in front of it in order for it to work.
+</p>
+
+<pre class="code-block code-block--wide"><code>Key        Setting/Command                               Information
+
+1          useweaponclass pistol                         Switch to Pistol
+2          useweaponclass rifle                          Switch to Rifle
+3          useweaponclass smg                            Switch to SMG
+4          useweaponclass mg                             Switch to MG
+5          useweaponclass grenade                        Switch to Grenade
+6          useweaponclass heavy                          Switch to Shotgun/Bazooka
+7          toggleitem                                    Switch to item (e.g. Binoculars)
+H          weapdrop                                      Drop Weapon
+Q          holster                                       Holster Weapon
+R          reload                                        Reload
+MOUSE1     +attackprimary                                Fire Weapon
+MOUSE2     +attacksecondary                              Scope Weapon / Bash
+MWHEELDOWN weapprev                                      Switch to Previous Weapon
+MWHEELUP   weapnext                                      Switch to Next Weapon
+W          +forward                                      Move Forwards
+S          +back                                         Move Backwards
+A          +moveleft                                     Strafe Left
+D          +moveright                                    Strafe Right
+Z          +leanleft                                     Lean Left
+C          +leanright                                    Lean Right
+SPACE      +moveup                                       Jump
+LCTRL      +movedown                                     Crouch
+LSHIFT     +speed                                        Walk (Silent)
+TAB        +scores                                       Scoreboard
+`          toggleconsole                                 Opens Console
+ESCAPE     togglemenu                                    Opens Menu
+P          pushmenu_weaponselect                         Open Weapon Menu
+U          pushmenu_teamselect                           Open Team Menu
+F2         ui_getplayermodel;pushmenu_dm mpoptions       Open Player Model Menu
+F3         pushmenu Controls                             Open Controls Menu
+V          instamsg_main                                 Open Taunt Menu
+T          sayteam                                       Team Chat
+Y          say                                           Chat
+F6         messagemode                                   Chat History
+E          +use                                          Use
+F12        screenshot                                    Screenshot
+PAUSE      pause                                         Pause (SP)
+F4         pushmenu_sp LoadSave                          Open Saved Games Menu (SP)
+F5         savegame quick                                Save Game (SP)
+F9         loadgame quick                                Load Game (SP)
+           cinematic                                     Removes Cinematic Sounds
+           vote yes                                      Vote Yes (when a callvote is issued)
+           vote no                                       Vote No (when a callvote is issued)
+           coord                                         Shows current coordinates in console
+           viewpos                                       Shows viewing position in console
+           kill                                          Commit Suicide
+           disconnect                                    Disconnect from the Server
+           quit                                          Quit the Game
+           join_team allies                              Switch to Allies
+           join_team axis                                Switch to Axis
+           spectator                                     Go to Spectator
+           vid_restart                                   Restart Video/Screen
+           reconnect                                     Reconnect to the Server
+           uselast                                       Switch to your previously used weapon
+           +left                                         Look towards the left
+           +right                                        Look towards the right
+           centerview                                    Center your view
+           +lookup                                       Look up
+           +lookdown                                     Look down</code></pre>
+
+<p>
+  The non-default binds have no key assigned to them in the above table. If you want to use those
+  extra binds, you’ll have to pick a key to assign them to yourself.
+</p>
+
+<p>Example: <strong style="color:#FFD700;">console:</strong></p>
+<pre class="code-block code-block--wide"><code>bind L disconnect</code></pre>
+
+<p>Example: <strong style="color:#FFD700;">unnamedsoldier.cfg:</strong></p>
+<pre class="code-block code-block--wide"><code>bind L "disconnect"</code></pre>
+
+<p>
+  Now when pressing <strong style="color:#FFD700;">L</strong>, you will disconnect from the current server you are on.
+</p>
+
+<p>
+  Remember, in the <span class="code-pill">unnamedsoldier.cfg</span> the values should always be in <span class="code-pill">" "</span>.
+</p>
+
+<p>
+  Some binds are also toggled (or are most useful when toggled), these are listed in the table below:
+</p>
+
+<pre class="code-block code-block--xl"><code>Setting/Command         Information
+
+cl_run                  Switches always running on and off
+cg_lagometer            Switches the lagometer on and off
+fps                     Switches the FPS counter on and off
+ui_minicon              Switches the mini console on and off
+whereami                Switches the printing of Coordinates and Yaw of the player continuously on and off</code></pre>
+
+<p>Example: <strong style="color:#FFD700;">console:</strong></p>
+<pre class="code-block code-block--wide"><code>bind Q toggle fps</code></pre>
+
+<p>Example: <strong style="color:#FFD700;">unnamedsoldier.cfg:</strong></p>
+<pre class="code-block code-block--wide"><code>bind Q toggle "fps"</code></pre>
+
+<p>
+  Now when pressing <strong style="color:#FFD700;">Q</strong> once, your FPS counter will show up in the bottom of your screen. If you press
+  it again, the counter will disappear.
+</p>
+
+<p>
+  However there are still other commands/CVARs you can toggle besides these, specifically CVARs that
+  only have the values 0 &amp; 1 (on and off).
+</p>
+
+        <!-- ARABIC (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="ar" dir="rtl" lang="ar">
+          <h2>Translation coming soon</h2>
+          <p>Arabic translation for this guide will be added later.</p>
+        </div>
+
+        <!-- GERMAN (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="de" lang="de">
+          <h2>Übersetzung folgt</h2>
+          <p>Die deutsche Übersetzung für diesen Guide wird später hinzugefügt.</p>
+        </div>
+
+        <!-- RUSSIAN (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="ru" lang="ru">
+          <h2>Перевод скоро</h2>
+          <p>Русский перевод этого гайда будет добавлен позже.</p>
+        </div>
+
+        <!-- ARMENIAN (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="am" lang="hy">
+          <h2>Թարգմանությունը շուտով</h2>
+          <p>Այս ուղեցույցի հայերեն տարբերակը կհավելվի ավելի ուշ։</p>
+        </div>
+
+        <!-- SPANISH (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="es" lang="es">
+          <h2>Traducción próximamente</h2>
+          <p>La traducción al español de esta guía se añadirá más adelante.</p>
+        </div>
+
+        <!-- DUTCH (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="nl" lang="nl">
+          <h2>Nederlandse vertaling komt eraan</h2>
+          <p>De Nederlandse vertaling voor deze guide wordt later toegevoegd.</p>
+        </div>
+      </div>
+      <!-- /stats-card -->
+    </div>
+    <!-- /container -->
+
+    <script src="nav.js" defer></script>
+    <script src="login.js" defer></script>
+    <script src="auth.js" defer></script>
+    <script src="binds.js" defer></script>
+  </body>
+</html>

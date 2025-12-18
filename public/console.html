@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Console – MOHAA Guide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <!-- Balkje rechtsboven: Logged in as ... + knop -->
+    <div class="login-strip">
+      <div class="login-top">
+        <span id="login-user-label" class="login-user-label hidden"></span>
+        <div class="login-pill-wrap">
+          <button
+          id="login-toggle"
+          class="social-icon login-btn"
+          type="button"
+          aria-label="Login"        >
+          <span class="icon icon-login" aria-hidden="true"></span>
+          <span class="icon icon-logout" aria-hidden="true"></span>
+        </button>       
+        </div>  
+      </div>
+
+      <div class="follow-us">
+        <span class="follow-label">Follow us on</span>
+        <div class="social-icons">
+          <a
+            href="https://www.youtube.com/@gunclan-d4m"
+            class="social-icon youtube"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="YouTube"
+          >
+            <span class="icon icon-youtube" aria-hidden="true"></span>
+          </a>
+
+          <a
+            href="https://t.me/gunserver123"
+            class="social-icon telegram"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Telegram"
+          >
+            <span class="icon icon-telegram" aria-hidden="true"></span>
+          </a>
+
+          <a
+            href="https://discord.com/invite/8n9tPUZ6zA"
+            class="social-icon discord"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Discord"
+          >
+            <span class="icon icon-discord" aria-hidden="true"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+<!-- ADMIN LOGIN OVERLAY (achtergrond/overlay) -->
+<div id="login-panel" class="auth-overlay hidden" aria-hidden="true">
+
+  <!-- MODAL (het venster zelf) -->
+  <div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title" aria-describedby="auth-desc">
+
+    <!-- SLUITKNOP (X) -->
+    <button id="login-close" class="auth-close" type="button" aria-label="Close login">✕</button>
+
+    <!-- HEADER (badge/titel gebied) -->
+    <div class="auth-header">
+      <div class="auth-badge" aria-hidden="true">ADMIN LOGIN</div>
+    </div>
+
+    <!-- SUCCESS MELDING (zichtbaar bij .is-success) -->
+    <div class="auth-success-row" aria-live="polite">
+      <div class="auth-success-icon" aria-hidden="true"></div>
+      <div class="auth-success-text">
+        <div class="auth-success-title">Successfully logged in</div>
+        <div class="auth-success-sub">Welcome, <span id="auth-success-user"></span></div>
+      </div>
+    </div>
+
+    <!-- LOGIN FORM (username/password + submit) -->
+    <form id="login-form" class="auth-form" autocomplete="off">
+
+      <!-- USERNAME -->
+      <label class="auth-label" for="login-username">Username</label>
+      <div class="auth-input-wrap">
+        <input id="login-username" class="auth-input" type="text" inputmode="text" autocomplete="username" required />
+      </div>
+
+      <!-- PASSWORD (+ show/hide) -->
+      <label class="auth-label" for="login-password">Password</label>
+      <div class="auth-input-wrap">
+        <input id="login-password" class="auth-input" type="password" autocomplete="current-password" required />
+        <button id="toggle-password" class="auth-ghost" type="button" aria-label="Show password">Show</button>
+      </div>
+
+      <!-- ERROR TEKST -->
+      <p id="login-error" class="auth-error" role="alert" aria-live="polite"></p>
+
+      <!-- SUBMIT KNOP -->
+      <button class="auth-submit" type="submit">Log in</button>
+
+    </form>
+  </div>
+</div>
+
+    <!-- PAGE CONTENT -->
+    <div class="container fullscreen-container">
+      <!-- Logo + slogan -->
+      <header class="home-header">
+        <div class="home-logo">
+          <img
+            src="images/gun-header.png"
+            alt="G|u|N - MoHAA Spearhead Rifle Only Clan"
+          />
+        </div>
+        <div class="home-header-text">
+          <h1>G|u|N - MoHAA Spearhead Rifle Only Clan</h1>
+          <p class="home-tagline">
+            Last living hub for Spearhead, and it will live forever...
+          </p>
+        </div>
+      </header>
+
+<!-- Navigatie knoppen -->
+<nav class="main-nav nav-video" aria-label="Main navigation">
+  <a class="nav-link nav-home active" href="index.html">Home</a>
+  <a class="nav-link nav-stats" href="players.html">Statistics</a>
+
+  <a class="nav-link nav-forum"
+     href="https://forum.gunclan.org/"
+     target="_blank" rel="noopener noreferrer">Forum</a>
+
+  <a class="nav-link nav-upload" href="upload.html">Upload screenshot</a>
+  <a class="nav-link nav-members" href="members.html">Members</a>
+  <a class="nav-link nav-history" href="history.html">Our history</a>
+  <a class="nav-link nav-downloads" href="downloads.html">Downloads</a>
+  <a class="nav-link nav-join" href="join.html">Join us</a>
+
+  <div class="dropdown nav-dropdown">
+    <button class="nav-link nav-guides dropdown-toggle" type="button" aria-haspopup="true">
+      Guides <span class="nav-caret" aria-hidden="true">▾</span>
+    </button>
+
+    <ul class="dropdown-menu" role="menu" aria-label="Guides">
+      <li><a href="unnamedsoldier-cfg.html" role="menuitem">Unnamedsoldier.cfg</a></li>
+      <li><a href="console.html" role="menuitem">Console</a></li>
+      <li><a href="binds.html" role="menuitem">Binds</a></li>
+      <li><a href="cvars.html" role="menuitem">CVARS</a></li>
+    </ul>
+  </div>
+    <div class="nav-admin-group">
+      <a class="nav-link nav-sessions hidden" href="sessions.html">Sessions</a>
+      <a class="nav-link nav-chat hidden" href="chatlogs.html">Chat logs</a>
+    </div>
+</nav>
+
+		<div class="stats-card">
+		  <div class="guide-topbar">
+		    <div class="guide-header">
+		      <h2 class="guide-title">Console</h2>
+		      <p class="guide-subtitle">
+		        Enable the in-game console, open it quickly, and use the mini console.
+		      </p>
+		    </div>
+
+		    <p class="lang-flags">
+		      <strong>Translations Available:</strong><br />
+
+		      <span class="lang-item active" data-lang="en">
+		        <img src="images/flags/us.png" alt="English" class="flag-icon" />
+		        English
+		      </span> |
+
+		      <span class="lang-item" data-lang="ar">
+		        <img src="images/flags/eg.png" alt="Arabic" class="flag-icon" />
+		        Arabic
+		      </span> |
+
+		      <span class="lang-item" data-lang="de">
+		        <img src="images/flags/de.png" alt="German" class="flag-icon" />
+		        German
+		      </span> |
+
+		      <span class="lang-item" data-lang="ru">
+		        <img src="images/flags/ru.png" alt="Russian" class="flag-icon" />
+		        Russian
+		      </span> |
+
+		      <span class="lang-item" data-lang="am">
+		        <img src="images/flags/am.png" alt="Armenian" class="flag-icon" />
+		        Armenian
+		      </span> |
+
+		      <span class="lang-item" data-lang="es">
+		        <img src="images/flags/es.png" alt="Spanish" class="flag-icon" />
+		        Spanish
+		      </span> |
+
+		      <span class="lang-item" data-lang="nl">
+		        <img src="images/flags/nl.png" alt="Dutch" class="flag-icon" />
+		        Dutch
+		      </span>
+		    </p>
+		  </div>
+
+        <!-- ENGLISH -->
+        <div class="howto-lang lang-block" data-lang="en">
+          <p>
+          	<br>
+          	<br>
+            Besides <span class="code-pill">unnamedsoldier.cfg</span>, the in-game
+            <strong style="color:#FFD700;">console</strong> is one of the most important tools for changing settings.
+          </p>
+
+          <h2>Enable the Console</h2>
+          <p>You can enable it in two ways:</p>
+          <ul>
+            <li>
+              <strong style="color:#FFD700;">Menu → Options → Advanced →</strong>
+              enable/tick <strong style="color:#FFD700;">Console</strong>
+            </li>
+            <li>
+              Or via <span class="code-pill">unnamedsoldier.cfg</span> by adding/changing:
+              <span class="code-pill">seta ui_console "1"</span>
+            </li>
+          </ul>
+
+          <p>
+            After enabling, you can open the console with the key below
+            <strong style="color:#FFD700;">Escape</strong> (usually <strong style="color:#FFD700;">`</strong> or <strong style="color:#FFD700;">~</strong>).
+          </p>
+
+          <h2>Mini Console</h2>
+          <p>
+            If you want a small mini console in the top-right corner that shows messages without opening the full console, type:
+          </p>
+          <pre class="code-block code-block--wide"><code>ui_minicon 1</code></pre>
+
+          <p>To disable the console/mini-console, set the values back from <strong style="color:#FFD700;">1</strong> to <strong style="color:#FFD700;">0</strong>.</p>
+
+          <h2>Annoying Console Errors</h2>
+          <p>
+            The console can show many harmless error messages that don’t affect gameplay but can be annoying.
+            (Fixes are usually listed in the guide’s appendix/extra section.)
+          </p>
+        </div>
+
+        <!-- ARABIC (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="ar" dir="rtl" lang="ar">
+          <h2>Translation coming soon</h2>
+          <p>Arabic translation for this guide will be added later.</p>
+        </div>
+
+        <!-- GERMAN (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="de" lang="de">
+          <h2>Übersetzung folgt</h2>
+          <p>Die deutsche Übersetzung für diesen Guide wird später hinzugefügt.</p>
+        </div>
+
+        <!-- RUSSIAN (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="ru" lang="ru">
+          <h2>Перевод скоро</h2>
+          <p>Русский перевод этого гайда будет добавлен позже.</p>
+        </div>
+
+        <!-- ARMENIAN (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="am" lang="hy">
+          <h2>Թարգմանությունը շուտով</h2>
+          <p>Այս ուղեցույցի հայերեն տարբերակը կհավելվի ավելի ուշ։</p>
+        </div>
+
+        <!-- SPANISH (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="es" lang="es">
+          <h2>Traducción próximamente</h2>
+          <p>La traducción al español de esta guía se añadirá más adelante.</p>
+        </div>
+
+        <!-- DUTCH -->
+        <div class="howto-lang lang-block hidden" data-lang="nl" lang="nl">
+          <p>
+            Naast <span class="code-pill">unnamedsoldier.cfg</span> is de in-game
+            <strong style="color:#FFD700;">console</strong> één van de belangrijkste tools om instellingen aan te passen.
+          </p>
+
+          <h2>Console inschakelen</h2>
+          <p>Je kunt de console op twee manieren aanzetten:</p>
+          <ul>
+            <li>
+              <strong style="color:#FFD700;">Menu → Options → Advanced →</strong>
+              vink <strong style="color:#FFD700;">Console</strong> aan
+            </li>
+            <li>
+              Of via <span class="code-pill">unnamedsoldier.cfg</span> door toe te voegen/aan te passen:
+              <span class="code-pill">seta ui_console "1"</span>
+            </li>
+          </ul>
+
+          <p>
+            Daarna kun je de console openen met de toets onder
+            <strong style="color:#FFD700;">Escape</strong> (meestal <strong style="color:#FFD700;">`</strong> of <strong style="color:#FFD700;">~</strong>).
+          </p>
+
+          <h2>Mini console</h2>
+          <p>
+            Wil je een kleine mini console rechtsboven die berichten toont zonder de volledige console te openen? Typ:
+          </p>
+          <pre class="code-block code-block--wide"><code>ui_minicon 1</code></pre>
+
+          <p>Zet de waarden terug van <strong style="color:#FFD700;">1</strong> naar <strong style="color:#FFD700;">0</strong> om het weer uit te zetten.</p>
+
+          <h2>Irritante console errors</h2>
+          <p>
+            De console kan veel onschuldige foutmeldingen tonen die de game niet beïnvloeden maar wel irritant zijn.
+            (Fixes staan meestal in een appendix/extra sectie van de guide.)
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="nav.js" defer></script>
+    <script src="auth.js" defer></script>
+
+    <!-- ✅ Alleen deze op deze pagina (niet howto.js) -->
+    <script src="console.js" defer></script>
+  </body>
+</html>

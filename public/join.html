@@ -6,12 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="styles.css" />
   </head>
+  
   <body>
     <!-- Balkje rechtsboven: Logged in as ... + knop -->
     <div class="login-strip">
       <div class="login-top">
         <span id="login-user-label" class="login-user-label hidden"></span>
-        <button id="login-toggle" class="login-button">Login</button>
+        <div class="login-pill-wrap">
+          <button
+          id="login-toggle"
+          class="social-icon login-btn"
+          type="button"
+          aria-label="Login"        >
+          <span class="icon icon-login" aria-hidden="true"></span>
+          <span class="icon icon-logout" aria-hidden="true"></span>
+        </button>       
+        </div>  
       </div>
 
       <div class="follow-us">
@@ -25,7 +35,7 @@
             rel="noopener noreferrer"
             aria-label="YouTube"
           >
-            <span class="social-icon-inner">▶</span>
+            <span class="icon icon-youtube" aria-hidden="true"></span>
           </a>
 
           <!-- Telegram -->
@@ -36,7 +46,7 @@
             rel="noopener noreferrer"
             aria-label="Telegram"
           >
-            <span class="social-icon-inner">✈</span>
+            <span class="icon icon-telegram" aria-hidden="true"></span>
           </a>
 
           <!-- Discord -->
@@ -47,39 +57,60 @@
             rel="noopener noreferrer"
             aria-label="Discord"
           >
-            <span class="social-icon-inner">💬</span>
+            <span class="icon icon-discord" aria-hidden="true"></span>
           </a>
         </div>
       </div>
     </div>
 
-    <div id="login-panel" class="login-panel hidden">
-      <div class="login-dialog">
-        <div class="login-dialog-header">
-          <h2>Admin login</h2>
-          <button type="button" id="login-close" class="login-close">✕</button>
-        </div>
-        <p class="login-subtitle">
-          Log in om toegang te krijgen tot Sessions en Chat logs.
-        </p>
-        <form id="login-form">
-          <input
-            type="text"
-            id="login-username"
-            placeholder="Username"
-            autocomplete="username"
-          />
-          <input
-            type="password"
-            id="login-password"
-            placeholder="Password"
-            autocomplete="current-password"
-          />
-          <button type="submit">Login</button>
-          <div id="login-error" class="login-error"></div>
-        </form>
+<!-- ADMIN LOGIN OVERLAY (achtergrond/overlay) -->
+<div id="login-panel" class="auth-overlay hidden" aria-hidden="true">
+
+  <!-- MODAL (het venster zelf) -->
+  <div class="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title" aria-describedby="auth-desc">
+
+    <!-- SLUITKNOP (X) -->
+    <button id="login-close" class="auth-close" type="button" aria-label="Close login">✕</button>
+
+    <!-- HEADER (badge/titel gebied) -->
+    <div class="auth-header">
+      <div class="auth-badge" aria-hidden="true">ADMIN LOGIN</div>
+    </div>
+
+    <!-- SUCCESS MELDING (zichtbaar bij .is-success) -->
+    <div class="auth-success-row" aria-live="polite">
+      <div class="auth-success-icon" aria-hidden="true"></div>
+      <div class="auth-success-text">
+        <div class="auth-success-title">Successfully logged in</div>
+        <div class="auth-success-sub">Welcome, <span id="auth-success-user"></span></div>
       </div>
     </div>
+
+    <!-- LOGIN FORM (username/password + submit) -->
+    <form id="login-form" class="auth-form" autocomplete="off">
+
+      <!-- USERNAME -->
+      <label class="auth-label" for="login-username">Username</label>
+      <div class="auth-input-wrap">
+        <input id="login-username" class="auth-input" type="text" inputmode="text" autocomplete="username" required />
+      </div>
+
+      <!-- PASSWORD (+ show/hide) -->
+      <label class="auth-label" for="login-password">Password</label>
+      <div class="auth-input-wrap">
+        <input id="login-password" class="auth-input" type="password" autocomplete="current-password" required />
+        <button id="toggle-password" class="auth-ghost" type="button" aria-label="Show password">Show</button>
+      </div>
+
+      <!-- ERROR TEKST -->
+      <p id="login-error" class="auth-error" role="alert" aria-live="polite"></p>
+
+      <!-- SUBMIT KNOP -->
+      <button class="auth-submit" type="submit">Log in</button>
+
+    </form>
+  </div>
+</div>
 
     <div class="container join-container">
       <!-- Logo + slogan -->
@@ -98,24 +129,38 @@
         </div>
       </header>
 
-  <div class="home-button-row main-nav">
-    <a class="primary-button nav-home" href="index.html">Home</a>
-    <a class="primary-button nav-stats" href="players.html">Statistics</a>
-    <a 
-      class="primary-button"
-      href="https://forum.gunclan.org/?_gl=1*qjszyy*_ga*NDUwNTc2NTAyLjE3NjM3NTg4ODM.*_ga_9EZKX8FRY9*czE3NjUyODc5NzckbzQkZzEkdDE3NjUyODk3NTYkajYwJGwwJGgw"
-      target="_blank"
-      rel="noopener noreferrer"
-    >Forum</a>
-    <a class="primary-button" href="upload.html">Upload screenshot</a>
-    <a class="primary-button" href="members.html">Members</a>
-    <a class="primary-button" href="history.html">Our history</a>
-    <a class="primary-button" href="downloads.html">Downloads</a>
-    <a class="primary-button active" href="join.html">Join us</a>
+<!-- Navigatie knoppen -->
+<nav class="main-nav nav-video" aria-label="Main navigation">
+  <a class="nav-link nav-home active" href="index.html">Home</a>
+  <a class="nav-link nav-stats" href="players.html">Statistics</a>
 
-    <a class="primary-button nav-sessions hidden" href="sessions.html">Sessions</a>
-    <a class="primary-button nav-chat hidden" href="chatlogs.html">Chat logs</a>
+  <a class="nav-link nav-forum"
+     href="https://forum.gunclan.org/"
+     target="_blank" rel="noopener noreferrer">Forum</a>
+
+  <a class="nav-link nav-upload" href="upload.html">Upload screenshot</a>
+  <a class="nav-link nav-members" href="members.html">Members</a>
+  <a class="nav-link nav-history" href="history.html">Our history</a>
+  <a class="nav-link nav-downloads" href="downloads.html">Downloads</a>
+  <a class="nav-link nav-join" href="join.html">Join us</a>
+
+  <div class="dropdown nav-dropdown">
+    <button class="nav-link nav-guides dropdown-toggle" type="button" aria-haspopup="true">
+      Guides <span class="nav-caret" aria-hidden="true">▾</span>
+    </button>
+
+    <ul class="dropdown-menu" role="menu" aria-label="Guides">
+      <li><a href="unnamedsoldier-cfg.html" role="menuitem">Unnamedsoldier.cfg</a></li>
+      <li><a href="console.html" role="menuitem">Console</a></li>
+      <li><a href="binds.html" role="menuitem">Binds</a></li>
+      <li><a href="cvars.html" role="menuitem">CVARS</a></li>
+    </ul>
   </div>
+    <div class="nav-admin-group">
+      <a class="nav-link nav-sessions hidden" href="sessions.html">Sessions</a>
+      <a class="nav-link nav-chat hidden" href="chatlogs.html">Chat logs</a>
+    </div>
+</nav>
 
   <div class="stats-card">
     <h2>Join Us</h2>
