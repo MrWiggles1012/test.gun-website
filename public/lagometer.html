@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Lagometer – MOHAA Guide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <!-- Balkje rechtsboven: Logged in as ... + knop -->
+    <div class="login-strip">
+      <div class="login-top">
+        <span id="login-user-label" class="login-user-label hidden"></span>
+        <div class="login-pill-wrap">
+          <button
+          id="login-toggle"
+          class="social-icon login-btn"
+          type="button"
+          aria-label="Login"        >
+          <span class="icon icon-login" aria-hidden="true"></span>
+          <span class="icon icon-logout" aria-hidden="true"></span>
+        </button>       
+        </div>  
+      </div>
+
+      <div class="follow-us">
+        <span class="follow-label">Follow us on</span>
+        <div class="social-icons">
+          <a href="https://www.youtube.com/@gunclan-d4m" class="social-icon youtube" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+            <span class="icon icon-youtube" aria-hidden="true"></span>
+          </a>
+
+          <a href="https://t.me/gunserver123" class="social-icon telegram" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+            <span class="icon icon-telegram" aria-hidden="true"></span>
+          </a>
+
+          <a href="https://discord.com/invite/8n9tPUZ6zA" class="social-icon discord" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+            <span class="icon icon-discord" aria-hidden="true"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div id="login-panel" class="login-panel hidden">
+      <div class="login-dialog">
+        <div class="login-dialog-header">
+          <h2>Admin login</h2>
+          <button type="button" id="login-close" class="login-close">✕</button>
+        </div>
+
+        <form id="login-form">
+          <input
+            type="text"
+            id="login-username"
+            placeholder="Username"
+            autocomplete="username"
+          />
+          <input
+            type="password"
+            id="login-password"
+            placeholder="Password"
+            autocomplete="current-password"
+          />
+          <button type="submit">Login</button>
+          <div id="login-error" class="login-error"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="container fullscreen-container">
+      <!-- Logo + slogan -->
+      <header class="home-header">
+        <div class="home-logo">
+          <img src="images/gun-header.png" alt="G|u|N - MoHAA Spearhead Rifle Only Clan" />
+        </div>
+        <div class="home-header-text">
+          <h1>G|u|N - MoHAA Spearhead Rifle Only Clan</h1>
+          <p class="home-tagline">Last living hub for Spearhead, and it will live forever...</p>
+        </div>
+      </header>
+
+<!-- Navigatie knoppen -->
+<nav class="main-nav nav-video" aria-label="Main navigation">
+  <a class="nav-link nav-home active" href="index.html">Home</a>
+  <a class="nav-link nav-stats" href="players.html">Statistics</a>
+
+  <a class="nav-link nav-forum"
+     href="https://forum.gunclan.org/"
+     target="_blank" rel="noopener noreferrer">Forum</a>
+
+  <a class="nav-link nav-upload" href="upload.html">Upload screenshot</a>
+  <a class="nav-link nav-members" href="members.html">Members</a>
+  <a class="nav-link nav-history" href="history.html">Our history</a>
+  <a class="nav-link nav-downloads" href="downloads.html">Downloads</a>
+  <a class="nav-link nav-join" href="join.html">Join us</a>
+
+  <div class="dropdown nav-dropdown">
+    <button class="nav-link nav-guides dropdown-toggle" type="button" aria-haspopup="true">
+      Guides <span class="nav-caret" aria-hidden="true">▾</span>
+    </button>
+
+    <ul class="dropdown-menu" role="menu" aria-label="Guides">
+      <li><a href="getting-started.html" role="menuitem">Getting Started</a></li>
+      <li><a href="howto.html" role="menuitem">How to Play Online</a></li>
+      <li><a href="fullscreen.html" role="menuitem">Fullscreen Fix (Win 10/11)</a></li>
+      <li><a href="unnamedsoldier-cfg.html" role="menuitem">Unnamedsoldier.cfg</a></li>
+      <li><a href="console.html" role="menuitem">Console</a></li>
+      <li><a href="binds.html" role="menuitem">Binds</a></li>
+      <li><a href="cvars.html" role="menuitem">CVARS</a></li>
+      <li><a href="lagometer.html" role="menuitem">Lagometer</a></li>
+    </ul>
+  </div>
+    <div class="nav-admin-group">
+      <a class="nav-link nav-sessions hidden" href="sessions.html">Sessions</a>
+      <a class="nav-link nav-chat hidden" href="chatlogs.html">Chat logs</a>
+    </div>
+</nav>
+
+      <!-- CARD -->
+      <div class="stats-card">
+        <!-- Topbar: titel links / translations rechts -->
+        <div class="guide-topbar">
+          <div class="guide-header">
+            <h2 class="guide-title">Lagometer</h2>
+            <p class="guide-subtitle">Enable the lagometer and learn how to read lag, packet loss, and connection issues.</p>
+          </div>
+
+          <p class="lang-flags">
+            <strong>Translations Available:</strong><br />
+
+            <span class="lang-item active" data-lang="en">
+              <img src="images/flags/us.png" alt="English" class="flag-icon" />
+              English
+            </span> |
+
+            <span class="lang-item" data-lang="ar">
+              <img src="images/flags/eg.png" alt="Arabic" class="flag-icon" />
+              Arabic
+            </span> |
+
+            <span class="lang-item" data-lang="de">
+              <img src="images/flags/de.png" alt="German" class="flag-icon" />
+              German
+            </span> |
+
+            <span class="lang-item" data-lang="ru">
+              <img src="images/flags/ru.png" alt="Russian" class="flag-icon" />
+              Russian
+            </span> |
+
+            <span class="lang-item" data-lang="am">
+              <img src="images/flags/am.png" alt="Armenian" class="flag-icon" />
+              Armenian
+            </span> |
+
+            <span class="lang-item" data-lang="es">
+              <img src="images/flags/es.png" alt="Spanish" class="flag-icon" />
+              Spanish
+            </span> |
+
+            <span class="lang-item" data-lang="nl">
+              <img src="images/flags/nl.png" alt="Dutch" class="flag-icon" />
+              Dutch
+            </span>
+          </p>
+        </div>
+
+        <!-- ENGLISH -->
+        <div class="howto-lang lang-block" data-lang="en">
+            <h2>Lagometer Explained</h2>
+
+            <p>
+              The <strong style="color:#FFD700;">lagometer</strong> helps you see connection stability, packet loss, and how smoothly
+              your client is receiving snapshots from the server.
+            </p>
+            
+            <p>Enable it with:</p>
+            <pre class="code-block code-block--wide"><code>cl_lagometer 1</code></pre>
+            
+            <p>
+              (To disable it again, use <span class="code-pill">cl_lagometer 0</span>.)
+            </p>
+            <br>
+            
+            <h3>Upper Graph (Client Frames)</h3>
+            <p>
+              The upper graph advances <strong style="color:#FFD700;">one pixel for every rendered frame</strong> on the client.
+            </p>
+            
+            <ul>
+              <li>
+                <strong style="color:#1E90FF;">Blue lines</strong> below the baseline mean the frame is <strong>interpolating</strong> between two valid snapshots.
+                This is good and stable.
+              </li>
+              <li>
+                <strong style="color:#FFD700;">Yellow lines</strong> above the baseline mean the frame is <strong>extrapolating</strong> beyond the latest valid time.
+                The client is predicting what will happen without a new snapshot yet.
+              </li>
+              <li>
+                The longer the line, the more time is being interpolated/extrapolated.
+              </li>
+            </ul>
+             
+            <p>
+              Ideally, you want mostly <strong style="color:#1E90FF;">short blue bars</strong> (only a pixel or two in height). If you often see large
+              <strong style="color:#FFD700;">yellow triangles</strong>, your connection is inconsistent.
+              When a new snapshot arrives and doesn’t match the prediction, the prediction gets corrected, which can feel like
+              <strong>skipping/teleporting</strong>.
+            </p>
+            <br>
+            <div class="guide-screens">
+                <figure class="guide-shot">
+                  <img
+                    src="images/upper_lagometer.png"
+                    alt="Lagometer upper graph example (blue and yellow bars)"
+                    class="guide-shot-img"
+                  />
+                </figure>
+              </div>
+            <br>
+            
+            <h3>Lower Graph (Server Snapshots)</h3>
+            <p>
+              The lower graph advances <strong style="color:#FFD700;">one pixel for every snapshot received</strong> from the server.
+              By default, snapshots come <strong style="color:#FFD700;">20 times per second</strong>.
+              So if you run above 20 FPS, the upper graph moves faster (and vice versa).
+            </p>
+            
+            <ul>
+              <li><strong style="color:#FF3B30;">Red bar</strong> = a snapshot was dropped by the network (packet loss).</li>
+              <li>
+                <strong style="color:#34C759;">Green</strong> / <strong style="color:#FFD700;">Yellow bars</strong> = snapshots received correctly.
+                The height of the bar is proportional to your ping.
+              </li>
+              <li>
+                A <strong style="color:#FFD700;">Yellow bar</strong> can also mean the previous snapshot was intentionally suppressed to stay under the
+                <strong>rate</strong> limit.
+              </li>
+            </ul>
+            
+            <p>
+              In heavy firefights it’s normal for some players (especially on weaker connections) to see occasional
+              <strong style="color:#FFD700;">yellow bars</strong> in the lower graph — it should return to
+              <strong style="color:#34C759;">green</strong> when action quiets down.
+              If you see several <strong style="color:#FF3B30;">red bars</strong>, consider trying a server that drops fewer packets.
+            </p>
+            <br>
+            <div class="guide-screens">
+                <figure class="guide-shot">
+                  <img
+                    src="images/lower_lagometer.png"
+                    alt="Lagometer lower graph example (green bars and red packet loss spikes)"
+                    class="guide-shot-img"
+                  />
+                </figure>
+              </div>
+              
+            <br>
+            <h2>Fine-tuning the Network</h2>
+
+            <p>
+              The following notes are commonly shared advice attributed to John Carmack, explaining a few key variables you can use
+              to tune your connection.
+            </p>
+            <br>
+            <h3>Rate (Bandwidth Limit)</h3>
+
+            <p>
+                <strong style="color:#FFD700;">Rate</strong> is the client’s bandwidth limit (in <strong style="color:#FFD700;">bytes per second</strong>).
+              The server uses this value to decide how much snapshot data it can send you. If your rate is too low, the server may
+              suppress snapshots to stay under the limit, which can make movement look choppy (especially in busy firefights).
+            </p>
+            
+            <p>
+              Important: servers can also cap your value using <span class="code-pill">sv_maxrate</span>, so setting an extremely high
+              rate does not always help.
+            </p>
+            
+            <p>
+              Too low of a <strong style="color:#FFD700;">rate</strong> usually makes other players’ movement look choppy. Too high can cause
+              lag if your connection can’t actually sustain it. Also keep in mind there’s protocol overhead (UDP headers, etc.),
+              so “more packets” can mean more overhead.
+            </p>
+            
+            <h4><strong style="color:#FFD700;">Common rate values</strong></h4>
+            
+            <pre class="code-block code-block--xxl"><code>CVAR            Default Value   Value Range                                   Information
+            
+rate            30000           30000 (LAN)                                   Game rates; 30000 is the best option for everyone nowadays.
+                25000           25000 (xDSL)                                  Game rates;
+                20000           20000 (Cable)                                 Game rates;
+                5000            5000 (ISDN)                                   Game rates;
+                4000            4000 (56k modem)                              Game rates;
+                3000            3000 (33.6k modem)                            Game rates;
+                2500            2500 (22.8k modem)                            Game rates;</code></pre>
+            
+            <p>
+              <strong style="color:#FFD700;">Lagometer tip:</strong> in many id Tech 3 games, yellow bars in the <em>lower</em> graph can indicate
+              a snapshot was suppressed to stay under the rate limit.
+            </p>
+            
+
+            <br>
+            <h3>Snaps (Snapshot Rate)</h3>
+
+            <p>
+                <strong style="color:#FFD700;">Snaps</strong> is how many <strong style="color:#FFD700;">snapshots per second</strong> your client requests from the server.
+              You can’t receive more snapshots than the server produces (controlled by the server’s <span class="code-pill">sv_fps</span>),
+              so setting snaps higher than the server’s update rate is usually wasted.
+            </p>
+            
+            <p>
+              Higher <strong style="color:#FFD700;">snaps</strong> can require more bandwidth. If your connection is unstable or your
+              <strong style="color:#FFD700;">rate</strong> is too low, using very high snaps can make things less stable (more pressure on bandwidth/packets).
+            </p>
+            
+            <ul>
+              <li>
+                Many dedicated servers run at <strong>20 Hz</strong>, so good snaps values are divisors of that: <strong>20</strong> (default), <strong>10</strong>.
+              </li>
+              <li>
+                <strong style="color:#FFD700;">snaps 20</strong> can make you hit your <strong style="color:#FFD700;">rate</strong> limit faster if your rate/connection can’t keep up.
+              </li>
+              <li>
+                It can still be useful while tuning <strong style="color:#FFD700;">rate</strong>, especially on servers that actually run a higher snapshot rate.
+              </li>
+            </ul>
+            
+            <h4><strong style="color:#FFD700;">Quick examples</strong></h4>
+            <pre class="code-block code-block--wide"><code>// Common starting point
+snaps 20
+            
+// If the server runs 40 snapshots/sec (sv_fps 40), you can match it:
+snaps 40</code></pre>
+<br>
+            <p>
+                <strong style="color:#FFD700;">Spearhead / Breakthrough note:</strong>
+                On the classic (original) Spearhead and Breakthrough engine, servers run at a 20Hz snapshot update in practice,
+                so setting <strong style="color:#FFD700;">snaps</strong> higher than <strong>20</strong> usually has no effect — you can’t receive more
+                snapshots than the server tickrate.
+              </p>
+              
+              <p>
+                <strong style="color:#FFD700;">OpenMoHAA exception:</strong>
+                On <strong style="color:#FFD700;">OpenMoHAA</strong> servers, admins can run a higher server tickrate
+                (<span class="code-pill">sv_fps</span>), so values above <strong>20</strong> (for example <strong style="color:#FFD700;">snaps 40</strong>)
+                can be useful <em>if the server actually runs a higher tickrate</em>.
+              </p>
+              
+
+            <br>
+            <h3>cg_timenudge (Interpolation vs Extrapolation)</h3>
+
+            <p>
+              You can adjust your local timing with <span class="code-pill">cg_timenudge &lt;value&gt;</span>. This effectively adds a small
+              local delay to help the client <strong style="color:#FFD700;">interpolate</strong> more (blue bars) and
+              <strong style="color:#FFD700;">extrapolate</strong> less (yellow bars) on the lagometer.
+            </p>
+            
+            <ul>
+              <li>
+                <strong>Positive values</strong> (e.g. <strong style="color:#FFD700;">50</strong> / <strong style="color:#FFD700;">100</strong>) add a small buffer.
+                This often looks smoother on unstable connections (more interpolation).
+              </li>
+              <li>
+                <strong>Negative values</strong> (e.g. <strong style="color:#FFD700;">-5</strong> / <strong style="color:#FFD700;">-10</strong>) reduce the buffer and can feel
+                more “snappy”, but may increase extrapolation (more yellow) if your connection is inconsistent.
+              </li>
+            </ul>
+            
+            <p>
+              <strong style="color:#FFD700;">Note:</strong> In many id Tech 3-based games/mods, timenudge is clamped (commonly around
+              <strong style="color:#FFD700;">-30</strong> to <strong style="color:#FFD700;">+30</strong>), so extremely large values may not always apply.
+            </p>
+            
+            <p><strong style="color:#FFD700;">How to test (recommended):</strong></p>
+            <ol>
+              <li>Enable lagometer: <span class="code-pill">cl_lagometer 1</span></li>
+              <li>Start at: <span class="code-pill">cg_timenudge 0</span></li>
+              <li>If you often see large yellow triangles on the upper graph, try <span class="code-pill">cg_timenudge 50</span>, then <strong style="color:#FFD700;">100</strong>.</li>
+              <li>If everything is stable (mostly short blue bars) but feels “delayed”, try small negatives like <span class="code-pill">cg_timenudge -5</span>.</li>
+            </ol>
+            
+            <p>
+              <strong style="color:#FFD700;">Reminder:</strong> higher (positive) values can feel smoother, but may add a little input delay.
+              Use small steps and keep what feels best for your connection.
+            </p>
+            <br>            
+            <h3>Quick commands</h3>
+            <pre class="code-block code-block--wide"><code>// Baseline (recommended)
+rate 30000
+snaps 20
+cg_timenudge 0
+            
+// If your connection is very inconsistent (try carefully)
+cg_timenudge 50
+cg_timenudge 100</code></pre>
+            
+            <p>Config example (<span class="code-pill">unnamedsoldier.cfg</span>):</p>
+            <pre class="code-block code-block--wide"><code>seta cg_timenudge "0"</code></pre>
+            
+            
+
+        <!-- ARABIC (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="ar" dir="rtl" lang="ar">
+          <h2>Translation coming soon</h2>
+          <p>Arabic translation for this guide will be added later.</p>
+        </div>
+
+        <!-- GERMAN (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="de" lang="de">
+          <h2>Übersetzung folgt</h2>
+          <p>Die deutsche Übersetzung für diesen Guide wird später hinzugefügt.</p>
+        </div>
+
+        <!-- RUSSIAN (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="ru" lang="ru">
+          <h2>Перевод скоро</h2>
+          <p>Русский перевод этого гайда будет добавлен позже.</p>
+        </div>
+
+        <!-- ARMENIAN (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="am" lang="hy">
+          <h2>Թարգմանությունը շուտով</h2>
+          <p>Այս ուղեցույցի հայերեն տարբերակը կհավելվի ավելի ուշ։</p>
+        </div>
+
+        <!-- SPANISH (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="es" lang="es">
+          <h2>Traducción próximamente</h2>
+          <p>La traducción al español de esta guía se añadirá más adelante.</p>
+        </div>
+
+        <!-- DUTCH (placeholder) -->
+        <div class="howto-lang lang-block hidden" data-lang="nl" lang="nl">
+          <h2>Nederlandse vertaling komt eraan</h2>
+          <p>De Nederlandse vertaling voor deze guide wordt later toegevoegd.</p>
+        </div>
+      </div>
+      <!-- /stats-card -->
+    </div>
+    <!-- /container -->
+
+    <script src="nav.js" defer></script>
+    <script src="auth.js" defer></script>
+    <script src="cvars.js" defer></script>
+  </body>
+</html>

@@ -12,6 +12,58 @@ const multer = require("multer");
 const axios = require("axios");
 const FormData = require("form-data");
 
+
+// ---------------------------
+// ProxyCheck.io (IP -> Country) cache
+// ---------------------------
+const PROXYCHECK_KEY = process.env.PROXYCHECK_KEY || "";
+const PROXYCHECK_TTL_MS = Number(process.env.PROXYCHECK_TTL_MS || 24 * 60 * 60 * 1000); // 24h
+const proxycheckCache = new Map(); // ip -> { country, isocode, ts }
+
+async function proxycheckLookup(ip) {
+  if (!PROXYCHECK_KEY) return null;
+  const now = Date.now();
+  const cached = proxycheckCache.get(ip);
+  if (cached && (now - cached.ts) < PROXYCHECK_TTL_MS) return cached;
+
+  try {
+    const url = `https://proxycheck.io/v2/${encodeURIComponent(ip)}?key=${encodeURIComponent(PROXYCHECK_KEY)}&asn=1`;
+    const { data } = await axios.get(url, { timeout: 5000 });
+
+    // Response looks like: { status:"ok", "<ip>": { country, isocode, ... } }
+    const rec = data && data[ip];
+    const country = rec?.country ? String(rec.country) : "";
+    const isocode = rec?.isocode ? String(rec.isocode) : "";
+
+    const val = { country, isocode, ts: now };
+    proxycheckCache.set(ip, val);
+    return val;
+  } catch (e) {
+    // Cache negative briefly to avoid hammering
+    const val = { country: "", isocode: "", ts: now };
+    proxycheckCache.set(ip, val);
+    return val;
+  }
+}
+
+async function enrichSessionsWithCountry(rows) {
+  // Collect unique public-looking IPs that are not empty
+  const ips = Array.from(
+    new Set(rows.map(r => r?.ip).filter(ip => typeof ip === "string" && ip.trim().length > 0))
+  );
+
+  // Look up only IPs not in cache or expired
+  const lookups = ips.map(ip => proxycheckLookup(ip).then(val => [ip, val]));
+  const results = await Promise.all(lookups);
+  const byIp = new Map(results.filter(([, v]) => v).map(([ip, v]) => [ip, v]));
+
+  return rows.map(r => {
+    const v = byIp.get(r.ip);
+    if (!v) return r;
+    return { ...r, country: v.country || r.country, isocode: v.isocode || r.isocode };
+  });
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -430,7 +482,88 @@ async function refreshStatsFromFiles() {
 // API routes
 // ---------------------------
 app.get("/api/getplayers", (req, res) => res.json(cachePlayers));
-app.get("/api/sessions", (req, res) => res.json(sessionsLog));
+
+
+// Full stats for a single player (used by stats.html)
+// GET /api/playerstats?player=<filename without .txt>
+app.get("/api/playerstats", async (req, res) => {
+  try {
+    const player = String(req.query.player || "").trim();
+    if (!player) return res.status(400).json({ error: "Missing ?player=" });
+
+    const txtFiles = await listTxtFiles(PLAYERFILES_DIR);
+    const fileName = txtFiles.find((f) => path.basename(f, ".txt") === player);
+    if (!fileName) return res.status(404).json({ error: "Player not found" });
+
+    const parsed = await readParsed(fileName);
+    const userinfo = parsed.userinfo || {};
+    const session = parsed.session || {};
+    const combat = parsed.combat || {};
+    const bodyLocations = parsed["body_locations"] || {};
+    const freezeTag = parsed["freeze_tag"] || {};
+    const weaponModels = parsed["weapon_models"] || {};
+    const meansOfDeath = parsed["means_of_death"] || {};
+
+    // Find first/last seen based on sessions log
+    const history = sessionsLog.filter((r) => r && r.filename === player);
+
+    function parseStamp(stamp) {
+      const s = String(stamp || "");
+      const m = /^([0-9]{2})\.([0-9]{2})\.([0-9]{4})\s+([0-9]{2}):([0-9]{2}):([0-9]{2})$/.exec(s);
+      if (!m) return 0;
+      return new Date(+m[3], +m[2] - 1, +m[1], +m[4], +m[5], +m[6]).getTime();
+    }
+
+    let firstSeen = "";
+    let lastSeen = "";
+    if (history.length) {
+      let minT = Infinity, minS = "";
+      let maxT = -Infinity, maxS = "";
+
+      for (const row of history) {
+        const jt = parseStamp(row.join);
+        if (jt && jt < minT) { minT = jt; minS = row.join; }
+
+        const endStamp = (row.leave && row.leave !== "Online") ? row.leave : row.join;
+        const et = parseStamp(endStamp);
+        if (et && et > maxT) { maxT = et; maxS = endStamp; }
+      }
+      firstSeen = minS;
+      lastSeen = maxS;
+    }
+
+    // Derived metrics
+    const kills = Number(combat.kills || 0);
+    const deaths = Number(combat.deaths || 0);
+    const damage = Number(combat.damage || 0);
+    const headshots = Number(bodyLocations.headshots || 0);
+
+    const kdr = deaths > 0 ? (kills / deaths) : kills;
+    const hsRate = kills > 0 ? (headshots / kills) * 100 : 0;
+    const dmgPerKill = kills > 0 ? (damage / kills) : 0;
+
+    return res.json({
+      player,
+      name: userinfo.name || player,
+      parsed: { userinfo, session, combat, bodyLocations, freezeTag, weaponModels, meansOfDeath },
+      derived: { kdr, hsRate, dmgPerKill },
+      sessions: { firstSeen, lastSeen },
+    });
+  } catch (e) {
+    console.error("GET /api/playerstats error:", e);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/api/sessions", async (req, res) => {
+  try {
+    // Attach country/isocode (cached) if ProxyCheck key is configured
+    const rows = await enrichSessionsWithCountry(sessionsLog);
+    res.json(rows);
+  } catch (e) {
+    res.json(sessionsLog);
+  }
+});
 
 // Chat logs history
 app.get("/api/chatlogs", (req, res) => {

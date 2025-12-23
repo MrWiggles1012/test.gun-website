@@ -1,10 +1,13 @@
-// public/chatlogs.js
-
 let chatLogs = [];
 let currentSortKey = "date";
 let currentSortDir = "desc";
 
-const INITIAL_LIMIT = 500;
+const FETCH_LIMIT = 500; // we halen max 500 op, daarna pagineren we client-side
+
+const chatPaging = {
+  page: 1,
+  limit: 50, // standaard 50
+};
 
 function escapeHtml(str) {
   if (str == null) return "";
@@ -22,7 +25,14 @@ function dateToValue(dateStr) {
   const [day, month, year] = dPart.split(".").map(Number);
   const [hour, minute, second] = tPart.split(":").map(Number);
 
-  return new Date(year, (month || 1) - 1, day || 1, hour || 0, minute || 0, second || 0).getTime();
+  return new Date(
+    year || 0,
+    (month || 1) - 1,
+    day || 1,
+    hour || 0,
+    minute || 0,
+    second || 0
+  ).getTime();
 }
 
 function setError(msg) {
@@ -37,34 +47,67 @@ function cleanRecipient(recipient) {
   return r;
 }
 
-function renderChatlogsTable() {
-  const tbody = document.getElementById("chatlogs-body");
-  if (!tbody) return;
+function clampPage(totalPages) {
+  if (chatPaging.page < 1) chatPaging.page = 1;
+  if (chatPaging.page > totalPages) chatPaging.page = totalPages;
+}
 
-  if (!chatLogs.length) {
-    tbody.innerHTML = "";
-    setError("Nog geen chat logs beschikbaar.");
-    return;
+function renderSummary(total, startIdx, endIdx) {
+  const summaryEl = document.getElementById("table-summary");
+  if (!summaryEl) return;
+  summaryEl.textContent = total === 0 ? "No results" : `${startIdx}–${endIdx} of ${total}`;
+}
+
+function makeBtn(label, targetPage, disabled = false, active = false) {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "pager-btn" + (active ? " is-active" : "");
+  b.textContent = label;
+  b.disabled = disabled;
+  b.addEventListener("click", () => {
+    chatPaging.page = targetPage;
+    renderChatlogsTable();
+  });
+  return b;
+}
+
+function makeEllipsis() {
+  const s = document.createElement("span");
+  s.className = "pager-ellipsis";
+  s.textContent = "…";
+  return s;
+}
+
+function renderPager(totalPages) {
+  const pagerEl = document.getElementById("table-pager");
+  if (!pagerEl) return;
+
+  pagerEl.innerHTML = "";
+  const p = chatPaging.page;
+
+  pagerEl.appendChild(makeBtn("«", 1, p === 1));
+  pagerEl.appendChild(makeBtn("‹", p - 1, p === 1));
+
+  const windowSize = 2;
+  const addPage = (n) => pagerEl.appendChild(makeBtn(String(n), n, false, n === p));
+
+  if (totalPages <= 9) {
+    for (let i = 1; i <= totalPages; i++) addPage(i);
+  } else {
+    addPage(1);
+
+    let start = Math.max(2, p - windowSize);
+    let end = Math.min(totalPages - 1, p + windowSize);
+
+    if (start > 2) pagerEl.appendChild(makeEllipsis());
+    for (let i = start; i <= end; i++) addPage(i);
+    if (end < totalPages - 1) pagerEl.appendChild(makeEllipsis());
+
+    addPage(totalPages);
   }
 
-  setError("");
-
-  let html = "";
-  for (const log of chatLogs) {
-    const isPrivate = String(log.scope || "").toLowerCase() === "private";
-    const recipient = cleanRecipient(log.recipient);
-
-    html += `
-      <tr class="${isPrivate ? "is-private" : ""}">
-        <td>${escapeHtml(log.message)}</td>
-        <td>${escapeHtml(log.sender)}</td>
-        <td>${escapeHtml(recipient)}</td>
-        <td>${escapeHtml(log.scope || "")}</td>
-        <td>${escapeHtml(log.date || "")}</td>
-      </tr>
-    `;
-  }
-  tbody.innerHTML = html;
+  pagerEl.appendChild(makeBtn("›", p + 1, p === totalPages));
+  pagerEl.appendChild(makeBtn("»", totalPages, p === totalPages));
 }
 
 function updateHeaderSortIndicators() {
@@ -102,8 +145,53 @@ function sortChatlogs(key, dir) {
     return 0;
   });
 
+  // bij sorteren logisch terug naar pagina 1
+  chatPaging.page = 1;
   updateHeaderSortIndicators();
   renderChatlogsTable();
+}
+
+function renderChatlogsTable() {
+  const tbody = document.getElementById("chatlogs-body");
+  if (!tbody) return;
+
+  if (!chatLogs.length) {
+    tbody.innerHTML = "";
+    setError("Nog geen chat logs beschikbaar.");
+    renderSummary(0, 0, 0);
+    renderPager(1);
+    return;
+  }
+
+  setError("");
+
+  const total = chatLogs.length;
+  const totalPages = Math.max(1, Math.ceil(total / chatPaging.limit));
+  clampPage(totalPages);
+
+  const start = (chatPaging.page - 1) * chatPaging.limit;
+  const end = Math.min(start + chatPaging.limit, total);
+
+  renderSummary(total, start + 1, end);
+  renderPager(totalPages);
+
+  let html = "";
+  for (const log of chatLogs.slice(start, end)) {
+    const isPrivate = String(log.scope || "").toLowerCase() === "private";
+    const recipient = cleanRecipient(log.recipient);
+
+    html += `
+      <tr class="${isPrivate ? "is-private" : ""}">
+        <td>${escapeHtml(log.message)}</td>
+        <td>${escapeHtml(log.sender)}</td>
+        <td>${escapeHtml(recipient)}</td>
+        <td>${escapeHtml(log.scope || "")}</td>
+        <td>${escapeHtml(log.date || "")}</td>
+      </tr>
+    `;
+  }
+
+  tbody.innerHTML = html;
 }
 
 function setupHeaderSorting() {
@@ -123,14 +211,36 @@ function setupHeaderSorting() {
   });
 }
 
+function setupRowsPerPage() {
+  const rowsSelect = document.getElementById("rows-per-page");
+  if (!rowsSelect) return;
+
+  rowsSelect.value = String(chatPaging.limit);
+
+  rowsSelect.addEventListener("change", () => {
+    chatPaging.limit = parseInt(rowsSelect.value, 10) || 50;
+    chatPaging.page = 1;
+    renderChatlogsTable();
+  });
+}
+
 async function loadChatlogs() {
   try {
     setError("Chat logs laden…");
-    const r = await fetch(`/api/chatlogs?limit=${INITIAL_LIMIT}`, { cache: "no-store" });
+    const r = await fetch(`/api/chatlogs?limit=${FETCH_LIMIT}`, { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
 
     chatLogs = await r.json();
-    sortChatlogs("date", "desc");
+    if (!Array.isArray(chatLogs)) chatLogs = [];
+
+    // default sort: date desc
+    currentSortKey = "date";
+    currentSortDir = "desc";
+    chatLogs.sort((a, b) => dateToValue(b.date) - dateToValue(a.date));
+
+    updateHeaderSortIndicators();
+    renderChatlogsTable();
+    setError("");
   } catch (e) {
     console.error(e);
     setError("Kon chat logs niet laden.");
@@ -140,6 +250,7 @@ async function loadChatlogs() {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  setupRowsPerPage();
   setupHeaderSorting();
   await loadChatlogs();
 });

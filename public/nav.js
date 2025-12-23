@@ -16,10 +16,14 @@ const ADMIN_USERS = new Set(["admin"]);
 
 // Guides dropdown: welke pagina's horen onder Guides
 const GUIDES_PAGES = new Set([
+  "getting-started.html",
+  "howto.html",
+  "fullscreen.html",
   "unnamedsoldier-cfg.html",
   "console.html",
   "binds.html",
   "cvars.html",
+  "lagometer.html",
 ]);
 
 function getCurrentFile() {

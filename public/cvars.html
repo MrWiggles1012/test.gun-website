@@ -102,10 +102,14 @@
     </button>
 
     <ul class="dropdown-menu" role="menu" aria-label="Guides">
+      <li><a href="getting-started.html" role="menuitem">Getting Started</a></li>
+      <li><a href="howto.html" role="menuitem">How to Play Online</a></li>
+      <li><a href="fullscreen.html" role="menuitem">Fullscreen Fix (Win 10/11)</a></li>
       <li><a href="unnamedsoldier-cfg.html" role="menuitem">Unnamedsoldier.cfg</a></li>
       <li><a href="console.html" role="menuitem">Console</a></li>
       <li><a href="binds.html" role="menuitem">Binds</a></li>
       <li><a href="cvars.html" role="menuitem">CVARS</a></li>
+      <li><a href="lagometer.html" role="menuitem">Lagometer</a></li>
     </ul>
   </div>
     <div class="nav-admin-group">
@@ -177,7 +181,7 @@
             better):
           </p>
 
-          <pre class="code-block code-block--xl"><code>CVAR and ConVar are abbreviations for Console Variable.
+          <pre class="code-block code-block--xxl"><code>CVAR and ConVar are abbreviations for Console Variable.
 Depending on the context in which the term is found, it may also stand for Client Variable, or Configuration Variable.
 This is a type of variable used in many computer games and computer 3D simulation engines that can be manipulated
 by a text based command line interface within the game or engine, often called a console.
@@ -242,20 +246,20 @@ cl_run                   1                 0 / 1               Always Running (o
 
 <h3>Network &amp; FPS CVARs</h3>
 
-<pre class="code-block code-block--xxl"><code>CVAR            Default Value   Value Range                                         Information
+<pre class="code-block code-block--xxl"><code>CVAR            Default Value   Value Range                                   Information
 
-rate            30000           30000 (LAN)                                         Game rates; 30000 is the best option for everyone nowadays.
-                25000           25000 (xDSL)                                        Game rates;
-                20000           20000 (Cable)                                       Game rates;
-                5000            5000 (ISDN)                                         Game rates;
-                4000            4000 (56k modem)                                    Game rates;
-                3000            3000 (33.6k modem)                                  Game rates;
-                2500            2500 (22.8k modem)                                  Game rates;
-com_maxfps      125             60 – 250                                            Max. FPS the game will play in. Over 250 and below 60 can cause lag.
-cl_maxpackets   30              20 – 100                                            Max client packets per second; low (20) = less stable ping, high (100) = more stable ping.
-snaps           20              20                                                  Default and max. snapshots the client receives per second.
-cl_packetdup    1               0 – 5                                               If you have much packetloss set this to 2 or 3. It will increase the bandwidth though.
-                                                                                    The higher the value the more duplicate packets the client will send to the server.</code></pre>
+rate            30000           30000 (LAN)                                   Game rates; 30000 is the best option for everyone nowadays.
+                25000           25000 (xDSL)                                  Game rates;
+                20000           20000 (Cable)                                 Game rates;
+                5000            5000 (ISDN)                                   Game rates;
+                4000            4000 (56k modem)                              Game rates;
+                3000            3000 (33.6k modem)                            Game rates;
+                2500            2500 (22.8k modem)                            Game rates;
+com_maxfps      125             60 – 250                                      Max. FPS the game will play in. Over 250 and below 60 can cause lag.
+cl_maxpackets   30              20 – 100                                      Max client packets per second; low (20) = less stable ping, high (100) = more stable ping.
+snaps           20              20                                            Default and max. snapshots the client receives per second.
+cl_packetdup    1               0 – 5                                         If you have much packetloss set this to 2 or 3. It will increase the bandwidth though.
+                                                                              The higher the value the more duplicate packets the client will send to the server.</code></pre>
 
 
 <h3>Audio CVARs</h3>
@@ -272,14 +276,14 @@ s_ambientvolume     1                   0 / 1                         Ambient Vo
 
 <h3>Tool CVARs</h3>
 
-<pre class="code-block code-block--xxl"><code>CVAR                Default Value         Value Range           Information
+<pre class="code-block code-block--xxl"><code>CVAR                Default Value      Value Range           Information
 
-cl_lagometer        0                     0 / 1                 Lagometer (on or off), shows your latency on screen
-ui_minicon          0                     0 / 1                 Mini Console (on or off), draws mini transparent console on screen
-fps                 0                     0 / 1                 FPS Meter (on or off), prints FPS on screen
-cl_greenfps         0                     0 / 1                 Colours the FPS Meter Green (on or off)
-whereami            0                     0 / 1                 Prints Coordinates and Yaw of player continuously (on or off). Needs developer to 1. Useful: ui_minicon to 1
-developer           1                     0 / 1 / 2 / 3         Developer Mode (0 = off, see 8.17 for more info)</code></pre>
+cl_lagometer        0                  0 / 1                 Lagometer (on or off), shows your latency on screen
+ui_minicon          0                  0 / 1                 Mini Console (on or off), draws mini transparent console on screen
+fps                 0                  0 / 1                 FPS Meter (on or off), prints FPS on screen
+cl_greenfps         0                  0 / 1                 Colours the FPS Meter Green (on or off)
+whereami            0                  0 / 1                 Prints Coordinates and Yaw of player continuously (on or off). Needs developer to 1. Useful: ui_minicon to 1
+developer           1                  0 / 1 / 2 / 3         Developer Mode (0 = off, see 8.17 for more info)</code></pre>
 
 <h3>Misc CVARs</h3>
 
@@ -289,7 +293,7 @@ r_forceClampToEdge        1                   0 / 1               Unknown, every
 
 <h3>Visual CVARs</h3>
 
-<pre class="code-block code-block--xxl"><code>CVAR                            Default Value             Value Range                                             Information
+<pre class="code-block code-block--xxxl"><code>CVAR                            Default Value             Value Range                                             Information
 
 r_ext_compressed_textures       1                         0 / 1                                                   Compressed Textures (on or off) - Set to 0 if unable to see custom (weapon) skins.
 r_fastdlights                   1                         0 / 1                                                   Real Dynamic Lighting (on or off)
@@ -428,7 +432,7 @@ seta r_mode "9"                 1600 x 1200</code></pre>
 
 <h3>CVARS (Max Settings)</h3>
 
-<pre class="code-block code-block--xl"><code>// CVARs
+<pre class="code-block code-block--xxl"><code>// CVARs
 seta r_ext_compressed_textures "1"                      // COMPRESSED TEXTURES - (on)
 seta cl_playintro "0"                                   // SKIP MOHAA INTRO - PLAY INTRO (off)
 seta r_fastdlights "1"                                  // REAL DYNAMIC LIGHTING - (on)

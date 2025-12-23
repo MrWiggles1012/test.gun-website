@@ -148,10 +148,14 @@
     </button>
 
     <ul class="dropdown-menu" role="menu" aria-label="Guides">
+      <li><a href="getting-started.html" role="menuitem">Getting Started</a></li>
+      <li><a href="howto.html" role="menuitem">How to Play Online</a></li>
+      <li><a href="fullscreen.html" role="menuitem">Fullscreen Fix (Win 10/11)</a></li>
       <li><a href="unnamedsoldier-cfg.html" role="menuitem">Unnamedsoldier.cfg</a></li>
       <li><a href="console.html" role="menuitem">Console</a></li>
       <li><a href="binds.html" role="menuitem">Binds</a></li>
       <li><a href="cvars.html" role="menuitem">CVARS</a></li>
+      <li><a href="lagometer.html" role="menuitem">Lagometer</a></li>
     </ul>
   </div>
     <div class="nav-admin-group">
@@ -209,47 +213,103 @@
 		    </p>
 		  </div>
 
-        <!-- ENGLISH -->
-        <div class="howto-lang lang-block" data-lang="en">
-          <p>
-          	<br>
-          	<br>
-            Besides <span class="code-pill">unnamedsoldier.cfg</span>, the in-game
-            <strong style="color:#FFD700;">console</strong> is one of the most important tools for changing settings.
-          </p>
+<!-- ENGLISH -->
+<div class="howto-lang lang-block" data-lang="en">
+  <p>
+    <br>
+    The console is where you can run commands, change settings, and troubleshoot issues while you play.
+    In this guide you’ll learn how to enable the full console, how to turn on the mini console for quick on-screen messages,
+    and what to do if you see annoying (but harmless) console errors.
+  </p>
+  <br>  
 
-          <h2>Enable the Console</h2>
-          <p>You can enable it in two ways:</p>
-          <ul>
-            <li>
-              <strong style="color:#FFD700;">Menu → Options → Advanced →</strong>
-              enable/tick <strong style="color:#FFD700;">Console</strong>
-            </li>
-            <li>
-              Or via <span class="code-pill">unnamedsoldier.cfg</span> by adding/changing:
-              <span class="code-pill">seta ui_console "1"</span>
-            </li>
-          </ul>
+  <h2>Enable the Console</h2>
+  <p>You can enable it in two ways:</p>
+  <ul>
+    <li>
+      Go to <strong style="color:#FFD700;">Menu → Options → Advanced →</strong> and enable/tick
+      <strong style="color:#FFD700;">Console</strong>.
+    </li>
+    <li>Don’t forget to click
+      <strong style="color:#FFD700;">Apply</strong> to save your changes.
+    </li>
+    <li>
+      Or via <span class="code-pill">unnamedsoldier.cfg</span> by adding/changing:
+      <span class="code-pill">seta ui_console "1"</span>
+    </li>
+  </ul>
+  
+  <p>
+    After enabling, you can open the console with the key below
+    <strong style="color:#FFD700;">Escape</strong> (usually <strong style="color:#FFD700;">`</strong> or
+    <strong style="color:#FFD700;">~</strong>).
+  </p>
+  
+  <p>
+    The <strong style="color:#FFD700;">Advanced</strong> menu should look roughly like the screenshot below:
+  </p>
+  
+  <br>
+  
+  <!-- Screenshot for Enable Console -->
+  <div class="guide-screens">
+    <figure class="guide-shot">
+      <img
+        src="images/enable_console.png"
+        alt="Enable the console in Menu → Options → Advanced"
+        class="guide-shot-img"
+      />
+    </figure>
+  </div>
+  
 
-          <p>
-            After enabling, you can open the console with the key below
-            <strong style="color:#FFD700;">Escape</strong> (usually <strong style="color:#FFD700;">`</strong> or <strong style="color:#FFD700;">~</strong>).
-          </p>
+  <br />
 
-          <h2>Mini Console</h2>
-          <p>
-            If you want a small mini console in the top-right corner that shows messages without opening the full console, type:
-          </p>
-          <pre class="code-block code-block--wide"><code>ui_minicon 1</code></pre>
+  <h2>Mini Console</h2>
+  <p>
+    If you want a small mini console in the top-right corner that shows messages without opening the full console, type:
+  </p>
+  <pre class="code-block code-block--wide"><code>ui_minicon 1</code></pre>
+  
+  <p>
+    You can also enable it permanently by adding the following line to your
+    <span class="code-pill">unnamedsoldier.cfg</span> file:
+  </p>
+  <pre class="code-block code-block--wide"><code>seta ui_minicon "1"</code></pre>
+  
+  <p>
+    To disable the console/mini-console, set the values back from
+    <strong style="color:#FFD700;">1</strong> to <strong style="color:#FFD700;">0</strong>.
+  </p>
+  
+  <p>
+    In-game, the mini console will appear like the example shown in the screenshot below:
+  </p>
+  
+  
+  
+  <br>
+  
+  <!-- Screenshot for Mini Console -->
+  <div class="guide-screens">
+    <figure class="guide-shot">
+      <img
+        src="images/ui_minicon_1.png"
+        alt="Mini console example (ui_minicon 1)"
+        class="guide-shot-img"
+      />
+    </figure>
+  </div>
+  
 
-          <p>To disable the console/mini-console, set the values back from <strong style="color:#FFD700;">1</strong> to <strong style="color:#FFD700;">0</strong>.</p>
+  <br />
 
-          <h2>Annoying Console Errors</h2>
-          <p>
-            The console can show many harmless error messages that don’t affect gameplay but can be annoying.
-            (Fixes are usually listed in the guide’s appendix/extra section.)
-          </p>
-        </div>
+  <h2>Annoying Console Errors</h2>
+  <p>
+    The console can show many harmless error messages that don’t affect gameplay but can be annoying.
+  </p>
+</div>
+
 
         <!-- ARABIC (placeholder) -->
         <div class="howto-lang lang-block hidden" data-lang="ar" dir="rtl" lang="ar">

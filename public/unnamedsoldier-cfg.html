@@ -128,10 +128,14 @@
     </button>
 
     <ul class="dropdown-menu" role="menu" aria-label="Guides">
+      <li><a href="getting-started.html" role="menuitem">Getting Started</a></li>
+      <li><a href="howto.html" role="menuitem">How to Play Online</a></li>
+      <li><a href="fullscreen.html" role="menuitem">Fullscreen Fix (Win 10/11)</a></li>
       <li><a href="unnamedsoldier-cfg.html" role="menuitem">Unnamedsoldier.cfg</a></li>
       <li><a href="console.html" role="menuitem">Console</a></li>
       <li><a href="binds.html" role="menuitem">Binds</a></li>
       <li><a href="cvars.html" role="menuitem">CVARS</a></li>
+      <li><a href="lagometer.html" role="menuitem">Lagometer</a></li>
     </ul>
   </div>
     <div class="nav-admin-group">
@@ -201,65 +205,121 @@
         <div class="howto-lang lang-block" data-lang="en">
           <p>
             <br>
+            <br/>
+            <strong style="color: #FFD700;">Unnamedsoldier.cfg</strong> is your main personal configuration file — it stores your custom settings and preferences.
             <br>
-            <span class="code-pill">unnamedsoldier.cfg</span> is the configuration file that stores all of your personal settings.
-            You can find it in <span class="code-pill">mohaa\main\configs</span>.
+            You’ll usually find it in the <strong style="color: #FFD700;">configs</strong> folder:
           </p>
+          
+          <ul>
+            <li>
+              <strong style="color: #FFD700;">Spearhead</strong>:              
+              <span class="code-pill">C:\Games\MOHAA\mainta\configs\</span>
+            </li>
+            <li>
+              <strong style="color: #FFD700;">Breakthrough</strong>:
+              <span class="code-pill">C:\Games\MOHAA\maintt\configs\</span>
+            </li>
+          </ul>
+          
+          
           <p>
-            It contains your <strong style="color: #FFD700;">binds</strong> (keys),
-            <strong style="color: #FFD700;">CVARs</strong> (settings), and other options that affect how you play the game.
+            This file contains things like your <strong style="color: #FFD700;">binds</strong> (key binds),
+            <strong style="color: #FFD700;">CVARs</strong> (game settings), and other options that control how the game looks, feels, and performs.
+            <br>
+            It’s basically the place where you “tune” the game to your liking.
           </p>
+          
+          <p>
+            <em>Tip:</em> Before you edit anything, it’s a good idea to make a quick backup copy of the file (for example:
+            <span class="code-pill">unnamedsoldier_backup.cfg</span>). That way you can always restore your original settings if something goes wrong.
+          </p>
+          
+          <p>
+            If you can’t find <strong style="color: #FFD700;">unnamedsoldier.cfg</strong>, launch the game once and close it again —
+            the file is created automatically after the first run.
+          </p>
+          
+<br>
 
           <h2>Protect unnamedsoldier.cfg from unwanted changes</h2>
           <p>
-            Some servers may modify or “mess up” your config file. To prevent that, you can set the file to
-            <strong style="color: #FFD700;">Read-only</strong>.
-          </p>
-          <ol>
-            <li>Right-click <strong style="color: #FFD700;">unnamedsoldier.cfg</strong></li>
-            <li>Click <strong style="color: #FFD700;">Properties</strong></li>
-            <li>Enable <strong style="color: #FFD700;">Read-only</strong></li>
-            <li>Click <strong style="color: #FFD700;">Apply</strong></li>
-          </ol>
-          <p>
-            If you want to edit or add something later, temporarily disable <strong style="color: #FFD700;">Read-only</strong>,
-            make your changes, then enable it again.
-          </p>
+            <p>
+              Some servers (or server-side settings) may change your config file and “mess up” your personal settings.
+              <br>
+              To protect your setup, you can set <strong style="color: #FFD700;">unnamedsoldier.cfg</strong> to
+              <strong style="color: #FFD700;">Read-only</strong>.
+            </p>
+            <ol>
+              <li>Right-click <strong style="color: #FFD700;">unnamedsoldier.cfg</strong>.</li>
+              <li>Select <strong style="color: #FFD700;">Properties</strong> from the context menu.</li>
+              <li>In the <strong style="color: #FFD700;">General</strong> tab, find the <strong style="color: #FFD700;">Attributes</strong> section.</li>
+              <li>Check the <strong style="color: #FFD700;">Read-only</strong> box.</li>
+              <li>Click <strong style="color: #FFD700;">Apply</strong>, then <strong style="color: #FFD700;">OK</strong>.</li>
+            </ol>
+            <p>
+              <em>Tip:</em> If you want to edit or add something later, temporarily disable
+              <strong style="color: #FFD700;">Read-only</strong>, make your changes, save the file, and then enable it again.
+            </p>
+            <div class="guide-screens">
+              <figure class="guide-shot">
+                <img
+                  src="images/read_only.png"
+                  alt="Read only"
+                  class="guide-shot-img"
+                />
+              </figure>
+            </div>
+
+<br>
 
           <h2>Remove forced aliases (Foresight and similar tools)</h2>
           <p>
-            In some cases, <strong style="color: #FFD700;">Foresight</strong> (or another program) may insert certain
-            <strong style="color: #FFD700;">aliases</strong> into your config. These are sometimes used to block cheat commands by
-            forcing the game to quit or by making you announce in chat that you’re cheating.
+            In some cases, <strong style="color: #FFD700;">Foresight</strong> (or other third-party tools) may automatically add certain
+            <strong style="color: #FFD700;">aliases</strong> to your config file.<br>These “trap” aliases are sometimes used to block cheat commands by
+            forcing the game to quit, or by making you send an embarrassing message in chat.
           </p>
-
+          
+          <p>
+            If you didn’t add these lines yourself, it’s safe to treat them as unwanted.
+            They can also cause confusion later when a command suddenly doesn’t work as expected.
+          </p>
+          
           <p>Examples:</p>
           <pre class="code-block code-block--wide"><code>alias wb_item_esp "quit"
 alias r_loadmap "say I'm trying to crash the server! KICK ME! KICK ME!"</code></pre>
-
+ 
           <p>
-            These aliases can conflict with <strong style="color: #FFD700;">MOHAAC</strong> (and possibly other anti-cheats),
-            so it’s recommended to remove them from <span class="code-pill">unnamedsoldier.cfg</span>.
+            <em>Tip:</em> Before removing anything, make a quick backup copy of your config file (for example:
+            <span class="code-pill">unnamedsoldier_backup.cfg</span>).<br>Then delete the alias lines, save the file, and restart the game.
           </p>
+<br>
 
           <h2>Clean up other config files</h2>
           <p>
-            You can delete other config files in the same folder (such as <span class="code-pill">newconfig.cfg</span> or
-            <span class="code-pill">player.cfg</span>), because they may overwrite or conflict with
-            <span class="code-pill">unnamedsoldier.cfg</span>.
+            You can also remove other config files in the same folder (for example <span class="code-pill">player.cfg</span>),
+            because they can sometimes overwrite or conflict with <span class="code-pill">unnamedsoldier.cfg</span>.
           </p>
+          
+
+<br>
 
           <h2>Optional: Lock down foresight.cfg</h2>
           <p>
-            If there is a <span class="code-pill">foresight.cfg</span> file in the folder, you can prevent it from messing with your settings:
+            If you see a <span class="code-pill">foresight.cfg</span> file in the same folder, you can stop it from altering your settings by clearing it and locking it:
           </p>
+          
           <ol>
-            <li>Open <span class="code-pill">foresight.cfg</span> in Notepad</li>
-            <li>Delete everything inside the file</li>
-            <li>Save the file</li>
-            <li>Set it to <strong style="color: #FFD700;">Read-only</strong> as well</li>
+            <li>Open <span class="code-pill">foresight.cfg</span> with <strong style="color: #FFD700;">Notepad</strong> (or any text editor).</li>
+            <li>Delete everything inside the file so it’s completely empty.</li>
+            <li>Save the file.</li>
+            <li>Set the file to <strong style="color: #FFD700;">Read-only</strong> as well.</li>
           </ol>
-          <p>This helps prevent servers running Foresight from changing your configuration.</p>
+          
+          <p>
+            This helps prevent servers running <strong style="color: #FFD700;">Foresight</strong> from changing your configuration.
+          </p>
+          
         </div>
 
         <!-- ARABIC (placeholder) -->

@@ -1,0 +1,4297 @@
+/* ============================================================================
+   styles.css (opgeschoond + gestructureerd + uitgelegd)
+   ============================================================================
+   Doel van dit bestand:
+   - Een consistente, donkere “dashboard” look & feel voor de hele website
+   - Herbruikbare UI-blokken: containers, knoppen, formulieren, tabellen, kaarten
+   - Pagina-specifieke componenten (Home, Sessions, Players, Chatlogs, Upload, ...)
+   - Responsive gedrag (mobiel/klein scherm)
+
+   Opzet:
+   00. Design tokens (CSS-variabelen) + reset
+   10. Basis layout (body, containers)
+   20. Typografie (koppen, subtitels)
+   30. Links & knoppen (primary button, actieve tabs, etc.)
+   40. Navigatie & home-layout (hero, tab-rij, header)
+   50. Forms (inputs, rows, foutmeldingen)
+   60. Cards & stats (stats-card, section, grid, stat)
+   70. Utilities (hidden, labels, badges)
+   80. Tabellen (shared), Sessions, Players, Chatlogs
+   90. Login (overlay + login-strip + socials)
+   100. Pagina-brede containers (max-width overrides)
+   110. Members pagina
+   120. Accordion (Our history)
+   130. Downloads pagina
+   140. Talen / vlaggen
+   150. Upload pagina
+   160. Responsive media queries
+   999. Zebra rows overrides (bewust als laatste)
+   ========================================================================== */
+
+
+/* =============================================================================
+   00) DESIGN TOKENS (KLEUREN, SPACING, RADII) + RESET
+   ============================================================================= */
+
+/* Universele reset: zorg dat padding/border mee telt in breedte/hoogte berekeningen */
+* {
+  box-sizing: border-box; /* Breedte/hoogte inclusief padding + border (minder layout verrassingen) */
+}
+
+/* Centrale kleur- en stijlvariabelen (handig als je later thema’s wilt aanpassen) */
+:root {
+  --c-bg: #0f172a;            /* Hoofd achtergrondkleur van de site */
+  --c-surface: #020617;       /* Donkere “surface” (kaarten, table header, inputs) */
+  --c-panel: rgba(15, 23, 42, 0.9); /* Semi-transparante kaart-achtergrond */
+  --c-border: #1f2937;        /* Standaard randkleur */
+  --c-text: #e5e7eb;          /* Standaard tekstkleur */
+  --c-muted: #9ca3af;         /* Subtiele/grijze tekstkleur */
+  --c-primary: #38bdf8;       /* Accent kleur (blauw) voor knoppen/links */
+
+  --c-success: #22c55e;       /* Groen voor “online/connected/success” */
+  --c-danger: #f97373;        /* Rood voor errors/alerts */
+  --c-warning: #facc15;       /* Geel/goud (members FIA) */
+  --c-orange: #f97316;        /* Oranje (members legends) */
+
+  --r-sm: 8px;                /* Kleine radius (inputs, kleine kaarten) */
+  --r-md: 16px;               /* Medium radius (cards) */
+  --r-pill: 9999px;           /* “Pill” radius (capsules/ronde knoppen) */
+
+  --shadow-card: 0 15px 30px rgba(0, 0, 0, 0.4); /* Standaard kaart-schaduw */
+  --shadow-strong: 0 20px 40px rgba(0, 0, 0, 0.7); /* Sterkere schaduw (modals) */
+
+  --container-default: 1000px; /* Standaard maximale content-breedte */
+  --container-wide: 1900px;    /* Brede pagina’s (sessions/players/stats/etc.) */
+  --container-wider: 1900px;   /* Extra breed (chatlogs) */
+}
+
+
+/* =============================================================================
+   10) BASIS LAYOUT (BODY, CONTAINERS)
+   ============================================================================= */
+
+/* haal browser-ruimte weg */
+html, body{
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0; /* Verwijder standaard browsermarge rond de pagina */
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; /* Moderne systeemfont */
+  background: var(--c-bg); /* Donkere achtergrond van de site */
+  color: var(--c-text); /* Standaard tekstkleur */
+  position: relative;
+}
+
+/* Standaard container voor de meeste pagina’s */
+.container {
+  max-width: var(--container-default); /* Max breedte voor leesbare content */
+  margin: 40px auto; /* 40px boven/onder + automatisch centreren horizontaal */
+  padding: 0 16px; /* Links/rechts binnenmarge zodat het niet tegen de rand plakt */
+}
+
+/* Een “fullscreen” container (zelfde padding, maar voor pagina’s die breder mogen) */
+.fullscreen-container {
+  max-width: var(--container-wide); /* Brede layout op grote schermen */
+  margin: 40px auto; /* Verticaal ruimte + centreren */
+  padding: 0 16px; /* Consistente zijkanten */
+}
+
+
+/* =============================================================================
+   20) TYPOGRAFIE (KOPPEN, SUBTITELS)
+   ============================================================================= */
+
+h1 {
+  margin-bottom: 8px; /* Ruimte onder de hoofdtitel */
+  font-size: 2rem; /* Grootte van h1 */
+}
+
+.subtitle {
+  margin-top: 0; /* Geen extra ruimte boven de subtitel */
+  margin-bottom: 24px; /* Ruimte onder de subtitel (richting content/knoppen) */
+  color: var(--c-muted); /* Subtiele grijze tekst */
+}
+
+
+/* =============================================================================
+   30) LINKS & KNOPPEN (PRIMARY BUTTON + STATE)
+   ============================================================================= */
+
+/* Algemene link-stijl voor “terug” links */
+.back-link {
+  display: inline-block; /* Gedraagt zich als blokje maar blijft inline */
+  margin-bottom: 12px; /* Ruimte eronder */
+  color: var(--c-muted); /* Subtiel grijs */
+  text-decoration: none; /* Geen underline */
+  font-size: 0.9rem; /* Iets kleiner dan standaard tekst */
+}
+
+.back-link:hover {
+  color: var(--c-text); /* Bij hover helderder */
+}
+
+/* “Primary” knop/CTA (ook gebruikt als tabs) */
+.primary-button {
+  display: inline-block; /* Gedraagt zich als knopblok, maar blijft inline */
+  padding: 7px 12px; /* Binnenruimte (vertical/horizontal) */
+  font-size: 0.90rem; /* Tekstgrootte */
+  border-radius: var(--r-pill); /* Hele ronde pill-vorm */
+  background: var(--c-primary); /* Blauwe achtergrond */
+  color: var(--c-surface); /* Donkere tekst (contrast op blauw) */
+  text-decoration: none; /* Geen underline (ook als het een <a> is) */
+  font-weight: 600; /* Semi-bold */
+}
+
+.primary-button:hover {
+  filter: brightness(1.1); /* Maak de knop iets feller bij hover */
+}
+
+/* Actieve tab/knop (bijv. huidige pagina) */
+.primary-button.active {
+  background: var(--c-bg);          /* Zelfde achtergrondkleur als pagina */
+  color: var(--c-primary);          /* Blauwe tekst */
+  border: 1px solid var(--c-primary); /* Blauwe rand */
+}
+
+/* Hover op actieve tab subtieler houden */
+.primary-button.active:hover {
+  filter: none; /* Geen brightness, blijft stabiel */
+}
+
+/* Knoppen die alleen na login zichtbaar zijn (sessions/chat) */
+.primary-button.nav-sessions,
+.primary-button.nav-chat {
+  background: var(--c-success);       /* Groene achtergrond */
+  border: 1px solid var(--c-success); /* Groene rand */
+  color: var(--c-surface);            /* Donkere tekst */
+}
+
+.primary-button.nav-sessions:hover,
+.primary-button.nav-chat:hover {
+  filter: brightness(1.08); /* Lichte hover */
+}
+
+.primary-button.nav-sessions.active,
+.primary-button.nav-chat.active {
+  background: var(--c-bg);         /* Donkere achtergrond bij actieve staat */
+  border-color: var(--c-success);  /* Groene rand blijft zichtbaar */
+  color: var(--c-success);         /* Groene tekst */
+}
+
+
+/* =============================================================================
+   40) NAVIGATIE & HOME LAYOUT (TAB-ROW, HERO, HEADER)
+   ============================================================================= */
+
+/* Algemene top navigatie (ruimte onder knoppen) */
+.main-nav {
+  margin-bottom: 24px; /* Ruimte onder de navigatie */
+}
+
+/* Rij met knoppen op homepagina of als tabs */
+.home-button-row {
+  display: flex; /* Zet knoppen in een rij */
+  flex-wrap: wrap; /* Laat knoppen doorlopen naar nieuwe regel */
+  gap: 12px; /* Ruimte tussen knoppen */
+  justify-content: center; /* Centreer knoppen horizontaal */
+}
+
+/* Home buttons: minimale breedte zodat tabs consistent ogen */
+.home-button-row .primary-button {
+  min-width: 140px; /* Zorgt dat knoppen niet te smal worden */
+  text-align: center; /* Tekst netjes gecentreerd */
+}
+
+/* Alleen voor homepagina: titel + knoppen centreren (niet verticaal) */
+.home-hero {
+  text-align: center; /* Centreer tekst/inline elementen */
+}
+
+/* Centreer content in de pagina (bijv. simpele “landing” blokken) */
+.center-page {
+  display: flex; /* Flex container */
+  flex-direction: column; /* Onder elkaar */
+  align-items: center; /* Horizontaal centreren */
+  justify-content: center; /* Verticaal centreren binnen min-height */
+  min-height: 60vh; /* Neemt 60% van viewport hoogte als minimum */
+  text-align: center; /* Tekst in het midden */
+}
+
+/* Rij met tabs + login-knop rechts */
+.top-nav-row {
+  display: flex; /* Tabs + login in één rij */
+  align-items: center; /* Verticaal uitlijnen */
+  justify-content: space-between; /* Links/midden/rechts spreiden */
+  gap: 12px; /* Ruimte tussen blokken */
+}
+
+/* Tabs in het midden houden binnen de rij */
+.top-nav-row .home-button-row {
+  flex: 1; /* Laat tabs de beschikbare ruimte gebruiken */
+  justify-content: center; /* Hou tabs in het midden */
+}
+
+
+/* =========================
+   HOME PAGE (specifiek)
+   ========================= */
+
+/* Home container: brede layout + consistente padding/marges */
+.home-container {
+  max-width: var(--container-wide); /* Brede pagina */
+  margin: 40px auto 40px; /* 40px boven/onder + centreren */
+  padding: 0 16px; /* Zijkant padding */
+}
+
+/* Header: logo + tekst */
+.home-header {
+  display: flex; /* Plaats logo en tekst naast elkaar */
+  align-items: center; /* Verticaal uitlijnen */
+  gap: 18px; /* Ruimte tussen logo en tekst */
+  margin-bottom: 24px; /* Ruimte onder header */
+  justify-content: center; /* Centreer het geheel */
+}
+
+/* Tekstblok onder elkaar centreren */
+.home-header-text {
+  text-align: center; /* Titel en tagline in het midden */
+}
+
+.home-logo img {
+  height: 60px; /* Hoogte van het logo */
+  width: auto; /* Breedte automatisch (ratio behouden) */
+  display: block; /* Voorkom inline whitespace */
+}
+
+.home-header-text h1 {
+  margin: 0; /* Geen standaard marge, strakker */
+  font-size: 1.6rem; /* Kleinere h1 in header */
+}
+
+.home-tagline {
+  margin: 2px 0 0; /* Klein beetje ruimte boven, geen onder */
+  font-size: 0.9rem; /* Subtiele tagline */
+  color: var(--c-muted); /* Muted kleur */
+}
+
+/* Hero blok */
+.home-hero-main {
+  margin-top: 80px; /* Veel ruimte boven (hero feeling) */
+  margin-bottom: 28px; /* Ruimte onder hero */
+  text-align: center; /* Centreer tekst */
+  display: flex; /* Flex voor verticale stapeling */
+  flex-direction: column; /* Onder elkaar */
+  align-items: center; /* Centreer horizontaal */
+}
+
+.home-eyebrow {
+  text-transform: uppercase; /* Kleine “label” tekst in caps */
+  font-size: 0.75rem; /* Klein */
+  letter-spacing: 0.18em; /* Meer spacing voor uppercase */
+  color: var(--c-muted); /* Muted */
+  margin: 0 0 4px; /* Kleine ruimte onder eyebrow */
+}
+
+.home-main-title {
+  margin: 0 0 6px; /* Geen bovenmarge, beetje onder */
+  font-size: 1.6rem; /* Hero title */
+}
+
+.home-subtitle {
+  margin: 0; /* Geen extra marges */
+  color: var(--c-muted); /* Subtiel */
+  max-width: 620px; /* Limiteer regel-lengte */
+  text-align: center; /* Centreer */
+}
+
+/* Call-to-action knoppen */
+.home-cta-row {
+  margin-top: 16px; /* Ruimte boven CTA’s */
+  display: flex; /* CTA’s in een rij */
+  flex-wrap: wrap; /* Bij kleine schermen doorbreken */
+  gap: 10px; /* Ruimte tussen buttons */
+  align-items: center; /* Verticaal uitlijnen */
+  justify-content: center; /* Centreer */
+}
+
+/* Iets bredere CTA knop */
+.home-cta {
+  padding-inline: 28px; /* Extra horizontale padding */
+  font-size: 0.95rem; /* Iets groter */
+}
+
+/* Secundaire link (tekstlink naast CTA) */
+.secondary-link {
+  font-size: 0.9rem; /* Kleinere link */
+  color: var(--c-primary); /* Blauw */
+  text-decoration: none; /* Geen underline */
+}
+
+.secondary-link:hover {
+  text-decoration: underline; /* Wel underline op hover */
+}
+
+/* Informatieblok onderaan home */
+.home-about {
+  margin-top: 80px; /* Ruimte boven blok */
+  background: var(--c-panel); /* Semi-transparant paneel */
+  border-radius: var(--r-md); /* Afgeronde hoeken */
+  padding: 22px 22px 18px; /* Binnenruimte */
+  border: 1px solid var(--c-border); /* Rand */
+  line-height: 1.6; /* Leesbaarheid */
+  font-size: 0.95rem; /* Tekstgrootte */
+}
+
+.home-about h3 {
+  margin-top: 0; /* Geen bovenmarge */
+  margin-bottom: 10px; /* Ruimte onder titel */
+  font-size: 1.1rem; /* Titelgrootte */
+}
+
+.home-about p + p {
+  margin-top: 10px; /* Ruimte tussen opeenvolgende paragrafen */
+}
+
+.home-highlight {
+  margin-top: 14px; /* Ruimte boven highlight */
+  font-weight: 600; /* Extra nadruk */
+  color: var(--c-text); /* Heldere tekst */
+}
+
+
+/* =============================================================================
+   50) FORMS (INPUTS, ROWS, KNOPPEN, ERRORS)
+   ============================================================================= */
+
+.player-form {
+  margin: 20px 0; /* Ruimte boven/onder het formulier */
+}
+
+.player-form label {
+  display: block; /* Label op eigen regel */
+  margin-bottom: 8px; /* Ruimte onder label */
+  font-weight: 500; /* Semi-bold */
+}
+
+/* 1 rij met input + knop */
+.form-row {
+  display: flex; /* Input en knop naast elkaar */
+  gap: 8px; /* Ruimte tussen input en knop */
+}
+
+.form-row input {
+  flex: 1; /* Input neemt alle beschikbare ruimte */
+  padding: 10px 12px; /* Binnenruimte */
+  border-radius: var(--r-sm); /* Afgeronde hoeken */
+  border: 1px solid var(--c-border); /* Rand */
+  background: var(--c-surface); /* Donkere achtergrond */
+  color: var(--c-text); /* Tekstkleur */
+}
+
+.form-row input:focus {
+  outline: none; /* Verwijder standaard focus outline */
+  border-color: var(--c-primary); /* Accent rand bij focus */
+}
+
+.form-row button {
+  padding: 10px 16px; /* Binnenruimte knop */
+  border-radius: var(--r-sm); /* Afgeronde hoeken */
+  border: none; /* Geen standaard border */
+  background: var(--c-primary); /* Blauw */
+  color: var(--c-surface); /* Donkere tekst */
+  font-weight: 600; /* Semi-bold */
+  cursor: pointer; /* Handje cursor */
+}
+
+.form-row button:hover {
+  filter: brightness(1.1); /* Hover effect */
+}
+
+/* Algemene error tekst */
+.error {
+  min-height: 24px; /* Houd ruimte vrij zodat layout niet “springt” */
+  margin-bottom: 16px; /* Ruimte onder error */
+  color: var(--c-danger); /* Rood */
+}
+
+
+/* =============================================================================
+   60) CARDS & STATS (STATS-CARD, SECTION, GRID, STAT)
+   ============================================================================= */
+
+.stats-card {
+  background: var(--c-panel); /* Donkere kaart met lichte transparantie */
+  border-radius: var(--r-md); /* Afgeronde hoeken */
+  padding: 20px; /* Binnenruimte */
+  border: 1px solid var(--c-border); /* Rand */
+  box-shadow: var(--shadow-card); /* Schaduw */
+}
+
+.stats-card h2 {
+  margin-top: 0; /* Geen bovenmarge */
+  margin-bottom: 16px; /* Ruimte onder titel */
+}
+
+/* Links in kaarten */
+.stats-card a {
+  color: var(--c-primary); /* Accent kleur */
+  text-decoration: none; /* Geen underline */
+  font-weight: 500; /* Medium weight */
+}
+
+.stats-card a:hover {
+  text-decoration: underline; /* Underline op hover */
+}
+
+/* Algemene sectie binnen een stats-card */
+.section {
+  margin-top: 32px; /* Ruimte boven secties (groter voor visuele ademruimte) */
+}
+
+.section h3 {
+  margin: 0 0 8px 0; /* Geen bovenmarge, 8px onder */
+  font-size: 1rem; /* Titelgrootte */
+  color: var(--c-muted); /* Muted */
+}
+
+/* Grid met stats-blokjes */
+.grid {
+  display: flex; /* Flex layout */
+  flex-wrap: wrap; /* Laat blokjes doorbreken */
+  gap: 8px; /* Ruimte tussen stats */
+}
+
+.stat {
+  padding: 10px 12px; /* Binnenruimte */
+  border-radius: 10px; /* Iets minder rond dan cards */
+  background: var(--c-panel); /* Zelfde paneelkleur */
+  border: 1px solid var(--c-border); /* Rand */
+  display: flex; /* Flex om label/value te centreren */
+  flex-direction: column; /* Onder elkaar */
+  align-items: center; /* Horizontaal centreren */
+  justify-content: center; /* Verticaal centreren */
+  text-align: center; /* Tekst in het midden */
+  min-width: 100px; /* Minimale breedte */
+}
+
+.label {
+  display: block; /* Op eigen regel */
+  font-size: 0.8rem; /* Klein */
+  color: var(--c-muted); /* Muted */
+}
+
+.value {
+  display: block; /* Op eigen regel */
+  font-size: 1rem; /* Iets groter */
+  font-weight: 600; /* Bold */
+  margin-top: 2px; /* Klein beetje ruimte boven */
+}
+
+/* Rij met Combat + Freeze tag (2 kolommen) */
+.section-row {
+  display: flex; /* Zet secties naast elkaar */
+  flex-wrap: wrap; /* Laat bij kleinere schermen onder elkaar vallen */
+  gap: 16px; /* Ruimte tussen secties */
+  margin-top: 24px; /* Ruimte boven de rij */
+  margin-bottom: 8px; /* Klein beetje ruimte onder */
+}
+
+.section-row .half-section {
+  flex: 1 1 300px; /* Min 300px, groeit mee, krimpt indien nodig */
+}
+
+
+/* =============================================================================
+   70) UTILITIES (HIDDEN, LIJSTEN, STATUS LABELS)
+   ============================================================================= */
+
+.hidden {
+  display: none; /* Verberg element volledig (neemt geen ruimte in) */
+}
+
+/* Spelerslijst (ul/li) */
+.player-list-items {
+  list-style: none; /* Geen bullets */
+  margin: 0; /* Geen marge */
+  padding: 0; /* Geen padding */
+}
+
+.player-list-items li a {
+  display: block; /* Link vult de hele rij */
+  padding: 6px 10px; /* Binnenruimte */
+  margin-bottom: 2px; /* Ruimte tussen items */
+  background: var(--c-panel); /* Paneel achtergrond */
+  border: 1px solid var(--c-border); /* Rand */
+  text-decoration: none; /* Geen underline */
+  color: var(--c-text); /* Tekstkleur */
+}
+
+.player-list-items li a:hover {
+  filter: brightness(1.1); /* Hover effect */
+}
+
+/* Online label */
+.online-label {
+  color: var(--c-success); /* Groen */
+  font-weight: 600; /* Bold */
+}
+
+/* Groene labels voor online/connected spelers */
+.connection-connected,
+.connection-online {
+  color: var(--c-success); /* Groen */
+  font-weight: 600; /* Bold */
+}
+
+
+/* =============================================================================
+   80) TABELLEN (SHARED) + SESSIONS / PLAYERS / CHATLOGS
+   ============================================================================= */
+
+/* Wrapper rondom tabellen */
+.table-wrapper {
+  margin-top: 16px; /* Ruimte boven tabel */
+  overflow-x: visible; /* Geen horizontale scroll (tekst mag breken) */
+}
+
+/* -------- SHARED TABLE STYLES (sessions/players/chatlogs) -------- */
+.sessions-table,
+.players-table,
+.chatlogs-table {
+  width: 100%; /* Tabel vult container */
+  border-collapse: collapse; /* Geen dubbele borders tussen cellen */
+  font-size: 0.80rem; /* Compactere tekst */
+  table-layout: fixed; /* Vaste kolombreedtes (nth-child widths werken beter) */
+  max-width: none;      /* pas aan */
+  box-sizing: border-box;
+}
+
+.sessions-table th,
+.sessions-table td,
+.players-table th,
+.players-table td,
+.chatlogs-table th,
+.chatlogs-table td {
+  padding: 10px 8px; /* Binnenruimte in cellen */
+  border-bottom: 2px solid var(--c-border); /* Scheidingslijn onder elke rij */
+  text-align: left; /* Tekst links uitlijnen */
+  white-space: normal; /* Tekst mag afbreken */
+  word-wrap: break-word; /* Lange woorden mogen breken */
+  border-right: 2px solid rgba(255, 255, 255, 0.08); /* verticale lijn */
+  white-space: nowrap;
+}
+
+/* Shared table header */
+.sessions-table th,
+.players-table th,
+.chatlogs-table th {
+  background: var(--c-surface); /* Donkere header background */
+  color: var(--c-muted); /* Muted header tekst */
+  position: sticky; /* Plakt bovenaan bij scroll */
+  top: 0; /* Plak-positie */
+}
+
+/* Shared links in tabellen */
+.sessions-table a,
+.players-table a,
+.chatlogs-table a {
+  color: var(--c-primary); /* Accent link kleur */
+  text-decoration: none; /* Geen underline */
+}
+
+.sessions-table a:hover,
+.players-table a:hover,
+.chatlogs-table a:hover {
+  text-decoration: underline; /* Underline op hover */
+}
+
+/* Sorteren (sessions) */
+.sessions-table th.sortable {
+  cursor: pointer; /* Maak duidelijk dat je kunt klikken */
+  user-select: none; /* Voorkom tekst-select bij klikken */
+}
+
+.sessions-table th.sortable.sort-asc::after {
+  content: " ▲"; /* Toon pijltje omhoog */
+  font-size: 0.7rem; /* Klein pijltje */
+  color: #00ff00;
+}
+
+.sessions-table th.sortable.sort-desc::after {
+  content: " ▼"; /* Toon pijltje omlaag */
+  font-size: 0.7rem; /* Klein pijltje */
+  color: #ff0000;
+}
+
+/* -------- SESSIONS (kolombreedtes) -------- */
+/* Kolom-index:
+   1 = Name, 2 = Connection, 3 = IP, 4 = Rate, 5 = Snaps, 6 = Ping,
+   7 = Allies model, 8 = Axis model, 9 = Game version, 10 = Join, 11 = Leave
+*/
+.sessions-table th:nth-child(1),
+.sessions-table td:nth-child(1) { width: 19%; } /* Name */
+.sessions-table th:nth-child(2),
+.sessions-table td:nth-child(2) { width: 7%; }  /* Connection */
+.sessions-table th:nth-child(3),
+.sessions-table td:nth-child(3) { width: 7%; }  /* IP */
+.sessions-table th:nth-child(4),
+.sessions-table td:nth-child(4) { width: 10%; }  /* Country */
+.sessions-table th:nth-child(5),
+.sessions-table td:nth-child(5) { width: 4%; }  /* Rate */
+.sessions-table th:nth-child(6),
+.sessions-table td:nth-child(6) { width: 3%; }  /* Snaps */
+.sessions-table th:nth-child(7),
+.sessions-table td:nth-child(7) { width: 3%; }  /* Ping */
+.sessions-table th:nth-child(8),
+.sessions-table td:nth-child(8) { width: 12%; } /* Allies model */
+.sessions-table th:nth-child(9),
+.sessions-table td:nth-child(9) { width: 12%; } /* Axis model */
+.sessions-table th:nth-child(10),
+.sessions-table td:nth-child(10) { width: 8%; } /* Game version */
+.sessions-table th:nth-child(11),
+.sessions-table td:nth-child(11) { width: 8%; } /* Join */
+.sessions-table th:nth-child(12),
+.sessions-table td:nth-child(12) { width: 8%; } /* Leave */
+
+
+/* -------- PLAYERS (kolombreedtes + uitlijning) -------- */
+/* Kolom-index:
+   1 = Name, 2 = Kills, 3 = Deaths, 4 = KDR, 5 = Headshots, 6 = Damage,
+   7 = Melts, 8 = Total time played
+*/
+
+/* 1) Name */
+.players-table th:nth-child(1),
+.players-table td:nth-child(1) {
+  width: 28%;
+  white-space: normal; /* Namen mogen afbreken */
+}
+
+/* 2) Kills */
+.players-table th:nth-child(2),
+.players-table td:nth-child(2) {
+  width: 10%;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* 3) Deaths */
+.players-table th:nth-child(3),
+.players-table td:nth-child(3) {
+  width: 10%;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* 4) KDR */
+.players-table th:nth-child(4),
+.players-table td:nth-child(4) {
+  width: 10%;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* 5) Headshots */
+.players-table th:nth-child(5),
+.players-table td:nth-child(5) {
+  width: 10%;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* 6) Damage */
+.players-table th:nth-child(6),
+.players-table td:nth-child(6) {
+  width: 10%;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* 7) Melts */
+.players-table th:nth-child(7),
+.players-table td:nth-child(7) {
+  width: 10%;
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* 8) Total time played */
+.players-table th:nth-child(8),
+.players-table td:nth-child(8) {
+  width: 10%;
+  text-align: right;
+  white-space: nowrap;
+}
+
+
+/* -------- TABLE TOOLBAR (shared) -------- */
+.table-toolbar {
+  margin-top: 10px;     /* onder de tabel */
+  margin-bottom: 0px;
+  padding: 6px 12px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.table-wrapper {
+  width: 100%;
+  max-width: 1900px;
+  margin: 16px auto 0;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
+
+.table-toolbar__left,
+.table-toolbar__right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.table-toolbar__label,
+.table-toolbar__muted,
+.table-summary {
+  color: var(--c-muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.table-toolbar__select {
+  background: transparent;
+  color: var(--c-text, #fff);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  outline: none;
+  background: var(--c-surface);          /* achtergrond van het veld */
+  color: var(--c-text, #fff);            /* tekstkleur */
+  border: 1px solid var(--c-border);     /* rand */
+}
+
+.table-toolbar__select:hover {
+  border-color: var(--c-primary);
+}
+
+.table-toolbar__select:focus {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.06);
+}
+
+
+.table-toolbar__select option {
+  background: var(--c-surface);          /* achtergrond van de dropdown lijst */
+  color: var(--c-text, #fff);            /* tekstkleur in de lijst */
+}
+
+.table-toolbar__select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-image: linear-gradient(45deg, transparent 50%, var(--c-muted) 50%),
+                    linear-gradient(135deg, var(--c-muted) 50%, transparent 50%);
+  background-position: calc(100% - 16px) calc(1em + 2px),
+                       calc(100% - 11px) calc(1em + 2px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+
+  padding-right: 28px; /* ruimte voor pijltje */
+}
+
+
+/* -------- PAGER (shared) -------- */
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+
+.pager-btn {
+  background: transparent;
+  color: var(--c-muted);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.pager-btn:hover {
+  border-color: var(--c-primary);
+  color: var(--c-text, #3131319a);
+}
+
+.pager-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pager-btn.is-active {
+  border-color: var(--c-primary);
+  color: var(--c-text, #fff);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.06) inset;
+}
+
+.pager-ellipsis {
+  color: var(--c-muted);
+  padding: 0 6px;
+  font-size: 0.85rem;
+}
+
+
+
+/* -------- CHATLOGS (kolombreedtes) -------- */
+/* Kolom-index:
+   1 = Message, 2 = Sender, 3 = Recipient, 4 = Scope, 5 = Date
+*/
+.chatlogs-table th:nth-child(1),
+.chatlogs-table td:nth-child(1) { width: 63%; } /* Message: breedst */
+.chatlogs-table th:nth-child(2),
+.chatlogs-table td:nth-child(2) { width: 12%; } /* Sender */
+.chatlogs-table th:nth-child(3),
+.chatlogs-table td:nth-child(3) { width: 12%; } /* Recipient */
+.chatlogs-table th:nth-child(4),
+.chatlogs-table td:nth-child(4) { width: 5%; }  /* Scope */
+.chatlogs-table th:nth-child(5),
+.chatlogs-table td:nth-child(5) { width: 8%; }  /* Date */
+
+
+/* =============================================================================
+   90) LOGIN (OVERLAY + LOGIN-STRIP + SOCIALS)
+   ============================================================================= */
+
+/* Volledig overlay login-scherm */
+.login-panel {
+  position: fixed; /* Vast op het scherm */
+  inset: 0; /* top/right/bottom/left = 0 (vult hele viewport) */
+  background: rgba(15, 23, 42, 0.85); /* Donkere overlay */
+  display: flex; /* Centreer dialog */
+  align-items: center; /* Verticaal centreren */
+  justify-content: center; /* Horizontaal centreren */
+  z-index: 1000; /* Boven alles */
+}
+
+/* Verborgen variant */
+.login-panel.hidden {
+  display: none; /* Verberg overlay volledig */
+}
+
+/* De “kaart” in het midden */
+.login-dialog {
+  background: var(--c-surface); /* Donkere kaart */
+  border-radius: var(--r-md); /* Afgeronde hoeken */
+  padding: 24px 24px 18px; /* Binnenruimte */
+  width: 320px; /* Vaste breedte */
+  max-width: 90vw; /* Op mobiel max 90% viewport */
+  border: 1px solid var(--c-border); /* Rand */
+  box-shadow: var(--shadow-strong); /* Sterke schaduw */
+}
+
+/* Header (titel + X) */
+.login-dialog-header {
+  display: flex; /* Titel + knop in één rij */
+  align-items: center; /* Verticaal uitlijnen */
+  justify-content: space-between; /* Titel links, X rechts */
+  margin-bottom: 6px; /* Ruimte onder header */
+}
+
+.login-dialog-header h2 {
+  margin: 0; /* Geen marge */
+  font-size: 1.1rem; /* Titelgrootte */
+}
+
+.login-subtitle {
+  font-size: 0.85rem; /* Kleine subtitel */
+  color: var(--c-muted); /* Muted */
+  margin: 0 0 12px; /* Ruimte onder subtitel */
+}
+
+/* Sluit-knop (X) */
+.login-close {
+  background: transparent; /* Geen achtergrond */
+  border: none; /* Geen rand */
+  color: var(--c-muted); /* Muted */
+  cursor: pointer; /* Handje */
+  font-size: 1rem; /* Grootte */
+  padding: 0; /* Geen padding */
+}
+
+.login-close:hover {
+  color: var(--c-text); /* Heldere kleur bij hover */
+}
+
+/* Inputs in login overlay */
+.login-panel input {
+  width: 100%; /* Volle breedte */
+  margin-bottom: 8px; /* Ruimte onder input */
+  padding: 8px 10px; /* Binnenruimte */
+  border-radius: var(--r-sm); /* Afgeronde hoeken */
+  border: 1px solid var(--c-border); /* Rand */
+  background: var(--c-surface); /* Donkere achtergrond */
+  color: var(--c-text); /* Tekst */
+  font-size: 0.9rem; /* Tekstgrootte */
+}
+
+.login-panel input:focus {
+  outline: none; /* Geen outline */
+  border-color: var(--c-primary); /* Accent rand */
+}
+
+/* Submit knop in login overlay */
+.login-panel button[type="submit"] {
+  width: 100%; /* Volle breedte */
+  margin-top: 4px; /* Ruimte boven knop */
+  padding: 8px 10px; /* Binnenruimte */
+  border-radius: var(--r-sm); /* Afgeronde hoeken */
+  border: none; /* Geen rand */
+  background: var(--c-primary); /* Blauw */
+  color: var(--c-surface); /* Donkere tekst */
+  font-weight: 600; /* Bold */
+  cursor: pointer; /* Handje */
+  font-size: 0.9rem; /* Tekstgrootte */
+}
+
+.login-panel button[type="submit"]:hover {
+  filter: brightness(1.05); /* Subtiele hover */
+}
+
+.login-error {
+  color: var(--c-danger); /* Rood */
+  font-size: 0.8rem; /* Klein */
+  margin-top: 4px; /* Ruimte boven */
+  min-height: 16px; /* Reserveer ruimte */
+}
+
+/* Login-strip rechtsboven (logged in info + knop + socials) */
+.login-strip {
+  position: absolute; /* Vast in viewport */
+  top: -30px; /* Afstand van boven */
+  right: 15px; /* Afstand van rechts */
+  display: flex; /* Flex container */
+  flex-direction: column; /* Onder elkaar */
+  align-items: flex-end; /* Rechts uitlijnen */
+  gap: 6px; /* Ruimte tussen rijen */
+  z-index: 900; /* Boven content, onder overlay */
+  font-size: 0.85rem; /* Kleine tekst */
+}
+
+/* “Logged in as ...” + login/logout knop in één rij */
+.login-top {
+  display: flex; /* Zet tekst + knop naast elkaar */
+  flex-direction: row; /* Horizontaal */
+  align-items: center; /* Verticaal uitlijnen */
+  gap: 18px; /* Ruimte tussen tekst en knop */
+}
+
+.login-user-label {
+  display: inline-block; /* Houd label compact */
+  margin-right: 4px; /* Ruimte rechts */
+  font-size: 0.8rem; /* Klein */
+  color: var(--c-text); /* Tekst */
+}
+
+/* Tekst: logged in username */
+.login-user-name {
+  font-weight: 600; /* Dikgedrukt */
+  font-size: 1.0rem; /* Iets groter */
+  color: var(--c-text); /* Tekst */
+}
+
+/* Login knop in de strip */
+.login-button {
+  position: static; /* Meedoen in flexbox (niet fixed) */
+  padding: 6px 14px; /* Binnenruimte */
+  border-radius: var(--r-pill); /* Pilvorm */
+  border: 1px solid var(--c-primary); /* Blauwe rand */
+  background: var(--c-surface); /* Donkere achtergrond */
+  color: var(--c-text); /* Tekst */
+  font-size: 0.8rem; /* Klein */
+  cursor: pointer; /* Handje */
+}
+
+/* Als ingelogd: “gevuld” */
+.login-button.logged-in {
+  background: var(--c-primary); /* Blauw gevuld */
+  color: var(--c-surface); /* Donkere tekst */
+}
+
+/* Follow us blok (label + iconen) */
+.follow-us {
+  display: flex; /* In een rij */
+  flex-direction: row; /* Tekst + icons naast elkaar */
+  align-items: center; /* Verticaal uitlijnen */
+  gap: 12px; /* Ruimte tussen label en icons */
+  margin-top: 10px; /* Ruimte boven */
+}
+
+.follow-label {
+  font-size: 0.95rem; /* Klein label */
+  color: var(--c-muted); /* Muted */
+}
+
+.social-icons {
+  display: flex; /* Iconen in een rij */
+  gap: 6px; /* Ruimte tussen iconen */
+}
+
+/* Ronde icon-knoppen */
+.social-icon {
+  width: 40px; /* Breedte knop */
+  height: 40px; /* Hoogte knop */
+  border-radius: var(--r-pill); /* Rond */
+  display: inline-flex; /* Flex inline voor centreren */
+  align-items: center; /* Verticaal centreren */
+  justify-content: center; /* Horizontaal centreren */
+  text-decoration: none; /* Geen underline */
+  color: #f9fafb; /* Witte tekst/icon */
+  font-size: 0.8rem; /* Klein */
+  transition: transform 0.15s ease, filter 0.15s ease; /* Mooie hover animatie */
+}
+
+.social-icon.youtube { background: #dc2626; } /* YouTube rood */
+.social-icon.telegram { background: var(--c-primary); } /* Telegram blauw */
+.social-icon.discord { background: #6366f1; } /* Discord paars */
+
+.social-icon:hover {
+  transform: translateY(-1px); /* Subtiel omhoog */
+  filter: brightness(1.1); /* Iets feller */
+}
+
+.social-icon-inner {
+  line-height: 1; /* Strakkere uitlijning in ronde knop */
+}
+
+
+/* ===== Social icons: smooth expand pill (no jitter, icons stay visible) ===== */
+
+.social-icons{
+  display:flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* per platform glow (je bestaande backgrounds mag je houden) */
+.social-icon{ --glow: rgba(255,255,255,.18); }
+.social-icon.youtube { --glow: rgba(220,38,38,.45); }
+.social-icon.telegram{ --glow: rgba(59,130,246,.45); }
+.social-icon.discord { --glow: rgba(99,102,241,.45); }
+
+.social-icon{
+  --w: 40px;
+  --w-open: 175px;
+
+  width: var(--w);
+  height: 40px;
+  border-radius: 999px;
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  color: #fff;
+
+  /* smoother rendering */
+  transform: translate3d(0,0,0);
+  will-change: width, transform;
+
+  transition:
+    width .28s cubic-bezier(.2,.8,.2,1),
+    padding .28s cubic-bezier(.2,.8,.2,1),
+    box-shadow .28s ease,
+    filter .18s ease,
+    transform .18s ease;
+}
+
+/* Zorg dat jouw <span class="icon ..."> nooit “instort” */
+.social-icon .icon{
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  position: relative;
+  z-index: 3;
+}
+
+/* Label komt uit aria-label (YouTube/Telegram/Discord) */
+.social-icon::after{
+  content: attr(aria-label);
+  position: absolute;
+  left: 54px;   /* start na het icoon */
+  right: 14px;
+  top: 50%;
+
+  transform: translate3d(-6px,-50%,0);
+  opacity: 0;
+
+  white-space: nowrap;
+  font-weight: 800;
+  letter-spacing: .2px;
+  color: rgba(255,255,255,.95);
+
+  pointer-events: none;
+  z-index: 3;
+
+  transition: opacity .16s ease, transform .16s ease;
+}
+
+/* Zachte highlight achter content (maar onder icon/tekst) */
+.social-icon::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  z-index: 1;
+  opacity: 0;
+  pointer-events:none;
+
+  background: radial-gradient(circle at 22% 50%,
+    rgba(255,255,255,.22),
+    rgba(255,255,255,0) 55%
+  );
+
+  transition: opacity .2s ease;
+}
+
+.social-icon:hover,
+.social-icon:focus-visible{
+  width: var(--w-open);
+  padding: 0 14px 0 12px;
+  justify-content: flex-start;
+
+  transform: translate3d(0,-1px,0);
+  filter: brightness(1.06);
+
+  box-shadow:
+    0 12px 26px rgba(0,0,0,.35),
+    0 0 18px var(--glow),
+    0 0 0 1px rgba(255,255,255,.14);
+}
+
+.social-icon:hover::after,
+.social-icon:focus-visible::after{
+  opacity: 1;
+  transform: translate3d(0,-50%,0);
+}
+
+.social-icon:hover::before,
+.social-icon:focus-visible::before{
+  opacity: 1;
+}
+
+/* minder beweging als user dat wil */
+@media (prefers-reduced-motion: reduce){
+  .social-icon,
+  .social-icon::before,
+  .social-icon::after{
+    transition: none !important;
+  }
+}
+
+
+/* ===== Tweak label position + thickness ===== */
+.social-icon{
+  --label-left: 52px;     /* tekst startpunt (meer = verder naar rechts) */
+  --label-right: 14px;    /* ruimte tot rechterrand */
+  --label-size: 0.95rem;  /* tekstgrootte */
+  --label-weight: 600;    /* dikte (600/700/800/900) */
+  --label-track: .25px;   /* letter spacing */
+}
+
+.social-icon::after{
+  left: var(--label-left);
+  right: var(--label-right);
+  font-size: var(--label-size);
+  font-weight: var(--label-weight);
+  letter-spacing: var(--label-track);
+}
+
+
+/* button moet zich gedragen als <a> (geen default button styling) */
+button.social-icon{
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  border: none;      /* we zetten border hieronder */
+  padding: 0;        /* hover rule zet padding bij openklappen */
+  cursor: pointer;
+}
+
+/* Login knop = zelfde animatie als socials, alleen andere kleur */
+#login-toggle.login-btn{
+  --w-open: 150px;                 /* breedte bij hover */
+  --glow: rgba(255,215,0,.55);
+  background: rgba(255,215,0,.16);
+  border: 1px solid rgba(255,215,0,.60);
+}
+
+/* icon kleur = wit zoals je socials */
+#login-toggle.login-btn .icon{
+  background-color: rgba(255,255,255,.95);
+}
+
+/* Mask voor login icon */
+.icon-loginout{
+  -webkit-mask: url("/images/icons/login-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/login-icon.svg") no-repeat center / contain;
+}
+
+/* Als ingelogd: swap naar logout icon */
+#login-toggle.login-btn.logged-in .icon-loginout{
+  -webkit-mask-image: url("/images/icons/logout-icon.svg");
+          mask-image: url("/images/icons/logout-icon.svg");
+}
+
+
+
+/* Login knop = zelfde animatie als socials, alleen andere kleur */
+#login-toggle.login-btn{
+  --w-open: 132px;                 /* hoe breed hij uitklapt */
+  --glow: rgba(34,197,94,.55);     /* glow kleur */
+  background: rgba(34, 197, 42, 0.18); /* zacht groen */
+  border: 1px solid rgba(34,197,94,.55);
+}
+
+/* Zet icon kleur naar wit (zoals socials) */
+#login-toggle.login-btn .icon{
+  background-color: rgba(255,255,255,.95);
+}
+
+/* Mask voor login icon */
+.icon-loginout{
+  -webkit-mask: url("/images/icons/login-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/login-icon.svg") no-repeat center / contain;
+}
+
+/* Als ingelogd: swap naar logout icon */
+#login-toggle.login-btn.logged-in .icon-loginout{
+  -webkit-mask-image: url("/images/icons/logout-icon.svg");
+          mask-image: url("/images/icons/logout-icon.svg");
+}
+
+
+/* reserveer ruimte zodat uitklappen niets verschuift */
+.login-pill-wrap{
+  width: 175px;               /* zelfde als --w-open van socials */
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* login knop krijgt eigen kleur/glow (maar animatie is al socials) */
+#login-toggle.login-btn{
+  --w-open: 175px;
+  --glow: rgba(34,197,94,.55);      /* groen glow */
+  background: rgba(34,197,94,.18);  /* zacht groen */
+  border: 1px solid rgba(34,197,94,.55);
+}
+
+/* iconen (wit, zoals je socials) */
+#login-toggle .icon{
+  background-color: rgba(255,255,255,.95);
+}
+
+/* login/logout masks (BELANGRIJK: pad!) */
+#login-toggle .icon-login{
+  -webkit-mask: url("images/icons/login-icon.svg") no-repeat center / contain;
+          mask: url("images/icons/login-icon.svg") no-repeat center / contain;
+}
+
+#login-toggle .icon-logout{
+  -webkit-mask: url("images/icons/logout-icon.svg") no-repeat center / contain;
+          mask: url("images/icons/logout-icon.svg") no-repeat center / contain;
+  display: none;
+}
+
+/* swap wanneer ingelogd */
+#login-toggle.logged-in .icon-login{ display: none; }
+#login-toggle.logged-in .icon-logout{ display: inline-block; }
+
+
+/* ===== Login button: zelfde als socials, maar zonder label-tekst ===== */
+#login-toggle.login-btn{
+  --glow: rgba(34,197,94,.55);
+  --w-open: 40px;                 /* blijft rond (geen uitklap, want geen tekst) */
+  background: rgba(34,197,94,.18);
+  border: 1px solid rgba(34,197,94,.55);
+
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* Verberg “Login” tekst (die normaal uit aria-label komt) */
+#login-toggle.login-btn::after{
+  display: none !important;
+}
+
+/* Houd hover exact netjes gecentreerd (geen padding shift) */
+#login-toggle.login-btn:hover,
+#login-toggle.login-btn:focus-visible{
+  padding: 0 !important;
+  justify-content: center !important;
+}
+
+/* Login/logout icon = mask-based (wit zoals socials) */
+#login-toggle.login-btn .icon{
+  background-color: rgba(255,255,255,.95);
+}
+
+/* default: login icon */
+#login-toggle.login-btn .icon-loginout{
+  -webkit-mask: url("/images/icons/login-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/login-icon.svg") no-repeat center / contain;
+}
+
+/* ingelogd: swap naar logout icon */
+#login-toggle.login-btn.logged-in .icon-loginout{
+  -webkit-mask-image: url("/images/icons/logout-icon.svg");
+          mask-image: url("/images/icons/logout-icon.svg");
+}
+
+
+/* ================================
+   LOGIN knop = exact socials animatie
+   Plak dit ONDERAAN styles.css
+   ================================ */
+
+/* Zorg dat button net zo werkt als <a> */
+#login-toggle.social-icon{
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;                /* socials hebben geen border in base */
+  cursor: pointer;
+}
+
+/* Geef login eigen kleur + glow (zacht groen) */
+#login-toggle.login-btn{
+  --glow: rgba(34,197,94,.55);
+  background: rgba(34,197,94,.22);
+}
+
+/* Hover/Focus: zelfde effect als socials */
+#login-toggle.login-btn:hover,
+#login-toggle.login-btn:focus-visible{
+  filter: brightness(1.06);
+}
+
+/* Icon kleur wit (mask-based net als socials) */
+#login-toggle.login-btn .icon{
+  background-color: rgba(255,255,255,.95);
+}
+
+/* Mask voor login/logout icon (jouw pad!) */
+#login-toggle.login-btn .icon-loginout{
+  width: 20px;
+  height: 20px;
+  -webkit-mask: url("/images/icons/login-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/login-icon.svg") no-repeat center / contain;
+}
+
+/* Als ingelogd: swap naar logout svg */
+#login-toggle.login-btn.logged-in .icon-loginout{
+  -webkit-mask-image: url("/images/icons/logout-icon.svg");
+          mask-image: url("/images/icons/logout-icon.svg");
+}
+
+/* Optioneel: als je de labeltekst iets compacter wilt */
+#login-toggle.login-btn{
+  --w-open: 132px; /* hoe breed uitklap */
+}
+
+
+/* ===== Login knop: icoon schuift naar links + label verschijnt (zoals socials) ===== */
+#login-toggle.login-btn{
+  --w: 40px;
+  --w-open: 132px;
+  width: var(--w);
+  justify-content: center;
+  padding: 0; /* default */
+}
+
+/* hover/focus: zelfde gedrag als socials */
+#login-toggle.login-btn:hover,
+#login-toggle.login-btn:focus-visible{
+  width: var(--w-open);
+  padding: 0 14px 0 12px;
+  justify-content: flex-start; /* <-- hierdoor schuift het icoon naar links */
+}
+
+/* label position (net als socials) */
+#login-toggle.login-btn::after{
+  left: 54px;
+  right: 14px;
+}
+
+
+/* =============================================================================
+   100) PAGINA-BREDE CONTAINERS (MAX-WIDTH OVERRIDES)
+   ============================================================================= */
+
+/* Sessions pagina mag breder zijn dan standaard */
+.sessions-container {
+  max-width: var(--container-wide); /* Brede layout */
+}
+
+/* Statistics / players pagina mag ook breder zijn */
+.players-container {
+  max-width: var(--container-wide); /* Brede layout */
+}
+
+/* Player stats pagina mag ook breder zijn */
+.stats-container {
+  max-width: var(--container-wide); /* Brede layout */
+}
+
+/* Chat logs pagina mag nóg iets breder */
+.chat-container {
+  max-width: var(--container-wide); /* Brede layout */
+}
+
+.chatlogs-container {
+  max-width: var(--container-wider); /* Extra breed voor chatlogs tabel */
+}
+
+/* Overige pagina’s breed maken */
+.forum-container,
+.members-container,
+.history-container,
+.downloads-container,
+.join-container,
+.howto-container,
+.upload-container {
+  max-width: var(--container-wide); /* Consistente brede breedte */
+}
+
+/* Howto titel centreren */
+.howto-container h1 {
+  text-align: center; /* Titel in het midden */
+  margin-bottom: 1px; /* Ruimte onder titel */
+  font-size: 1.6rem; /* Titelgrootte */
+}
+
+
+/* =============================================================================
+   110) MEMBERS PAGE STYLING
+   ============================================================================= */
+
+.members-section {
+  margin-top: 32px; /* Ruimte boven sectie */
+  text-align: center; /* Centreer titels/tekst */
+}
+
+/* Titels per groep */
+.members-title {
+  margin-bottom: 6px; /* Ruimte onder titel */
+  font-size: 1.25rem; /* Grootte */
+  font-weight: 700; /* Bold */
+}
+
+/* Kleuren per groep */
+.members-title.leaders { color: var(--c-danger); } /* Leaders rood */
+.members-title.fia { color: var(--c-warning); } /* FIA goud */
+.members-title.members { color: var(--c-success); } /* Members groen */
+.members-title.legends { color: var(--c-orange); } /* Legends oranje */
+
+.members-desc {
+  max-width: 700px; /* Leesbreedte */
+  margin: 0 auto 16px; /* Centreren + ruimte onder */
+  color: var(--c-text); /* Tekst */
+}
+
+/* Lijst met namen */
+.members-list {
+  list-style: none; /* Geen bullets */
+  margin: 0 auto 8px; /* Centreren + ruimte onder */
+  padding: 0; /* Geen padding */
+  max-width: 600px; /* Max breedte */
+  text-align: left; /* Namen links */
+}
+
+/* Elke naam op een rij, met een gekleurde balk ervoor */
+.members-list li {
+  display: flex; /* Balkje + tekst in één rij */
+  align-items: center; /* Verticaal uitlijnen */
+  gap: 8px; /* Ruimte tussen balkje en tekst */
+  margin-bottom: 4px; /* Ruimte tussen items */
+}
+
+/* Basis-balkje */
+.members-list li::before {
+  content: ""; /* Pseudo-element (decoratief) */
+  display: inline-block; /* Gedraagt zich als klein blok */
+  width: 4px; /* Breedte balk */
+  height: 18px; /* Hoogte balk */
+  border-radius: var(--r-pill); /* Rond uiteinde */
+  margin-right: 4px; /* Extra ruimte rechts */
+}
+
+/* Kleur per groep */
+.members-list.leaders li::before { background: var(--c-danger); } /* rood */
+.members-list.fia li::before { background: var(--c-warning); } /* goud */
+.members-list.members li::before { background: var(--c-success); } /* groen */
+.members-list.legends li::before { background: var(--c-orange); } /* oranje */
+
+
+/* =============================================================================
+   120) OUR HISTORY ACCORDION
+   ============================================================================= */
+
+.history-container .stats-card {
+  margin-top: 16px; /* Ruimte boven kaart in history pagina */
+}
+
+/* Wrapper */
+.accordion {
+  margin-top: 16px; /* Ruimte boven accordion */
+}
+
+/* Tussen items een lijn */
+.accordion-item + .accordion-item {
+  border-top: 1px solid var(--c-border); /* Scheidingslijn */
+}
+
+/* Header-knop */
+.accordion-header {
+  width: 100%; /* Volle breedte */
+  padding: 10px 0; /* Ruimte boven/onder */
+  background: transparent; /* Geen achtergrond */
+  border: none; /* Geen rand */
+  color: inherit; /* Gebruik ouder-kleur */
+  display: flex; /* Pijl + titel in rij */
+  align-items: center; /* Verticaal uitlijnen */
+  gap: 10px; /* Ruimte tussen pijl en titel */
+  cursor: pointer; /* Klikbaar */
+  text-align: left; /* Tekst links */
+}
+
+.accordion-header:hover {
+  background: rgba(15, 23, 42, 0.85); /* Subtiele hover achtergrond */
+}
+
+/* Pijltje links */
+.accordion-arrow {
+  display: inline-flex; /* Flex inline */
+  align-items: center; /* Center */
+  justify-content: center; /* Center */
+  width: 22px; /* Breedte */
+  height: 22px; /* Hoogte */
+  border-radius: var(--r-pill); /* Rond */
+  border: 1px solid #4b5563; /* Grijze rand */
+  font-size: 12px; /* Pijl grootte */
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease; /* Animaties */
+}
+
+.accordion-title {
+  font-weight: 500; /* Medium */
+  font-size: 0.95rem; /* Tekstgrootte */
+}
+
+/* Ingeklapte content */
+.accordion-content {
+  overflow: hidden; /* Verberg content als max-height 0 is */
+  max-height: 0; /* Start ingeklapt */
+  padding-bottom: 0; /* Geen padding als dicht is */
+  transition: max-height 0.25s ease, padding-bottom 0.25s ease; /* Smooth open/dicht */
+}
+
+/* Paragrafen binnen content */
+.accordion-content p {
+  margin-top: 0; /* Geen bovenmarge */
+  margin-bottom: 8px; /* Ruimte onder paragraaf */
+  color: var(--c-text); /* Tekst */
+}
+
+/* Geopende staat */
+.accordion-item.open .accordion-content {
+  padding-bottom: 10px; /* Extra ruimte onder content */
+}
+
+.accordion-item.open .accordion-arrow {
+  transform: rotate(90deg); /* Pijl draait naar “open” */
+  border-color: var(--c-primary); /* Blauwe rand */
+  background: rgba(56, 189, 248, 0.1); /* Subtiele blauwe achtergrond */
+}
+
+
+/* =============================================================================
+   130) DOWNLOADS PAGE
+   ============================================================================= */
+
+.downloads-wrapper {
+  margin-top: 24px; /* Ruimte boven downloads */
+  display: flex; /* Flex kolom */
+  flex-direction: column; /* Onder elkaar */
+  gap: 40px; /* Ruimte tussen kaarten */
+}
+
+/* Kaart: image links, tekst rechts */
+.download-card {
+  display: flex; /* Links + rechts kolom */
+  flex-wrap: nowrap; /* Niet wrappen (op desktop) */
+  align-items: flex-start; /* Boven uitlijnen */
+  gap: 24px; /* Ruimte tussen kolommen */
+  padding: 20px; /* Binnenruimte */
+  background: var(--c-panel); /* Paneel achtergrond */
+  border-radius: var(--r-md); /* Afgeronde hoeken */
+  border: 1px solid var(--c-border); /* Rand */
+}
+
+/* Linker kolom (afbeelding + knop) */
+.download-card-media {
+  display: flex; /* Stacking */
+  flex-direction: column; /* Onder elkaar */
+  align-items: flex-start; /* Links uitlijnen */
+  gap: 12px; /* Ruimte tussen image en knop */
+}
+
+/* Basis styling voor alle download-afbeeldingen */
+.download-card-media img {
+  display: block; /* Voorkom inline whitespace */
+  height: auto; /* Ratio behouden */
+  border-radius: var(--r-sm); /* Afgeronde hoeken */
+  max-width: 100%; /* Niet buiten kolom */
+}
+
+/* Variant: Revival (kolombreedte links + img breedte) */
+.download-media-revival { flex: 0 0 150px; } /* Linkerkolom breedte */
+.download-media-revival img { width: 150px; } /* Afbeelding breedte */
+
+/* Variant: Palermo (kolombreedte links + img breedte) */
+.download-media-palermo { flex: 0 0 180px; } /* Linkerkolom breedte */
+.download-media-palermo img { width: 150px; } /* Afbeelding breedte */
+
+/* Rechter kolom (tekst) */
+.download-card-content {
+  flex: 1 1 auto; /* Neem rest van ruimte */
+  min-width: 260px; /* Minimale breedte */
+}
+
+.download-card-content h2 {
+  margin-top: 0; /* Geen bovenmarge */
+  margin-bottom: 8px; /* Ruimte onder */
+  font-size: 1.05rem; /* Titel */
+  text-transform: uppercase; /* CAPS */
+  letter-spacing: 0.03em; /* Spatiëring */
+}
+
+.download-card-content h3 {
+  margin-top: 16px; /* Ruimte boven subkop */
+  margin-bottom: 6px; /* Ruimte onder */
+  font-size: 0.95rem; /* Grootte */
+}
+
+.download-card-content p,
+.download-card-content li {
+  font-size: 0.9rem; /* Tekstgrootte */
+}
+
+.download-card-content ul {
+  margin-top: 4px; /* Ruimte boven lijst */
+  margin-bottom: 8px; /* Ruimte onder lijst */
+  padding-left: 1.2rem; /* Inspringing bullets */
+}
+
+/* Grote rode download-knop */
+.download-primary-btn {
+  display: inline-flex; /* Flex inline zodat icon kan alignen */
+  align-items: center; /* Verticaal centreren */
+  justify-content: center; /* Horizontaal centreren */
+  padding: 10px 23px; /* Binnenruimte */
+  border-radius: 4px; /* Kleine radius (hoekig) */
+  background: #b91c1c; /* Donkerrood */
+  color: #f9fafb; /* Licht */
+  text-decoration: none; /* Geen underline */
+  font-weight: 700; /* Bold */
+  text-transform: uppercase; /* CAPS */
+  letter-spacing: 0.05em; /* Spatiëring */
+  font-size: 0.85rem; /* Tekstgrootte */
+}
+
+.download-primary-btn:hover {
+  filter: brightness(1.1); /* Hover */
+}
+
+.download-primary-btn .icon {
+  margin-left: 6px; /* Ruimte voor icon */
+  font-size: 0.8rem; /* Icon iets kleiner */
+}
+
+.home-download-btn {
+  margin-top: 4px; /* Extra ruimte (optioneel) */
+}
+
+/* Extra links onder de tekst */
+.download-links {
+  margin-top: 10px; /* Ruimte boven */
+  font-size: 0.9rem; /* Tekstgrootte */
+}
+
+.download-links a {
+  display: block; /* Elke link op nieuwe regel */
+  color: var(--c-primary); /* Blauw */
+  text-decoration: none; /* Geen underline */
+}
+
+.download-links a:hover {
+  text-decoration: underline; /* Underline op hover */
+}
+
+/* Dunne lijn tussen kaarten */
+.download-separator {
+  height: 1px; /* Hoogte */
+  background: var(--c-border); /* Kleur */
+  margin: 8px 0 0; /* Ruimte boven, geen onder */
+}
+
+/* Kleine ‘code’ pillen (.pk3, mainta, pad) */
+.code-pill {
+  display: inline-block; /* Kleine capsule */
+  padding: 2px 8px; /* Binnenruimte */
+  border-radius: var(--r-pill); /* Rond */
+  border: 1px solid var(--c-border); /* Rand */
+  background: var(--c-surface); /* Achtergrond */
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* Monospace */
+  font-size: 0.8rem; /* Klein */
+}
+
+/* Code block (preformatted) */
+.code-block {
+  background: var(--c-surface); /* Donkere achtergrond */
+  border-radius: var(--r-sm); /* Afgeronde hoeken */
+  padding: 8px 10px; /* Binnenruimte */
+  border: 1px solid var(--c-border); /* Rand */
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* Monospace */
+  font-size: 0.85rem; /* Tekstgrootte */
+  overflow-x: auto; /* Horizontaal scrollen bij lange regels */
+}
+
+
+/* =============================================================================
+   140) TALEN / VLAGGEN
+   ============================================================================= */
+
+/* Kleine vlag-iconen naast tekst */
+.flag-icon {
+  width: 20px; /* Breedte vlag */
+  height: 14px; /* Hoogte vlag */
+  object-fit: cover; /* Vul kader zonder vervormen */
+  border-radius: 2px; /* Kleine rounding */
+  vertical-align: -2px; /* Iets omlaag voor betere baseline uitlijning */
+  margin-right: 4px; /* Ruimte rechts van vlag */
+}
+
+.lang-flags {
+  font-size: 0.95rem; /* Grootte voor taalregel */
+  margin-bottom: 14px; /* Ruimte onder */
+  letter-spacing: 0.02em; /* Subtiele letterspacing */
+}
+
+.lang-item {
+  cursor: pointer; /* Geeft aan dat je kunt klikken */
+  font-weight: 500; /* Medium */
+}
+
+.lang-item.active {
+  color: var(--c-primary); /* Accent kleur */
+  text-decoration: underline; /* Underline voor active state */
+}
+
+.lang-label {
+  opacity: 0.8; /* Iets transparanter */
+}
+
+
+/* =============================================================================
+   150) UPLOAD PAGE
+   ============================================================================= */
+
+/* Intro tekst op upload pagina */
+.upload-intro {
+  font-size: 0.95rem; /* Tekstgrootte */
+  color: var(--c-muted); /* Muted kleur */
+  max-width: 700px; /* Leesbreedte */
+  margin: 6px 0 18px; /* Ruimte rond intro */
+}
+
+/* Buitenste container upload pagina */
+.upload-container {
+  margin: 40px auto; /* Ruimte boven/onder + centreren */
+  padding: 0 16px; /* Zijkant padding */
+}
+
+/* Titel in upload container (limiteer leesbreedte) */
+.upload-container h1 {
+  width: 100%; /* Volle breedte */
+  max-width: 900px; /* Leesbreedte */
+  margin: 0 auto 0px; /* Centreren */
+}
+
+/* Uitleg sectie boven de kaart */
+.upload-section {
+  width: 100%; /* Volle breedte */
+  max-width: 900px; /* Leesbreedte */
+  margin: 0 auto 80px; /* Centreren + ruimte onder */
+}
+
+/* Titel in upload-sectie */
+.upload-section .page-title {
+  margin-bottom: 10px; /* Ruimte onder titel */
+}
+
+/* Genummerde stappen */
+.upload-steps {
+  margin: 0 0 18px; /* Ruimte onder */
+  padding-left: 1.2rem; /* Inspringing voor nummers */
+  font-size: 0.9rem; /* Tekstgrootte */
+  color: var(--c-muted); /* Muted */
+}
+
+.upload-steps li + li {
+  margin-top: 6px; /* Ruimte tussen stappen */
+}
+
+/* Sub-lijst binnen stap */
+.upload-steps-sub {
+  margin-top: 4px; /* Ruimte boven sublijst */
+  padding-left: 1.2rem; /* Inspringing */
+  list-style-type: disc; /* Bullet style */
+}
+
+/* Inline code in stappen */
+.upload-steps code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* Monospace */
+  font-size: 0.85rem; /* Klein */
+  background: var(--c-panel); /* Paneel achtergrond */
+  padding: 1px 6px; /* Binnenruimte */
+  border-radius: var(--r-pill); /* Rond */
+  border: 1px solid var(--c-border); /* Rand */
+}
+
+/* Kaart om upload formulier */
+.upload-card {
+  width: 100%; /* Volle breedte */
+  max-width: 900px; /* Leesbreedte */
+  margin: 40px auto 0; /* Ruimte boven + centreren */
+  padding: 24px; /* Binnenruimte */
+  background: var(--c-panel); /* Paneel */
+  border-radius: var(--r-md); /* Afgerond */
+  border: 1px solid var(--c-border); /* Rand */
+}
+
+/* Formulier binnen upload kaart */
+.upload-form {
+  display: flex; /* Flex */
+  flex-direction: column; /* Onder elkaar */
+  gap: 12px; /* Ruimte tussen velden */
+}
+
+/* Field wrapper */
+.upload-field {
+  margin-top: 30px; /* Ruimte boven file-input gedeelte */
+  display: flex; /* Flex */
+  flex-direction: column; /* Stapelen */
+  gap: 4px; /* Ruimte tussen label/input/hint */
+}
+
+.upload-field label {
+  font-size: 0.85rem; /* Klein label */
+  font-weight: 500; /* Medium-bold */
+  color: var(--c-text); /* Tekst */
+}
+
+.upload-field input,
+.upload-field textarea {
+  padding: 8px 10px; /* Binnenruimte */
+  border-radius: var(--r-sm); /* Afgerond */
+  border: 1px solid var(--c-border); /* Rand */
+  background: var(--c-surface); /* Donkere achtergrond */
+  color: var(--c-text); /* Tekst */
+  font-size: 0.9rem; /* Tekstgrootte */
+}
+
+.upload-field input:focus,
+.upload-field textarea:focus {
+  outline: none; /* Geen outline */
+  border-color: var(--c-primary); /* Accent rand */
+}
+
+/* Bestand input specifiek */
+.upload-field input[type="file"] {
+  padding: 6px; /* Binnenruimte */
+  border-radius: var(--r-sm); /* Afgerond */
+  border: 1px solid var(--c-border); /* Rand */
+  background: var(--c-surface); /* Donkere achtergrond */
+  font-size: 0.9rem; /* Tekstgrootte */
+}
+
+/* Bestand-input + hint wrapper (als je HTML deze wrapper gebruikt) */
+.upload-file-wrapper {
+  display: flex; /* Flex container */
+  flex-direction: column; /* Stapel input + hint */
+  gap: 4px; /* Ruimte tussen input en hint */
+}
+
+.upload-file-wrapper input[type="file"] {
+  padding: 6px; /* Binnenruimte */
+  border-radius: var(--r-sm); /* Afgeronde hoeken */
+  border: 1px solid var(--c-border); /* Rand */
+  background: var(--c-surface); /* Donkere achtergrond */
+  font-size: 0.9rem; /* Tekstgrootte */
+}
+
+.upload-hint {
+  margin-top: 5px; /* Ruimte boven hint */
+  font-size: 0.8rem; /* Klein */
+  color: var(--c-muted); /* Muted */
+}
+
+/* Acties (knop) */
+.upload-actions {
+  margin-top: 10px; /* Ruimte boven */
+  display: flex; /* Flex */
+  justify-content: center; /* Centreer knop */
+}
+
+/* Submit knop iets breder */
+.upload-submit {
+  padding-inline: 26px; /* Extra horizontale padding */
+}
+
+/* Feedbacktekst */
+.upload-message {
+  margin-top: 12px; /* Ruimte boven */
+  min-height: 20px; /* Reserveer ruimte */
+  font-size: 0.9rem; /* Tekstgrootte */
+  color: var(--c-primary); /* Default: blauw */
+}
+
+.upload-message.success { color: var(--c-success); } /* Succes: groen */
+.upload-message.error { color: var(--c-danger); }   /* Error: rood */
+
+
+/* =============================================================================
+   160) RESPONSIVE (MEDIA QUERIES)
+   ============================================================================= */
+
+/* Mobiel: buttons onder elkaar */
+@media (max-width: 600px) {
+  .home-button-row {
+    flex-direction: column; /* Zet knoppen onder elkaar */
+    align-items: center; /* Centreer */
+  }
+
+  .container {
+    margin-top: 10px; /* Minder top marge op klein scherm */
+  }
+
+  .form-row {
+    flex-direction: column; /* Input + knop onder elkaar */
+  }
+
+  .form-row button {
+    width: 100%; /* Knop volle breedte */
+  }
+}
+
+/* Home: header stapelt op iets grotere mobiele breedtes */
+@media (max-width: 700px) {
+  .home-header {
+    flex-direction: column; /* Logo boven tekst */
+    align-items: flex-start; /* Links uitlijnen */
+  }
+
+  .home-header-text h1 {
+    font-size: 1.3rem; /* Kleinere titel */
+  }
+
+  .home-container {
+    margin-top: 60px; /* Extra ruimte boven */
+  }
+}
+
+
+/* =============================================================================
+   999) ZEBRA ROWS OVERRIDES (BEWUST ALS LAATSTE)
+   =============================================================================
+   Dit blok staat expres onderaan zodat het altijd de rij-achtergronden “wint”
+   als je later elders nog table-styling toevoegt.
+   ========================================================================== */
+
+/* Sessions zebra */
+.sessions-table tbody tr:nth-child(odd) {
+  background-color: #334155; /* Donkergrijs/blauw voor oneven rijen */
+}
+
+.sessions-table tbody tr:nth-child(even) {
+  background-color: #111827; /* Donker voor even rijen */
+}
+
+.sessions-table tbody tr:hover {
+  background-color: rgba(37, 99, 235, 0.25); /* Blauwe hover */
+}
+
+/* Players zebra */
+.players-table tbody tr:nth-child(odd) {
+  background-color: #334155; /* Donkergrijs/blauw voor oneven rijen */
+}
+
+.players-table tbody tr:nth-child(even) {
+  background-color: #111827; /* Donker voor even rijen */
+}
+
+.players-table tbody tr:hover {
+  background-color: rgba(37, 99, 235, 0.25); /* Blauwe hover */
+}
+
+/* Chatlogs zebra */
+.chatlogs-table tbody tr:nth-child(odd) {
+  background-color: #334155; /* Donkergrijs/blauw voor oneven rijen */
+}
+
+.chatlogs-table tbody tr:nth-child(even) {
+  background-color: #111827; /* Donker voor even rijen */
+}
+
+.chatlogs-table tbody tr:hover {
+  background: rgba(37, 99, 235, 0.45); /* Blauwe hover (iets sterker) */
+}
+
+
+/* =============================================================================
+   Social SVG Icons (mask-based) — YouTube / Telegram / Discord
+   ============================================================================= */
+
+/* (veilig) verberg oude emoji/tekst als die nog ergens staat */
+.social-icon-inner { display: none; }
+
+/* de “icon” laag die het svg-mask gebruikt */
+.icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+
+  background-color: var(--c-text); /* icon kleur */
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+/* Masks (SVG bestanden) */
+.icon-youtube {
+  -webkit-mask: url("/images/icons/youtube.svg") no-repeat center / contain;
+  mask: url("/images/icons/youtube.svg") no-repeat center / contain;
+}
+
+.icon-telegram {
+  -webkit-mask: url("/images/icons/telegram.svg") no-repeat center / contain;
+  mask: url("/images/icons/telegram.svg") no-repeat center / contain;
+}
+
+.icon-discord {
+  -webkit-mask: url("/images/icons/discord.svg") no-repeat center / contain;
+  mask: url("/images/icons/discord.svg") no-repeat center / contain;
+}
+
+/* hover: icon wordt accentkleur */
+.social-icon:hover .icon {
+  transform: translateY(-1px);
+}
+
+/* zorg dat icon in het midden van je knop zit */
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.download-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.download-icon {
+  display: inline-block;
+}
+
+/* Kleine inline game-icons achter woorden */
+.inline-game-icon{
+  width: 18px;
+  height: 18px;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+}
+
+
+.code-block{
+  max-width: 520px;     /* <-- pas aan (bijv. 420px / 600px) */
+  width: fit-content;   /* krimpt naar de tekst (werkt in moderne browsers) */
+}
+
+.code-block--wide{
+  max-width: 700px; /* kies wat jij mooi vindt */
+  width: 100% !important;
+}
+
+/* =============================================================================
+   HOWTO + FULLSCREEN: beperk leesbreedte (ziet eruit als andere pagina’s)
+   ============================================================================= */
+
+.howto-container .lang-flags,
+.howto-container .lang-block,
+.fullscreen-container .lang-flags,
+.fullscreen-container .lang-block {
+  max-width: 1050px;   /* kies: 900 / 1050 / 1200 */
+  margin-left: 0;      /* links uitlijnen */
+  margin-right: auto;
+}
+
+/* Optioneel: iets fijnere tekst spacing op die pagina's */
+.howto-container .stats-card p,
+.fullscreen-container .stats-card p,
+.howto-container .stats-card li,
+.fullscreen-container .stats-card li {
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+/* =============================================================================
+   Dropdown (hover + focus)
+   ============================================================================= */
+
+.dropdown{
+  position: relative;
+  display: inline-block;
+}
+
+/* Menu (standaard verborgen) */
+.dropdown-menu{
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+
+  min-width: 220px;
+  padding: 6px;
+  margin: 0;
+
+  list-style: none;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-card);
+  z-index: 1200;
+
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s ease;
+}
+
+/* “hover-bridge” zodat je muis van knop naar menu kan zonder dat ie dichtklapt */
+.dropdown-menu::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -10px;
+  height: 10px;
+}
+
+/* Openen bij hover en bij keyboard focus */
+.dropdown:hover .dropdown-menu,
+.dropdown:focus-within .dropdown-menu{
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Link styling binnen menu */
+.dropdown-menu a{
+  display: block;
+  padding: 10px 12px;
+  border-radius: var(--r-sm);
+  text-decoration: none;
+  color: var(--c-text);
+}
+
+/* Hover/focus op items */
+.dropdown-menu a:hover,
+.dropdown-menu a:focus{
+  background: rgba(255,255,255,0.08);
+  outline: none;
+}
+
+/* Optioneel: toggle knop iets duidelijker */
+.dropdown-toggle{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+  font-weight: 600;
+}
+
+/* ===== Guide language switch ===== */
+.howto-wrap {
+  margin-top: 14px;
+}
+
+.howto-langbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 10px 0 16px;
+  flex-wrap: wrap;
+}
+
+/* Buttons gebruiken je bestaande .primary-button styling.
+   Deze extra regels maken het netter. */
+.lang-item {
+  cursor: pointer;
+}
+
+.lang-item.active {
+  outline: 2px solid rgba(255, 215, 0, 0.7);
+  outline-offset: 2px;
+}
+
+/* ===== Language blocks ===== */
+.lang-block {
+  /* JS zet display block/none; dit is alleen layout */
+  padding: 0;
+}
+
+.lang-block h2 {
+  margin-top: 18px;
+}
+
+/* ===== Code styling (als je dit nog niet hebt) ===== */
+.code-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 0.95em;
+}
+
+.code-block {
+  margin: 10px 0 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: auto;
+}
+
+.code-block code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  font-size: 0.95em;
+  line-height: 1.35;
+  white-space: pre;
+}
+
+/* ===== Guide Card ===== */
+.guide-card {
+  margin-top: 14px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+}
+
+.guide-card__header {
+  margin-bottom: 12px;
+}
+
+.guide-card__title {
+  margin: 0 0 6px 0;
+}
+
+.guide-card__subtitle {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.howto-langbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 14px 0 16px;
+  flex-wrap: wrap;
+}
+
+.lang-item.active {
+  outline: 2px solid rgba(255, 215, 0, 0.7);
+  outline-offset: 2px;
+}
+
+/* Optional: wat meer spacing in de card */
+.lang-block h2 {
+  margin-top: 18px;
+}
+
+/* =============================================================================
+   CONSOLE PAGE (extra klein stukje styling)
+   ============================================================================= */
+
+.console-container .stats-card h2{
+  margin-top: 0;
+}
+
+/* Rij: codeblock + copy button */
+.code-row{
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Copy button */
+.copy-btn{
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+  color: var(--c-text);
+  border-radius: var(--r-pill);
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: transform 0.15s ease, filter 0.15s ease, background-color 0.15s ease;
+}
+
+.copy-btn:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.copy-btn.copied{
+  border-color: var(--c-success);
+}
+
+/* Subtiele note */
+.muted-note{
+  color: var(--c-muted);
+  font-size: 0.9rem;
+  margin-top: 14px;
+}
+
+.guide-header {
+  margin-bottom: 14px;
+}
+
+.guide-title {
+  margin: 0 0 6px 0;
+}
+
+.guide-subtitle {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.guide-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.guide-header {
+  margin: 0;
+}
+
+.guide-title {
+  margin: 0 0 6px 0;
+}
+
+.guide-subtitle {
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* Rechts uitlijnen in desktop */
+.guide-topbar .lang-flags {
+  margin: 0;
+  text-align: right;
+  line-height: 1.4;
+}
+
+/* Op mobiel onder elkaar + links uitlijnen */
+@media (max-width: 720px) {
+  .guide-topbar .lang-flags {
+    width: 100%;
+    text-align: left;
+  }
+}
+
+/* D: mini banner/header binnen de card */
+.guide-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  padding: 14px 14px 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+
+  margin-bottom: 16px;
+}
+
+/* B: verticale gouden lijn links */
+.guide-header {
+  padding-left: 14px;
+  border-left: 4px solid rgba(255, 215, 0, 0.85);
+}
+
+/* Titel: groter + duidelijk */
+.guide-title {
+  margin: 0 0 6px 0;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.05;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+
+  /* C: subtiele highlight achter de titel */
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 215, 0, 0.18),
+    rgba(255, 215, 0, 0.04)
+  );
+  border: 1px solid rgba(255, 215, 0, 0.18);
+}
+
+.guide-subtitle {
+  margin: 8px 0 0 0;
+  opacity: 0.92;
+  max-width: 620px;
+}
+
+/* Vertalingen rechts in desktop */
+.guide-topbar .lang-flags {
+  margin: 0;
+  text-align: right;
+  line-height: 1.4;
+}
+
+/* Mobiel: onder elkaar, links uitlijnen, titel iets kleiner */
+@media (max-width: 720px) {
+  .guide-title {
+    font-size: 24px;
+  }
+
+  .guide-topbar .lang-flags {
+    width: 100%;
+    text-align: left;
+  }
+}
+
+/* ===== Section titles (marker only, no box) ===== */
+.stats-card .howto-lang h2 {
+  position: relative;
+  margin: 24px 0 12px;
+  padding-left: 18px;
+
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.15px;
+  line-height: 1.15;
+  color: #fff;
+}
+
+.stats-card .howto-lang h2::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 6px;
+  height: 22px;
+  border-radius: 999px;
+
+  background: rgba(255, 215, 0, 0.9);
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.25);
+}
+
+/* Mobile */
+@media (max-width: 720px) {
+  .stats-card .howto-lang h2 {
+    font-size: 18px;
+    margin: 20px 0 10px;
+    padding-left: 16px;
+  }
+
+  .stats-card .howto-lang h2::before {
+    height: 20px;
+  }
+}
+
+.stats-card .howto-lang h2{
+  padding-bottom: 10px;
+}
+
+.stats-card .howto-lang h2::after{
+  content:"";
+  display:block;
+  height: 2px;
+  margin-top: 10px;
+  background: linear-gradient(90deg,
+    rgba(255,215,0,0.85),
+    rgba(255,215,0,0.15),
+    rgba(255,215,0,0)
+  );
+}
+
+.stats-card .howto-lang h2::before{
+  background: rgba(255,215,0,0.9);
+  box-shadow:
+    0 0 14px rgba(255,215,0,0.22),
+    0 0 0 1px rgba(0,0,0,0.35); /* subtiele rand */
+}
+
+
+.stats-card .code-block--xl{
+  width: calc(100% + 28px);
+  max-width: calc(100% + 28px);
+  margin-left: 0px;
+  margin-right: -14px;
+}
+
+/* Code block tot aan de randen van de stats-card (padding = 20px) */
+.stats-card pre.code-block.code-block--xxl{
+  width: calc(100% + 400px);
+  max-width: none;
+  margin-left: 0px;
+  margin-right: 0px;
+  box-sizing: border-box;
+}
+
+
+/* ===== H3 = zelfde als H2, maar GROEN ===== */
+.stats-card .howto-lang h3{
+  position: relative;
+  margin: 24px 0 12px;
+  padding-left: 18px;
+
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.15px;
+  line-height: 1.15;
+  color: #fff;
+}
+
+/* groene marker links */
+.stats-card .howto-lang h3::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 6px;
+  height: 22px;
+  border-radius: 999px;
+
+  background: rgba(34, 197, 94, 0.95); /* groen */
+  box-shadow:
+    0 0 14px rgba(34, 197, 94, 0.22),
+    0 0 0 1px rgba(0,0,0,0.35);
+}
+
+/* groene lijn eronder */
+.stats-card .howto-lang h3{
+  padding-bottom: 10px;
+}
+.stats-card .howto-lang h3::after{
+  content:"";
+  display:block;
+  height: 2px;
+  margin-top: 10px;
+  background: linear-gradient(90deg,
+    rgba(34, 197, 94, 0.85),
+    rgba(34, 197, 94, 0.15),
+    rgba(34, 197, 94, 0)
+  );
+}
+
+/* Mobile */
+@media (max-width: 720px){
+  .stats-card .howto-lang h3{
+    font-size: 18px;
+    margin: 20px 0 10px;
+    padding-left: 16px;
+  }
+  .stats-card .howto-lang h3::before{
+    height: 20px;
+  }
+}
+
+a.primary-button,
+button.primary-button{
+  position: relative;
+  isolation: isolate;
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+}
+
+a.primary-button::after,
+button.primary-button::after{
+  content:"";
+  position:absolute;
+  inset:-3px;                 /* dikte ring */
+  border-radius: 999px;
+  border: 2px solid rgba(255,215,0,0);
+  box-shadow: 0 0 0 rgba(58,190,255,0);
+  transition: border-color .15s ease, box-shadow .15s ease;
+  z-index:-1;
+}
+
+a.primary-button:hover,
+button.primary-button:hover{
+  transform: translateY(-2px) scale(1.03) !important;
+  filter: brightness(1.08) !important;
+  box-shadow: 0 14px 30px rgba(0,0,0,.45) !important;
+}
+
+a.primary-button:hover::after,
+button.primary-button:hover::after{
+  border-color: rgba(255,215,0,.95);
+  box-shadow: 0 0 18px rgba(58,190,255,.45), 0 0 26px rgba(255,215,0,.18);
+}
+
+/* ===== Login button: exact dezelfde pill/hover animatie als socials ===== */
+
+/* Reset button “UA padding/appearance” zodat hij zich gedraagt als <a> */
+button.social-icon{
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 0;          /* belangrijk: anders verschuift je icon niet “zoals socials” */
+  border: 0;           /* we zetten border hieronder terug voor login */
+  font: inherit;
+  line-height: 1;
+  cursor: pointer;
+  background: transparent;
+}
+
+/* Login knop krijgt eigen kleur + glow (maar gebruikt verder 1-op-1 .social-icon animatie) */
+#login-toggle.login-btn{
+  --w-open: 170px;                 /* breedte open (zoals jij wil) */
+  --glow: rgba(34,197,94,.55);
+
+  background: rgb(35, 109, 62); /* zacht groen */
+  border: 1px solid rgb(35, 109, 62); /* zacht groen */
+}
+
+/* icon wit (zoals YouTube/Telegram/Discord) */
+#login-toggle.login-btn .icon{
+  background-color: rgba(255,255,255,.95);
+}
+
+/* Mask icon: login */
+#login-toggle.login-btn .icon-loginout{
+  -webkit-mask: url("/images/icons/login-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/login-icon.svg") no-repeat center / contain;
+}
+
+/* Mask icon: logout (swap op class) */
+#login-toggle.login-btn.logged-in .icon-loginout{
+  -webkit-mask-image: url("/images/icons/logout-icon.svg");
+          mask-image: url("/images/icons/logout-icon.svg");
+}
+
+
+/* ===== LOGIN BUTTON = exact dezelfde pill-hover als socials ===== */
+
+/* reserveer ruimte zodat het niet “duwt” */
+.login-pill-wrap{
+  width: auto;              /* moet matchen met --w-open */
+  display: flex;
+  justify-content: flex-end; /* groeit naar links (handig rechtsboven) */
+}
+
+/* login kleuren */
+#login-toggle.login-btn{
+  --w-open: 175px;
+  --glow: rgba(34,197,94,.55);
+
+  background: rgba(34,197,94,.18);
+  border: 1px solid rgba(34,197,94,.55);
+
+  cursor: pointer;
+  padding: 0;               /* belangrijk bij <button> */
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* icoon wit zoals socials */
+#login-toggle.login-btn .icon{
+  background-color: rgba(255,255,255,.95);
+}
+
+/* FORCE: label komt uit aria-label (zoals socials) */
+#login-toggle.login-btn::after{
+  content: attr(aria-label);
+}
+
+/* FORCE: bij hover ook echt links uitlijnen + padding */
+#login-toggle.login-btn:hover,
+#login-toggle.login-btn:focus-visible{
+  justify-content: flex-start;
+  padding: 0 14px 0 12px;
+}
+
+/* login/logout masks */
+#login-toggle .icon-login{
+  -webkit-mask: url("/images/icons/login-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/login-icon.svg") no-repeat center / contain;
+  display: inline-block;
+}
+
+#login-toggle .icon-logout{
+  -webkit-mask: url("/images/icons/logout-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/logout-icon.svg") no-repeat center / contain;
+  display: none;
+}
+
+/* swap bij logged-in */
+#login-toggle.logged-in .icon-login{ display:none; }
+#login-toggle.logged-in .icon-logout{ display:inline-block; }
+
+
+/* ===== LOGIN knop: exact socials gedrag ===== */
+#login-toggle.login-btn{
+  --w: 40px;
+  --w-open: 132px;                 /* breed genoeg voor Login/Logout */
+  --glow: rgba(34,197,94,.55);
+
+  background: rgba(34,197,94,.18);
+  border: 1px solid rgba(34,197,94,.55);
+}
+
+/* tekst label laten werken zoals socials */
+#login-toggle.login-btn::after{
+  content: attr(aria-label);
+  display: block;
+}
+
+/* FORCE hover gedrag zodat icoon links schuift */
+#login-toggle.login-btn:hover,
+#login-toggle.login-btn:focus-visible{
+  justify-content: flex-start !important;
+  padding: 0 14px 0 12px !important;
+}
+
+/* icon wit zoals socials */
+#login-toggle.login-btn .icon{
+  background-color: rgba(255,255,255,.95);
+}
+
+/* ===== ICONS (2 spans) ===== */
+#login-toggle.login-btn .icon-login{
+  -webkit-mask: url("/images/icons/login-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/login-icon.svg") no-repeat center / contain;
+}
+
+#login-toggle.login-btn .icon-logout{
+  -webkit-mask: url("/images/icons/logout-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/logout-icon.svg") no-repeat center / contain;
+  display: none;
+}
+
+/* swap bij ingelogd */
+#login-toggle.login-btn.logged-in .icon-login{
+  display: none;
+}
+#login-toggle.login-btn.logged-in .icon-logout{
+  display: inline-block;
+}
+
+
+/* =========================
+   LOGIN knop: label tonen + icoon schuift links (zoals socials)
+   Plak HELEMAAL ONDERAAN styles.css
+   ========================= */
+
+/* zorg dat label niet verborgen is */
+#login-toggle.login-btn::after{
+  display: block !important;
+  content: attr(aria-label);
+}
+
+/* login eigen kleur/glow */
+#login-toggle.login-btn{
+  --w-open: 175px;
+  --glow: rgba(255,255,255,.18);
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.18);
+}
+
+/* op hover: exact socials gedrag -> icoon schuift links + tekst verschijnt */
+#login-toggle.login-btn:hover,
+#login-toggle.login-btn:focus-visible{
+  justify-content: flex-start !important;
+  padding: 0 14px 0 12px !important;
+}
+
+/* icon wit + mask swap login/logout */
+#login-toggle.login-btn .icon{
+  background-color: rgba(255,255,255,.95);
+}
+
+#login-toggle.login-btn .icon-loginout{
+  -webkit-mask: url("/images/icons/login-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/login-icon.svg") no-repeat center / contain;
+}
+
+#login-toggle.login-btn.logged-in .icon-loginout{
+  -webkit-mask-image: url("/images/icons/logout-icon.svg");
+          mask-image: url("/images/icons/logout-icon.svg");
+}
+
+
+/* LOGIN knop: opvallend + match met socials */
+#login-toggle.login-btn{
+  --w-open: 175px;
+
+  /* glow die je hover-shadow gebruikt */
+  --glow: rgba(99,102,241,.70); /* discord-ish glow */
+
+  /* pill kleur (telegram -> discord vibe) */
+  background: linear-gradient(135deg,
+    rgba(59,130,246,.26),   /* telegram blauw */
+    rgba(99,102,241,.22)   /* discord paars */
+  );
+
+  border: 1px solid rgba(99,102,241,.75);
+}
+
+/* LOGOUT state: YouTube rood */
+#login-toggle.login-btn.logged-in{
+  --glow: rgba(220,38,38,.70);
+  background: rgba(220,38,38,.22);
+  border: 1px solid rgba(220,38,38,.78);
+}
+
+
+/* =========================================
+   NAV ICON PILLS (same behavior as socials)
+   ========================================= */
+
+/* Nav gebruikt dezelfde expand animatie, maar andere look */
+.main-nav.nav-icons{
+  gap: 10px;
+  align-items: center;
+}
+
+/* Nav-pill basis */
+.social-icon.nav-pill{
+  --w-open: 250px;                 /* uitklap breedte */
+  --glow: rgba(255,215,0,.28);     /* glow matcht met je gold */
+  
+  background: rgb(0, 81, 255);
+  /*background: rgba(15, 23, 42, 0.55);*/
+  border: 1px solid rgba(255,215,0,.28);
+
+  box-shadow: 0 10px 22px rgba(0,0,0,0.28);
+}
+
+/* Icoon kleur wit (zoals je socials) */
+.main-nav.nav-icons .icon{
+  background-color: rgba(255,255,255,.95);
+}
+
+/* Actieve pagina wat “harder” */
+.social-icon.nav-pill.active{
+  border-color: rgba(255,215,0,.55);
+  box-shadow:
+    0 12px 26px rgba(0,0,0,.35),
+    0 0 18px rgba(255,215,0,.22),
+    0 0 0 1px rgba(255,215,0,.12);
+}
+
+/* Guides caret (zorgt dat label niet botst) */
+.social-icon.nav-guides{
+  --label-right: 150px; /* ruimte voor ▾ */
+}
+.social-icon.nav-guides .nav-caret{
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translate3d(6px,-50%,0);
+  opacity: 0;
+  z-index: 3;
+  pointer-events: none;
+  transition: opacity .16s ease, transform .16s ease;
+}
+.social-icon.nav-guides:hover .nav-caret,
+.social-icon.nav-guides:focus-visible .nav-caret{
+  opacity: 1;
+  transform: translate3d(0,-50%,0);
+}
+
+/* Button reset (Guides is een <button>) */
+button.social-icon.nav-pill{
+  appearance: none;
+  border: 1px solid rgba(255,215,0,.28);
+  cursor: pointer;
+}
+
+/* =========================================
+   NAV SVG masks (jouw bestanden)
+   Pad: /images/icons/...
+   ========================================= */
+
+.icon-home{
+  -webkit-mask: url("/images/icons/home-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/home-icon.svg") no-repeat center / contain;
+}
+.icon-statistics{
+  -webkit-mask: url("/images/icons/statistics-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/statistics-icon.svg") no-repeat center / contain;
+}
+.icon-forum{
+  -webkit-mask: url("/images/icons/forum-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/forum-icon.svg") no-repeat center / contain;
+}
+.icon-upload{
+  -webkit-mask: url("/images/icons/upload-screenshot-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/upload-screenshot-icon.svg") no-repeat center / contain;
+}
+.icon-members{
+  -webkit-mask: url("/images/icons/members-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/members-icon.svg") no-repeat center / contain;
+}
+.icon-history{
+  -webkit-mask: url("/images/icons/our-history-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/our-history-icon.svg") no-repeat center / contain;
+}
+.icon-downloads{
+  -webkit-mask: url("/images/icons/download-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/download-icon.svg") no-repeat center / contain;
+}
+.icon-join{
+  -webkit-mask: url("/images/icons/join-us-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/join-us-icon.svg") no-repeat center / contain;
+}
+.icon-guides{
+  -webkit-mask: url("/images/icons/guides-icon.svg") no-repeat center / contain;
+          mask: url("/images/icons/guides-icon.svg") no-repeat center / contain;
+}
+
+/* Touch devices: laat labels standaard zien (geen hover) */
+@media (hover: none){
+  .social-icon.nav-pill{
+    width: var(--w-open);
+    padding: 0 14px 0 12px;
+    justify-content: flex-start;
+  }
+  .social-icon.nav-pill::after{
+    opacity: 1;
+    transform: translate3d(0,-50%,0);
+  }
+  .social-icon.nav-guides .nav-caret{
+    opacity: 1;
+    transform: translate3d(0,-50%,0);
+  }
+}
+
+/* Zorg dat de dropdown wrapper de “hover zone” is */
+.dropdown{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ✅ Houd de Guides-knop open zolang je in de dropdown zit (button of menu) */
+.dropdown:hover > .social-icon.nav-guides,
+.dropdown:focus-within > .social-icon.nav-guides{
+  width: var(--w-open);
+  padding: 0 14px 0 12px;
+  justify-content: flex-start;
+
+  transform: translate3d(0,-1px,0);
+  filter: brightness(1.06);
+
+  box-shadow:
+    0 12px 26px rgba(0,0,0,.35),
+    0 0 18px var(--glow),
+    0 0 0 1px rgba(255,255,255,.14);
+}
+
+/* ✅ Laat het label ook zichtbaar blijven */
+.dropdown:hover > .social-icon.nav-guides::after,
+.dropdown:focus-within > .social-icon.nav-guides::after{
+  opacity: 1;
+  transform: translate3d(0,-50%,0);
+}
+
+.dropdown:hover > .social-icon.nav-guides::before,
+.dropdown:focus-within > .social-icon.nav-guides::before{
+  opacity: 1;
+}
+
+
+/* Dropdown menu breder maken */
+.dropdown { position: relative; }
+
+.dropdown-menu{
+  min-width: 250px;                 /* kies wat je mooi vindt (240/280/320) */
+  width: 250px;                     /* of: width: clamp(220px, 30vw, 320px); */
+}
+
+/* Netjes: links vullen de hele breedte */
+.dropdown-menu a{
+  display: block;
+  width: 100%;
+}
+
+/* =============================================================================
+   VIDEO-STYLE NAVBAR (glassy + shine sweep + active gradient)
+   ============================================================================= */
+
+   .main-nav.nav-video{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items:center;
+    justify-content:center;
+  
+    padding: 12px 14px;
+    margin: 14px auto 20px;
+    width: fit-content;
+  
+    background: rgba(15, 23, 42, 0.55);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+  
+    box-shadow: 0 14px 32px rgba(0,0,0,0.35);
+    backdrop-filter: blur(10px);
+  }
+  
+  .main-nav.nav-video .nav-link{
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  
+    padding: 10px 16px 10px 40px;  /* ruimte voor icon links */
+    border-radius: 12px;
+  
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+  
+    color: rgba(255,255,255,0.92);
+    text-decoration: none;
+  
+    font: inherit;
+    font-weight: 600;
+    letter-spacing: .2px;
+  
+    cursor: pointer;
+    user-select: none;
+  
+    transition:
+      transform .18s ease,
+      background-color .28s ease,
+      border-color .28s ease,
+      box-shadow .28s ease;
+  }
+  
+  /* reset voor button variant */
+  .main-nav.nav-video button.nav-link{
+    appearance: none;
+  }
+  
+  /* ICON (mask) */
+  .main-nav.nav-video .nav-link::before{
+    content:"";
+    position:absolute;
+    left: 14px;
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    transform: translateY(-50%);
+  
+    background-color: currentColor;
+    opacity: .95;
+  
+    -webkit-mask: var(--nav-ico) no-repeat center / contain;
+    mask: var(--nav-ico) no-repeat center / contain;
+  }
+  
+  /* SHINE SWEEP */
+  .main-nav.nav-video .nav-link::after{
+    content:"";
+    position:absolute;
+    inset: 0;
+    left: -120%;
+    width: 120%;
+    height: 100%;
+  
+    background: linear-gradient(90deg,
+      transparent,
+      rgba(255,255,255,.18),
+      transparent
+    );
+    transform: skewX(-20deg);
+    z-index: -1;
+  
+    transition: left .55s ease;
+  }
+  
+  .main-nav.nav-video .nav-link:hover,
+  .main-nav.nav-video .nav-link:focus-visible{
+    background: rgba(255,255,255,0.11);
+    border-color: rgba(255,255,255,0.14);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+  }
+  
+  .main-nav.nav-video .nav-link:hover::after,
+  .main-nav.nav-video .nav-link:focus-visible::after{
+    left: 120%;
+  }
+  
+  /* ACTIVE (zoals video: paars/blauw gradient) */
+  .main-nav.nav-video .nav-link.active{
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    border-color: rgba(255,255,255,0.18);
+    box-shadow: 0 12px 26px rgba(106,17,203,0.35);
+    color: #fff;
+  }
+  
+  /* Caret styling */
+  .main-nav.nav-video .nav-caret{
+    opacity: .85;
+    margin-left: 6px;
+  }
+  
+  /* Icons koppelen aan jouw bestanden */
+  .main-nav.nav-video .nav-home      { --nav-ico: url("/images/icons/home-icon.svg"); }
+  .main-nav.nav-video .nav-stats     { --nav-ico: url("/images/icons/statistics-icon.svg"); }
+  .main-nav.nav-video .nav-forum     { --nav-ico: url("/images/icons/forum-icon.svg"); }
+  .main-nav.nav-video .nav-upload    { --nav-ico: url("/images/icons/upload-screenshot-icon.svg"); }
+  .main-nav.nav-video .nav-members   { --nav-ico: url("/images/icons/members-icon.svg"); }
+  .main-nav.nav-video .nav-history   { --nav-ico: url("/images/icons/our-history-icon.svg"); }
+  .main-nav.nav-video .nav-downloads { --nav-ico: url("/images/icons/download-icon.svg"); }
+  .main-nav.nav-video .nav-join      { --nav-ico: url("/images/icons/join-us-icon.svg"); }
+  .main-nav.nav-video .nav-guides    { --nav-ico: url("/images/icons/guides-icon.svg"); }
+  .main-nav.nav-video .nav-sessions  { --nav-ico: url("/images/icons/sessions-icon.svg"); }
+  .main-nav.nav-video .nav-chat      { --nav-ico: url("/images/icons/chatlogs-icon.svg"); }
+
+  
+  /* mobiel: laat wrap netjes */
+  @media (max-width: 780px){
+    .main-nav.nav-video{
+      width: calc(100% - 20px);
+      justify-content: flex-start;
+    }
+  }
+
+  
+  .main-nav{
+    display:flex;
+    align-items:center;
+    gap: 10px;              /* normale ruimte tussen alle knoppen */
+  }
+  
+  .nav-admin-group{
+    display:flex;
+    gap: 10px;              /* ruimte tussen Sessions & Chat */
+    margin-left: 0px;      /* EXTRA ruimte na Guides */
+  }
+  
+
+  .icon-sessions{
+    -webkit-mask: url("/images/icons/sessions-icon.svg") no-repeat center / contain;
+            mask: url("/images/icons/sessions-icon.svg") no-repeat center / contain;
+  }
+  
+  .icon-chatlogs{
+    -webkit-mask: url("/images/icons/chatlogs-icon.svg") no-repeat center / contain;
+            mask: url("/images/icons/chatlogs-icon.svg") no-repeat center / contain;
+  }
+
+  /* Zorg dat hidden ALTIJD wint van .nav-link display regels */
+.hidden { display: none !important; }
+
+.nav-link.active {
+  opacity: 1;
+  text-decoration: underline; /* of jouw stijl */
+}
+.dropdown-menu a.active {
+  font-weight: 700;
+}
+
+
+/* Home (index.html) */
+body.page-index #login-panel .login-dialog {
+  max-width: 520px;
+}
+
+/* CVARS */
+body.page-cvars #login-panel .login-dialog {
+  max-width: 360px;
+}
+
+/* Console */
+body.page-console #login-panel .login-dialog {
+  max-width: 420px;
+}
+
+#login-panel .login-dialog {
+  max-width: var(--login-width, 420px);
+  border-radius: var(--login-radius, 16px);
+}
+
+
+body.page-home  #login-panel .login-dialog { max-width: 520px; }
+body.page-other #login-panel .login-dialog { max-width: 360px; }
+
+
+/* ===== Admin Login Overlay ===== */
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(8, 12, 20, 0.62);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: authFadeIn 180ms ease-out both;
+}
+
+.auth-modal {
+  width: min(520px, 100%);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.35),
+    0 2px 0 rgba(255, 255, 255, 0.35) inset;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  animation: authPopIn 220ms ease-out both;
+}
+
+.auth-header {
+  padding: 22px 22px 14px 22px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  background:
+    radial-gradient(1200px 280px at 20% 0%, rgba(50,120,255,0.22), transparent 55%),
+    radial-gradient(900px 240px at 100% 0%, rgba(255,70,140,0.18), transparent 55%);
+}
+
+.auth-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+  color: rgba(10, 15, 25, 0.85);
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.auth-form {
+  padding: 18px 22px 22px 22px;
+  display: grid;
+  gap: 10px;
+}
+
+.auth-label {                 /* Labels (Username/Password) */
+  font-size: 13px;
+  font-weight: 600;
+  opacity: 0.85;
+  margin-top: 6px;
+  color: #0b1220; /* <- tekstkleur */
+}
+
+.auth-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(0,0,0,0.12);
+}
+
+.auth-input {               /* Input tekst */
+  flex: 1;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-size: 15px;
+  padding: 2px 0;
+}
+
+.auth-input-wrap:focus-within {
+  border-color: rgba(40, 120, 255, 0.55);
+  box-shadow: 0 0 0 4px rgba(40,120,255,0.18);
+}
+
+.auth-ghost {
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.75);
+  border-radius: 10px;
+  padding: 8px 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.auth-ghost:hover {
+  opacity: 1;
+}
+
+.auth-error {
+  margin: 2px 0 0 0;
+  min-height: 18px;
+  color: #b00020;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.auth-submit {
+  margin-top: 8px;
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(90deg, rgba(40,120,255,1), rgba(180,70,255,1));
+  box-shadow: 0 12px 30px rgba(40,120,255,0.25);
+}
+
+.auth-submit:hover {
+  filter: brightness(1.03);
+}
+
+.auth-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: rgba(255,255,255,0.75);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+@keyframes authFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes authPopIn {
+  from { transform: translateY(10px) scale(0.98); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@media (prefers-color-scheme: dark) {
+  .auth-modal { background: rgba(20, 24, 34, 0.92); border-color: rgba(255,255,255,0.10); }
+  .auth-header { border-bottom-color: rgba(255,255,255,0.10); }
+  .auth-title, .auth-label { color: rgba(255,255,255,0.92); }
+  .auth-subtitle, .auth-footer { color: rgba(255,255,255,0.72); }
+  .auth-input-wrap { background: rgba(10, 12, 18, 0.45); border-color: rgba(255,255,255,0.12); }
+  .auth-input { color: rgba(255,255,255,0.92); }
+  .auth-ghost, .auth-close { background: rgba(10,12,18,0.45); border-color: rgba(255,255,255,0.12); color: rgba(255,255,255,0.9); }
+  .auth-badge { background: rgba(10,12,18,0.45); border-color: rgba(255,255,255,0.12); color: rgba(255,255,255,0.9); }
+}
+
+
+/* ===== Success UI (standaard verborgen) ===== */
+:root{
+  /* Pas deze 3 aan voor jouw gewenste succes-kleur */
+  --auth-success: #22c55e;                 /* hoofd kleur */
+  --auth-success-bg: rgba(34,197,94,0.14); /* achtergrond */
+  --auth-success-border: rgba(34,197,94,0.30); /* rand */
+}
+
+.auth-success-row{
+  display: none;
+  align-items: center;
+  justify-content: center; /* zet icon + tekst in het midden */
+  text-align: center;      /* centreert de tekstregels */
+  gap: 14px;
+  padding: 16px 22px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+
+  /* breder / voller */
+  width: 100%;
+}
+
+/* Icoon iets groter en in succes kleuren */
+.auth-success-icon{
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--auth-success-border);
+  background: var(--auth-success-bg);
+}
+
+.auth-success-icon::before{
+  content: "✓";
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--auth-success);
+  transform: scale(0.6);
+  opacity: 0;
+}
+
+.auth-success-title{
+  font-weight: 900;
+  font-size: 15px;
+  color: var(--auth-success);
+}
+
+.auth-success-sub{
+  opacity: 0.8;
+  font-size: 12px;
+  color: rgba(0,0,0,0.75);
+}
+
+/* ===== Wanneer succes actief is ===== */
+.auth-modal.is-success .auth-success-row{
+  display: flex;
+  animation: successSlide 520ms ease-out both; /* langer */
+}
+
+.auth-modal.is-success .auth-success-icon::before{
+  animation: authCheckIn 520ms ease-out forwards; /* langer */
+}
+
+.auth-modal.is-success .auth-form{
+  opacity: 0.18;            /* iets meer dim */
+  pointer-events: none;
+  filter: blur(0.7px);
+}
+
+/* Optioneel: maak de modal breder tijdens success (zet uit als je dit niet wil) */
+.auth-modal.is-success{
+  width: min(640px, 100%);
+  animation: authSuccessPop 560ms ease-out both; /* langer */
+}
+
+/* ===== Animaties ===== */
+@keyframes authSuccessPop{
+  0%   { transform: translateY(0) scale(1); }
+  45%  { transform: translateY(-2px) scale(1.012); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes successSlide{
+  from { transform: translateY(-8px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes authCheckIn{
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* =========================
+   Upload button = nav-video look
+   ========================= */
+   .video-pill{
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  
+    padding: 10px 16px 10px 40px;  /* ruimte voor icon links */
+    border-radius: 12px;
+  
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+  
+    color: rgba(255,255,255,0.92);
+    text-decoration: none;
+  
+    font: inherit;
+    font-weight: 600;
+    letter-spacing: .2px;
+  
+    cursor: pointer;
+    user-select: none;
+  
+    transition:
+      transform .18s ease,
+      background-color .28s ease,
+      border-color .28s ease,
+      box-shadow .28s ease;
+  }
+  
+  /* reset button defaults */
+  button.video-pill{
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  
+  /* ICON (mask) */
+  .video-pill::before{
+    content:"";
+    position:absolute;
+    left: 14px;
+    top: 50%;
+    width: 18px;
+    height: 18px;
+    transform: translateY(-50%);
+    background-color: currentColor;
+    opacity: .95;
+  
+    -webkit-mask: var(--pill-ico) no-repeat center / contain;
+    mask: var(--pill-ico) no-repeat center / contain;
+  }
+  
+  /* SHINE SWEEP */
+  .video-pill::after{
+    content:"";
+    position:absolute;
+    inset: 0;
+    left: -120%;
+    width: 120%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+    transform: skewX(-20deg);
+    z-index: -1;
+    transition: left .55s ease;
+  }
+  
+  .video-pill:hover,
+  .video-pill:focus-visible{
+    background: rgba(255,255,255,0.11);
+    border-color: rgba(255,255,255,0.14);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.35);
+  }
+  
+  .video-pill:hover::after,
+  .video-pill:focus-visible::after{
+    left: 120%;
+  }
+  
+  /* Upload icon koppelen */
+  .upload-pill{
+    --pill-ico: url("/images/icons/upload-screenshot-icon.svg");
+  }
+  
+  /* Busy state (tijdens upload) */
+  .video-pill.is-busy{
+    opacity: .85;
+    cursor: progress;
+  }
+  .video-pill.is-busy:hover,
+  .video-pill.is-busy:focus-visible{
+    transform: none;
+  }
+  
+  /* =========================
+     Toast (professionele melding)
+     ========================= */
+  .toast{
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    z-index: 9999;
+  
+    width: min(420px, calc(100vw - 36px));
+    padding: 14px 14px 14px 14px;
+  
+    background: rgba(15, 23, 42, 0.72);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 14px;
+    backdrop-filter: blur(10px);
+  
+    box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+  }
+  
+  .toast.hidden{ display: none; }
+  
+  .toast .toast-row{
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .toast .toast-icon{
+    width: 22px;
+    height: 22px;
+    flex: 0 0 22px;
+    margin-top: 2px;
+    background-color: rgba(255,255,255,0.92);
+    -webkit-mask: var(--toast-ico) no-repeat center / contain;
+    mask: var(--toast-ico) no-repeat center / contain;
+  }
+  
+  .toast .toast-title{
+    font-weight: 700;
+    color: rgba(255,255,255,0.95);
+    margin-bottom: 2px;
+  }
+  
+  .toast .toast-sub{
+    font-size: 0.92rem;
+    color: rgba(255,255,255,0.78);
+    line-height: 1.25;
+  }
+  
+  .toast.success{
+    border-color: rgba(34,197,94,0.40);
+    --toast-ico: url("/images/icons/login-icon.svg"); /* als je geen check icon hebt */
+  }
+  .toast.error{
+    border-color: rgba(220,38,38,0.45);
+    --toast-ico: url("/images/icons/logout-icon.svg"); /* als je geen error icon hebt */
+  }
+
+  /* Upload knop dezelfde kleur als actieve nav knop */
+.video-pill.is-active,
+.upload-pill {
+  background: linear-gradient(180deg, rgba(60,130,255,0.22), rgba(140,80,255,0.18));
+  border-color: rgba(120,120,255,0.38);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.40);
+}
+
+/* Hover blijft net iets “levendiger” */
+.video-pill.is-active:hover,
+.upload-pill:hover,
+.video-pill.is-active:focus-visible,
+.upload-pill:focus-visible {
+  background: linear-gradient(180deg, rgba(60,130,255,0.28), rgba(140,80,255,0.22));
+  border-color: rgba(160,160,255,0.52);
+}
+
+/* Chatlogs: private rows altijd exact dezelfde kleur (geen zebra verschil) */
+#chatlogs-body tr.is-private {
+  background: rgba(56, 248, 56, 0.199) !important;
+}
+
+/* =========================================================
+   FIX: Dropdown menu altijd boven sticky table headers
+   ========================================================= */
+
+/* Geef de navbar een stacking context + hoge z-index */
+.main-nav.nav-video{
+  position: relative;
+  z-index: 5000;
+}
+
+/* Extra zekerheid: de dropdown zelf + menu nog hoger */
+.dropdown.nav-dropdown{
+  position: relative;
+  z-index: 5100;
+}
+.dropdown.nav-dropdown .dropdown-menu{
+  z-index: 5200; /* override jouw 1200 */
+}
+
+/* Sticky table headers moeten boven rows blijven,
+   maar onder de dropdown */
+.sessions-table th,
+.players-table th,
+.chatlogs-table th{
+  z-index: 50;
+}
+
+
+/* Stats pagina: inner table netjes binnen card */
+.stats-card .table-wrapper.stats-inner-table {
+  max-width: none;
+  margin: 8px 0 0;
+  overflow-x: auto;
+}
+
+.sessions-table.sessions-table--mini {
+  table-layout: auto;
+  font-size: 0.78rem;
+}
+
+.sessions-table.sessions-table--mini th,
+.sessions-table.sessions-table--mini td {
+  width: auto !important;     /* override jouw nth-child widths */
+  white-space: nowrap;
+  padding: 8px 8px;
+}
+
+/* Maak de grote grids scrollbaar zodat de pagina niet extreem lang wordt */
+#body-locations-grid,
+#weapon-models-grid,
+#means-of-death-grid {
+  max-height: 520px;
+  overflow: auto;
+  padding-right: 6px;
+}
+
+
+/* ===== Stats page: professional layout ===== */
+
+.stats-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 14px;
+  padding: 18px;
+  max-width: 1900px;
+  margin: 16px auto 0;
+  box-sizing: border-box;
+}
+
+.stats-card h2, .stats-card h3 {
+  color: var(--c-text, #fff);
+  margin: 0;
+}
+
+.stats-card .section {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Key stats grid (kills/deaths/kdr etc.) */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Single stat tile */
+.stat {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stat:hover {
+  border-color: rgba(255,255,255,0.12);
+}
+
+.stat .label {
+  color: var(--c-muted);
+  font-size: 0.82rem;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat .value {
+  color: var(--c-text, #fff);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ===== Panels for long lists ===== */
+
+.stats-panels {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.stats-panel {
+  grid-column: span 12;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+@media (min-width: 1100px) {
+  .stats-panel { grid-column: span 4; }
+}
+
+.stats-panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.stats-panel__head h3 {
+  font-size: 0.95rem;
+  color: var(--c-text, #fff);
+}
+
+.stats-grid {
+  padding: 12px;
+  max-height: 520px;     /* professioneel: lange lijsten scrollen */
+  overflow: auto;
+}
+
+/* Scrollbar (subtiel) */
+.stats-grid::-webkit-scrollbar { width: 10px; }
+.stats-grid::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.10);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+.stats-grid::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.16); }
+
+
+.stats-panel__head h3 {
+  position: relative;
+  padding-left: 10px;
+}
+
+.stats-panel__head h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--c-primary);
+}
+
+/* 1) Sections strakker */
+.stats-card .section > h3{
+  font-size: 0.95rem;
+  color: var(--c-text, #fff);
+  margin-bottom: 8px;
+}
+
+/* 2) Belangrijk: laat KPI tiles niet meer gigantisch stretchen */
+.stats-card .grid{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.stats-card .grid .stat{
+  flex: 1 1 230px;     /* basisbreedte */
+  max-width: 360px;    /* voorkomt mega-brede cards */
+}
+
+/* 3) Value iets prominenter, label iets subtieler */
+.stats-card .stat .label{
+  font-size: 0.80rem;
+  color: var(--c-muted);
+}
+
+.stats-card .stat .value{
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 4) 0-waardes minder opvallend */
+.stats-card .stat.is-zero{
+  opacity: 0.55;
+}
+
+/* 5) Lijsten (body/weapons/mod) wat compacter */
+.stats-grid .stat{
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+
+
+body[data-stats-theme="1"] .kpi-strip{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap:10px;
+  margin: 12px 0 6px;
+}
+body[data-stats-theme="1"] .kpi{
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+body[data-stats-theme="1"] .kpi__label{
+  color: var(--c-muted);
+  font-size: .78rem;
+}
+body[data-stats-theme="1"] .kpi__value{
+  color: var(--c-text,#fff);
+  font-weight: 800;
+  font-size: 1.05rem;
+  margin-top: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* =============================================================================
+   PLAYER STATS PAGE (Option 23) — append this at the BOTTOM of your styles.css
+   ============================================================================= */
+
+
+  
+   .ps-page{
+    max-width:1900px;
+    margin:0 auto;              /* <-- GEEN top margin meer */
+    padding:16px 10px 0;        /* <-- spacing bovenin via padding */
+    box-sizing:border-box;
+  
+    overflow:hidden;
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+  }
+  
+  .ps-topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  
+  .ps-back{
+    color:var(--c-primary);
+    text-decoration:none;
+  }
+  .ps-back:hover{ text-decoration:underline; }
+  
+  .ps-topbar__right{
+    color:var(--c-muted);
+    font-size:.85rem;
+  }
+  
+  .hidden{ display:none; }
+  
+  /* Layout */
+  .ps-wrap{
+    flex: 1;             /* vult alles onder de topbar */
+    min-height: 0;       /* cruciaal voor inner scroll */
+    display:grid;
+    grid-template-columns:320px 1fr;
+    gap:10px;
+    align-items: stretch; /* links/rechts even hoog */
+  }
+  
+  @media(max-width:1200px){
+    .ps-wrap{ grid-template-columns:1fr; }
+  }
+  
+  .ps-card{
+    background:var(--c-surface);
+    border:1px solid var(--c-border);
+    border-radius:14px;
+  }
+  
+  /* Left */
+  .ps-left{
+    padding:12px;
+    height: 100%;
+    min-height: 0;
+    display:flex;
+    flex-direction:column;
+  }
+  
+  .ps-kicker{
+    color:var(--c-muted);
+    font-size:.78rem;
+  }
+  
+  .ps-playername{
+    font-weight:900;
+    font-size:1.10rem;
+    margin:4px 0 40px;
+  }
+  
+  .ps-pairs{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  
+  .ps-pair{
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:12px;
+    padding:8px 10px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  
+  .ps-sectiontitle{
+    margin-top:40px;
+    color:var(--c-muted);
+    font-size:.78rem;
+  }
+  
+  /* Shared metric block (label above value) */
+  .ps-metric{
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:12px;
+    padding:8px 10px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    min-height:52px;
+  }
+  
+  .ps-label{
+    color:var(--c-muted);
+    font-size:.78rem;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  
+  .ps-value{
+    font-weight:900;
+    font-variant-numeric:tabular-nums;
+  }
+  
+  .ps-eff{
+    margin-top:8px;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  
+  /* Right */
+  .ps-right{
+    padding: 0;
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .ps-overview{
+    padding:12px;
+    margin-bottom:25px;
+    flex: 0 0 auto;
+  }
+  
+  .ps-overview__head h3{
+    margin:0 0 8px;
+    font-size:.92rem;
+  }
+  
+  /* 7 metrics row */
+  .ps-overviewgrid{
+    display:grid;
+    grid-template-columns:repeat(7, minmax(0, 1fr));
+    gap:8px;
+  }
+  @media(max-width:1100px){
+    .ps-overviewgrid{ grid-template-columns:repeat(3, minmax(0, 1fr)); }
+  }
+  
+  /* Lists container takes remaining height */
+  .ps-lists{
+    flex: 1;
+    min-height: 0;
+    display: flex;
+  }
+  
+  /* Lists grid */
+  .ps-listsgrid{
+    flex: 1;
+    min-height: 0;
+    display:grid;
+    grid-template-columns:repeat(12,1fr);
+    gap:10px;
+    align-items: stretch;
+  }
+  
+  .ps-panel{
+    grid-column:span 12;
+    background:rgba(255,255,255,.02);
+    border:1px solid rgba(255,255,255,.06);
+  
+    min-height: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  @media(min-width:1100px){
+    .ps-panel{ grid-column:span 4; }
+  }
+  
+  /* Panel header should NOT grow */
+  .ps-panelhead{
+    flex: 0 0 auto;
+    padding:10px 12px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    align-items:center;
+    flex-wrap: nowrap; /* <-- belangrijk: voorkomt extra hoogte door wrap */
+  }
+  
+  .ps-panelhead h3{
+    margin:0;
+    font-size:.92rem;
+    white-space: nowrap;
+  }
+  
+  .ps-tools{
+    display:flex;
+    gap:6px;
+    align-items:center;
+    flex-wrap: nowrap; /* ook geen wrap */
+    white-space: nowrap;
+  }
+  
+  .ps-btn-xs{
+    border:1px solid rgba(255,255,255,.10);
+    background:transparent;
+    color:var(--c-muted);
+    border-radius:10px;
+    padding:3px 6px;
+    font-size:.76rem;
+    cursor:pointer;
+    line-height:1;
+  }
+  .ps-btn-xs:hover{
+    border-color:var(--c-primary);
+    color:var(--c-text,#fff);
+  }
+  
+  .ps-seg{
+    display:flex;
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  
+  .ps-segbtn{
+    background:transparent;
+    color:var(--c-muted);
+    border:0;
+    padding:3px 7px;
+    font-size:.76rem;
+    cursor:pointer;
+    line-height:1;
+    min-width:34px;
+  }
+  .ps-segbtn:hover{
+    background:rgba(255,255,255,.05);
+    color:var(--c-text,#fff);
+  }
+  .ps-segbtn.is-active{
+    background:rgba(255,255,255,.07);
+    color:var(--c-text,#fff);
+  }
+  
+  .ps-count{
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:999px;
+    padding:3px 7px;
+    font-size:.76rem;
+    color:var(--c-muted);
+    line-height:1;
+  }
+  
+  /* Scroll area (fills rest of panel height) */
+  .ps-list{
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+  
+    padding:10px 12px;
+    box-sizing: border-box;
+  
+    display:flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: space-between;
+
+  }
+  
+  /* List item: value UNDER label */
+  .ps-list-item{
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:12px;
+    padding:7px 9px;
+    flex: 1;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  
+    margin: 0; /* geen margins; spacing komt van .ps-list gap */
+  }
+  
+  .ps-list-item .label{
+    color:var(--c-muted);
+    font-size:.80rem;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  
+  .ps-list-item .value{
+    font-weight:900;
+    font-variant-numeric:tabular-nums;
+  }
+  
+  .ps-list-item.is-zero{ opacity:.55; }
+  
+  .ps-eff-divider{
+    height: 1px;
+    background: rgba(255,255,255,.08);
+    border-radius: 999px;
+    margin: 6px 0;
+  }
+  
+  
+  

@@ -151,10 +151,14 @@
     </button>
 
     <ul class="dropdown-menu" role="menu" aria-label="Guides">
+      <li><a href="getting-started.html" role="menuitem">Getting Started</a></li>
+      <li><a href="howto.html" role="menuitem">How to Play Online</a></li>
+      <li><a href="fullscreen.html" role="menuitem">Fullscreen Fix (Win 10/11)</a></li>
       <li><a href="unnamedsoldier-cfg.html" role="menuitem">Unnamedsoldier.cfg</a></li>
       <li><a href="console.html" role="menuitem">Console</a></li>
       <li><a href="binds.html" role="menuitem">Binds</a></li>
       <li><a href="cvars.html" role="menuitem">CVARS</a></li>
+      <li><a href="lagometer.html" role="menuitem">Lagometer</a></li>
     </ul>
   </div>
     <div class="nav-admin-group">
@@ -165,7 +169,13 @@
 
       <div class="stats-card">
         <!-- Taalkeuze -->
-        <p class="lang-flags">
+        <div class="guide-topbar">
+  <div class="guide-header">
+    <h2 class="guide-title">Fullscreen Fix</h2>
+    <p class="guide-subtitle">Fix windowed mode, low resolution, or black bars on Windows 10/11.</p>
+  </div>
+
+  <p class="lang-flags">
           <strong>Translations Available:</strong><br />
 
           <span class="lang-item active" data-lang="en">
@@ -203,7 +213,9 @@
             Dutch
           </span>
         </p>
+</div>
 
+<br>
         <!-- ENGLISH -->
         <div class="howto-lang lang-block" data-lang="en">
           <p>
@@ -214,84 +226,130 @@
           </p>
           <p>
             This works perfectly on <strong style="color: #FFD700;">MOHAA Revival Edition</strong>
-            (which you can <a href="https://gunclan.org/downloads/download-mohaa-revival-edition/" target="_blank" rel="noopener noreferrer">download on our website</a>)
+            (which you can <a href="https://gunclan.org/downloads/download-mohaa-revival-edition/" target="_blank" rel="noopener noreferrer">download here</a>)
             and is tested on <strong style="color: #FFD700;">Windows 10 and 11</strong>.
           </p>
-
+<br>
           <h2>Step 1: Find Your Screen Resolution</h2>
           <ul>
-            <li>Right-click your desktop → choose <strong style="color: #FFD700;">Display settings</strong></li>
-            <li>Look for <strong style="color: #FFD700;">Display resolution</strong> (example: <strong style="color: #FFD700;">1920 x 1080</strong>)</li>
-            <li>Write down or remember these two numbers: width and height</li>
+            <li>Right-click on your desktop and select <strong style="color: #FFD700;">Display settings</strong>.</li>
+            <li>Find <strong style="color: #FFD700;">Display resolution</strong> (for example: <strong style="color: #FFD700;">1920 × 1080</strong>).</li>
+            <div class="guide-screens guide-screens">
+              <figure class="guide-shot">
+                <img
+                  src="images/display_resolution.png"
+                  alt="Windows Display settings showing the Display resolution option"
+                  class="guide-shot-img"
+                />
+              </figure>
+            </div>
+            <li>Note the two values (width and height) so you can use them in the steps below.</li>
           </ul>
-
+          
+<br>
           <h2>Step 2: Edit unnamedsoldier.cfg</h2>
-          <p><strong style="color: #FFD700;">For Spearhead</strong> go to this folder:</p>
-          <p><span class="code-pill">C:\Games\MOHAA\mainta\configs\</span></p>
-
-          <p><strong style="color: #FFD700;">For Breakthrough</strong> the correct folder is:</p>
-          <p><span class="code-pill">C:\Games\MOHAA\maintt\configs\</span></p>
-
-          <ol>
-            <li>Find the file <strong style="color: #FFD700;">unnamedsoldier.cfg</strong><br />
-              <em>If it doesn't exist, just run the game once — it will be created automatically.</em>
+          <p>First, locate the <strong style="color: #FFD700;">configs</strong> folder for the game you’re launching:</p>
+          <ul>
+            <li>
+              <strong style="color: #FFD700;">Spearhead:</strong>
+              <span class="code-pill">C:\Games\MOHAA\mainta\configs\</span>
             </li>
-            <li>Right-click the file → <strong style="color: #FFD700;">Open with Notepad</strong></li>
-            <li>Scroll to the bottom and add or replace the following lines:</li>
-          </ol>
-
-          <pre class="code-block code-block--wide"><code>seta r_mode "-1"              // Enables custom resolution mode
-seta r_customwidth "1920"     // Set this to your screen width
-seta r_customheight "1080"    // Set this to your screen height
-seta r_fullscreen "1"         // Enables full screen</code></pre>
-
+            <li>
+              <strong style="color: #FFD700;">Breakthrough:</strong>
+              <span class="code-pill">C:\Games\MOHAA\maintt\configs\</span>
+            </li>
+          </ul>
+          <p><em>If you installed the game in a different location, the folder will be in your MOHAA install directory.</em></p>
+          <div class="guide-screens">
+            <figure class="guide-shot">
+              <img
+                src="images/path_to_configs_folder.png"
+                alt="Path to configs folder"
+                class="guide-shot-img"
+              />
+            </figure>
+          </div>
+          
+          
           <p>
-            Example: For a <strong style="color: #FFD700;">1920×1080</strong> monitor, copy the settings exactly.<br />
-            If your screen is for example <strong style="color: #FFD700;">1360×768</strong>, change those numbers accordingly.
+            In that folder you’ll edit the game’s config file to force a proper fullscreen resolution.
+            Use your desktop resolution (width × height) for the values below.
           </p>
-
+          
+          <ol>
+            <li>
+              Find <strong style="color: #FFD700;">unnamedsoldier.cfg</strong>.<br />
+              <em>If it doesn’t exist yet, launch the game once and close it — the file will be created automatically.</em>
+            </li>
+            <li>
+              Right-click the file → <strong style="color: #FFD700;">Open with Notepad</strong> (or any text editor).
+              <br><br>
+              <div class="guide-screens">
+                <figure class="guide-shot">
+                  <img
+                    src="images/open_with_notepad.png"
+                    alt="Open with notepad"
+                    class="guide-shot-img"
+                  />
+                </figure>
+              </div>
+            </li>
+            <li>
+              Scroll to the bottom and add these lines (or replace the existing ones if they’re already there):
+            </li>
+          </ol>
+          
+          <pre class="code-block code-block--wide"><code>seta r_mode "-1"                    // Enables custom resolution mode
+seta r_customwidth "1920"           // Set this to your screen width
+seta r_customheight "1080"          // Set this to your screen height
+seta r_fullscreen "1"               // Enables full screen</code></pre>
+          
+          <p>
+            <strong style="color: #FFD700;">Example:</strong> if your monitor is <strong style="color: #FFD700;">1920×1080</strong>, copy the values exactly as shown.<br />
+            If your screen is <strong style="color: #FFD700;">1360×768</strong> (or any other resolution), replace <strong style="color: #FFD700;">1920</strong> and <strong style="color: #FFD700;">1080</strong> with your own width and height.
+          </p>
+<br>
           <h2>Step 3: Save and Launch the Game</h2>
           <ul>
-            <li>Click <strong style="color: #FFD700;">File &gt; Save</strong> in Notepad</li>
-            <li>Launch <strong style="color: #FFD700;">Medal of Honor: Spearhead</strong></li>
-            <li>It should now run in <strong style="color: #FFD700;">true fullscreen</strong> using your correct resolution</li>
+            <li>In Notepad, click <strong style="color: #FFD700;">File &gt; Save</strong> (or press <strong style="color: #FFD700;">Ctrl + S</strong>).</li>
+            <li>
+              Close Notepad and launch <strong style="color: #FFD700;">Medal of Honor: Spearhead</strong>
+              <img class="inline-game-icon" src="images/icons/medal-of-honor-spearhead-icon.ico" alt="" aria-hidden="true" />
+              (or <strong style="color: #FFD700;">Breakthrough</strong>
+              <img class="inline-game-icon" src="images/icons/medal-of-honor-breakthrough-icon.png" alt="" aria-hidden="true" />
+              if you edited that config).
+              <div class="guide-screens">
+                <figure class="guide-shot">
+                  <img
+                    src="images/launch_spearhead_or_breakthrough.png"
+                    alt="Launch spearhead or breakthrough"
+                    class="guide-shot-img"
+                  />
+                </figure>
+              </div>
+            </li>
+            
+            <li>The game should now run in <strong style="color: #FFD700;">true fullscreen</strong> at your selected resolution.</li>
+            <li>
+              If it still opens in a small window, double-check that the width and height values match your desktop resolution
+              and that you saved the changes to the correct <strong style="color: #FFD700;">configs</strong> folder.
+            </li>
           </ul>
+          
 
+<br>
           <h2>That’s It!</h2>
           <p>This fix solves:</p>
           <ul>
             <li>Fullscreen not working</li>
             <li>Wrong or low resolution</li>
-            <li>Widescreen issues on Windows 10 / 11</li>
+            <li>Widescreen display problems on Windows 10 / 11</li>
+            <li>Black bars on the sides of your screen (these usually disappear when you use the correct <strong style="color: #FFD700;">16:9</strong> resolution instead of <strong style="color: #FFD700;">4:3</strong>)</li>
           </ul>
           <p>
             Tested and working on <strong style="color: #FFD700;">MOHAA Revival Edition</strong>.<br />
             Feel free to share this guide with other players!
           </p>
-
-          <h2>Useful Links &amp; Info</h2>
-          <ul>
-            <li>
-              <strong style="color: #FFD700;">Download MOHAA Revival Edition</strong><br />
-              Full game with Spearhead &amp; Breakthrough, patched and ready to play.<br />
-              <a href="https://gunclan.org/downloads/download-mohaa-revival-edition/" target="_blank" rel="noopener noreferrer">
-                Open download page
-              </a>
-            </li>
-            <li>
-              <strong style="color: #FFD700;">Fix Fullscreen &amp; Resolution Issues (Windows 10/11)</strong><br />
-              Guide to get widescreen and fullscreen working properly.<br />
-              (You’re reading it now!)
-            </li>
-            <li>
-              <strong style="color: #FFD700;">Visit the G|u|N Clan Website</strong><br />
-              <a href="https://gunclan.org/" target="_blank" rel="noopener noreferrer">gunclan.org</a>
-            </li>
-            <li>
-              <strong style="color: #FFD700;">Forum Help &amp; Tutorials</strong><br />
-              <a href="https://forum.gunclan.org/" target="_blank" rel="noopener noreferrer">forum.gunclan.org</a>
-            </li>
-          </ul>
         </div>
 
 <!-- ARABIC -->

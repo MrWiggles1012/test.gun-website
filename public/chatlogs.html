@@ -150,10 +150,14 @@
     </button>
 
     <ul class="dropdown-menu" role="menu" aria-label="Guides">
+      <li><a href="getting-started.html" role="menuitem">Getting Started</a></li>
+      <li><a href="howto.html" role="menuitem">How to Play Online</a></li>
+      <li><a href="fullscreen.html" role="menuitem">Fullscreen Fix (Win 10/11)</a></li>
       <li><a href="unnamedsoldier-cfg.html" role="menuitem">Unnamedsoldier.cfg</a></li>
       <li><a href="console.html" role="menuitem">Console</a></li>
       <li><a href="binds.html" role="menuitem">Binds</a></li>
       <li><a href="cvars.html" role="menuitem">CVARS</a></li>
+      <li><a href="lagometer.html" role="menuitem">Lagometer</a></li>
     </ul>
   </div>
     <div class="nav-admin-group">
@@ -162,25 +166,43 @@
     </div>
 </nav>
 
-      <div id="chatlogs-error" class="error"></div>
+<div id="chatlogs-error" class="error"></div>
 
-      <div class="table-wrapper">
-        <table class="chatlogs-table">
-          <thead>
-            <tr>
-              <th data-sort-key="message">Message</th>
-              <th data-sort-key="sender">Sender</th>
-              <th data-sort-key="recipient">Recipient</th>
-              <th data-sort-key="scope">Scope</th>
-              <th data-sort-key="date" data-sort-default="desc">Date</th>
-            </tr>
-          </thead>
-          <tbody id="chatlogs-body">
-            <!-- Wordt gevuld door chatlogs.js -->
-          </tbody>
-        </table>
-      </div>
+<div class="table-wrapper">
+
+  <table class="chatlogs-table">
+    <thead>
+      <tr>
+        <th data-sort-key="message">Message</th>
+        <th data-sort-key="sender">Sender</th>
+        <th data-sort-key="recipient">Recipient</th>
+        <th data-sort-key="scope">Scope</th>
+        <th data-sort-key="date" data-sort-default="desc">Date</th>
+      </tr>
+    </thead>
+    <tbody id="chatlogs-body"></tbody>
+  </table>
+
+  <div class="table-toolbar">
+    <div class="table-toolbar__left">
+      <label class="table-toolbar__label" for="rows-per-page">Rows</label>
+      <select id="rows-per-page" class="table-toolbar__select">
+        <option value="50" selected>50</option>
+        <option value="100">100</option>
+        <option value="250">250</option>
+        <option value="500">500</option>
+      </select>
+      <span class="table-toolbar__muted">per page</span>
     </div>
+
+    <div class="table-toolbar__right">
+      <div id="table-summary" class="table-summary"></div>
+      <div id="table-pager" class="pager" aria-label="Pagination"></div>
+    </div>
+  </div>
+
+</div>
+
 
     <!-- Onderaan de pagina, vóór </body> -->
     <script src="nav.js" defer></script>

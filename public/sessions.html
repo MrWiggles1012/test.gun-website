@@ -151,10 +151,14 @@
     </button>
 
     <ul class="dropdown-menu" role="menu" aria-label="Guides">
+      <li><a href="getting-started.html" role="menuitem">Getting Started</a></li>
+      <li><a href="howto.html" role="menuitem">How to Play Online</a></li>
+      <li><a href="fullscreen.html" role="menuitem">Fullscreen Fix (Win 10/11)</a></li>
       <li><a href="unnamedsoldier-cfg.html" role="menuitem">Unnamedsoldier.cfg</a></li>
       <li><a href="console.html" role="menuitem">Console</a></li>
       <li><a href="binds.html" role="menuitem">Binds</a></li>
       <li><a href="cvars.html" role="menuitem">CVARS</a></li>
+      <li><a href="lagometer.html" role="menuitem">Lagometer</a></li>
     </ul>
   </div>
     <div class="nav-admin-group">
@@ -163,22 +167,17 @@
     </div>
 </nav>
 
-
-
-
-
-        <!-- back-link mag je nu eventueel weglaten, is een beetje dubbel -->
-        <!-- <a href="index.html" class="back-link">&larr; Terug naar hoofdscherm</a> -->
-
-        <div id="sessions-error" class="error"></div>
+        <div id="sessions-error" class="error"></div>      
 
         <div class="table-wrapper">
+
         <table class="sessions-table">
           <thead>
             <tr>
               <th class="sortable" data-sort-key="name">Name</th>
               <th class="sortable" data-sort-key="connection_state">Connection</th>
               <th class="sortable" data-sort-key="ip">IP</th>
+              <th class="sortable" data-sort-key="country">Country</th>
               <th class="sortable" data-sort-key="rate">Rate</th>
               <th class="sortable" data-sort-key="snaps">Snaps</th>
               <th class="sortable" data-sort-key="ping">Ping</th>
@@ -191,8 +190,26 @@
           </thead>
           <tbody id="sessions-body"></tbody>
         </table>
+
+        <div class="table-toolbar">
+          <div class="table-toolbar__left">
+            <label class="table-toolbar__label" for="rows-per-page">Rows</label>
+            <select id="rows-per-page" class="table-toolbar__select">
+              <option value="50" selected>50</option>
+              <option value="100">100</option>
+              <option value="250">250</option>
+              <option value="500">500</option>
+            </select>
+            <span class="table-toolbar__muted">per page</span>
+          </div>
+        
+          <div class="table-toolbar__right">
+            <div id="table-summary" class="table-summary"></div>
+            <div id="table-pager" class="pager" aria-label="Pagination"></div>
+          </div>
+        </div>
+      
       </div>
-    </div>
 
     <!-- login / nav logic + sessions tabel -->
     <script src="nav.js" defer></script>

@@ -125,10 +125,14 @@
     </button>
 
     <ul class="dropdown-menu" role="menu" aria-label="Guides">
+      <li><a href="getting-started.html" role="menuitem">Getting Started</a></li>
+      <li><a href="howto.html" role="menuitem">How to Play Online</a></li>
+      <li><a href="fullscreen.html" role="menuitem">Fullscreen Fix (Win 10/11)</a></li>
       <li><a href="unnamedsoldier-cfg.html" role="menuitem">Unnamedsoldier.cfg</a></li>
       <li><a href="console.html" role="menuitem">Console</a></li>
       <li><a href="binds.html" role="menuitem">Binds</a></li>
       <li><a href="cvars.html" role="menuitem">CVARS</a></li>
+      <li><a href="lagometer.html" role="menuitem">Lagometer</a></li>
     </ul>
   </div>
     <div class="nav-admin-group">
@@ -214,21 +218,21 @@
     <h2>Bind a text message to a key</h2>
   <p>Open <strong style="color:#FFD700;">console</strong> (or your <span class="code-pill">unnamedsoldier.cfg</span>) and type in:</p>
 
-  <pre class="code-block code-block--wide"><code>bind *key* say ’’text’’  (’’ ’’ (quotation marks) = needed when the text is more than 1 word)</code></pre>
+  <pre class="code-block code-block--xl"><code>bind *key* say ’’text’’  (’’ ’’ (quotation marks) = needed when the text is more than 1 word)</code></pre>
 
   <p>
   Example <strong style="color:#FFD700;">console</strong>:
   (by pressing <strong style="color:#FFD700;">L</strong>, this message will appear on screen: <strong style="color:#FFD700;">w00t w00t</strong>)
 </p>
 
-<pre class="code-block code-block--wide"><code>bind L say "w00t w00t"</code></pre>
+<pre class="code-block code-block--xl"><code>bind L say "w00t w00t"</code></pre>
 
 <p>
   Example <strong style="color:#FFD700;">unnamedsoldier.cfg</strong>:
   (Be sure to add <strong style="color:#FFD700;">seta</strong> in <span class="code-pill">unnamedsoldier.cfg</span>)
 </p>
 
-<pre class="code-block code-block--wide"><code>seta bind L say "w00t w00t"</code></pre>
+<pre class="code-block code-block--xl"><code>seta bind L say "w00t w00t"</code></pre>
     <br>
     <br>
     <h2>Restore the Taunt Menu Key</h2>
@@ -237,7 +241,7 @@
     using the following bind:
   </p>
 
-  <pre class="code-block code-block--wide"><code>bind v instamsg_main (by doing this you can use the taunts again)</code></pre>
+  <pre class="code-block code-block--xl"><code>bind v instamsg_main (by doing this you can use the taunts again)</code></pre>
     <br>
     <br>
     <h2>Mute Background Ambience (cinematic)</h2>
@@ -246,7 +250,7 @@
     easily binded as well so that you don’t have to retype it into console again:
   </p>
 
-  <pre class="code-block code-block--wide"><code>bind p cinematic (by pressing P, the background noise will disappear)</code></pre>
+  <pre class="code-block code-block--xl"><code>bind p cinematic (by pressing P, the background noise will disappear)</code></pre>
 
   <p>
     (Note: <span class="code-pill">s_ambientvolume 1</span> returns the sound and <span class="code-pill">s_ambientvolume 2</span> doubles the sound volume.)
@@ -256,7 +260,7 @@
     <h2>View and Remove Binds</h2>
   <p>To see all your current binds in-game, type the following into <strong style="color:#FFD700;">console</strong>:</p>
 
-  <pre class="code-block code-block--wide"><code>bindlist</code></pre>
+  <pre class="code-block code-block--xl"><code>bindlist</code></pre>
 
   <p>
     To unbind something, either change it in your <span class="code-pill">unnamedsoldier.cfg</span> or type in console:
@@ -277,13 +281,13 @@
     <span class="code-pill">unnamedsoldier.cfg</span>:
   </p>
 
-  <pre class="code-block code-block--wide"><code>bind *key* toggle *command*</code></pre>
+  <pre class="code-block code-block--xl"><code>bind *key* toggle *command*</code></pre>
 
   <p><strong style="color:#FFD700;">Examples:</strong></p>
 
-  <pre class="code-block code-block--wide"><code>bind p toggle cg_lagometer       // Turns the lagometer on and off
-bind q toggle fps                // Turns the FPS counter on and off 
-bind o toggle ui_minicon         // Turns the mini console on and off </code>
+  <pre class="code-block code-block--xl"><code>bind p toggle cg_lagometer               // Turns the lagometer on and off
+bind q toggle fps                        // Turns the FPS counter on and off 
+bind o toggle ui_minicon                 // Turns the mini console on and off </code>
 </pre>
 
     <br>
@@ -302,8 +306,8 @@ bind o toggle ui_minicon         // Turns the mini console on and off </code>
   <span class="code-pill">unnamedsoldier.cfg</span>:
 </p>
 
-<pre class="code-block code-block--wide"><code>seta cl_altbindings "1"   // (for ALT binds, 1 = on &amp; 0 = off)
-seta cl_ctrlbindings "1"  // (for CTRL binds, 1 = on &amp; 0 = off)</code></pre>
+<pre class="code-block code-block--xl"><code>seta cl_altbindings "1"                  // (for ALT binds, 1 = on &amp; 0 = off)
+seta cl_ctrlbindings "1"                 // (for CTRL binds, 1 = on &amp; 0 = off)</code></pre>
 
 <p>
   You can now add binds to your <span class="code-pill">unnamedsoldier.cfg</span>. They are added the same way as regular binds
@@ -312,8 +316,8 @@ seta cl_ctrlbindings "1"  // (for CTRL binds, 1 = on &amp; 0 = off)</code></pre>
 
 <p><strong style="color:#FFD700;">Examples:</strong></p>
 
-<pre class="code-block code-block--wide code-block--xl"><code>seta altbind v say "I killed you!"  // Now, when pressing ALT + V simultaneously in-game, the message will appear.
-seta ctrlbind p say "Hello!"        // Now, when pressing CTRL + P simultaneously in-game, the message will appear.</code></pre>
+<pre class="code-block code-block--xl"><code>seta altbind v say "I killed you!"       // Now, when pressing ALT + V simultaneously in-game, the message will appear.
+seta ctrlbind p say "Hello!"             // Now, when pressing CTRL + P simultaneously in-game, the message will appear.</code></pre>
 
 <p>To see the list of <strong style="color:#FFD700;">ALT</strong> binds in-game type into <strong style="color:#FFD700;">console</strong>:</p>
 <pre class="code-block code-block--wide"><code>altbindlist</code></pre>
@@ -420,7 +424,7 @@ Num Lock                           →    KP_NUMLOCK</code></pre>
 
 <p><strong style="color:#FFD700;">Examples:</strong></p>
 
-<pre class="code-block code-block--xl"><code>bind L say *41                // Now when pressing L on your keyboard in-game, you will taunt the message: "Yes Sir!"
+<pre class="code-block code-block--xxl"><code>bind L say *41                // Now when pressing L on your keyboard in-game, you will taunt the message: "Yes Sir!"
 
 bind KP_PGDN say *43          // Now when pressing 9 on your NUMPAD in-game, you will taunt the message: "Enemy Spotted."</code></pre>
 
@@ -432,7 +436,7 @@ bind KP_PGDN say *43          // Now when pressing 9 on your NUMPAD in-game, you
 
 <p><strong style="color:#FFD700;">ALT/CTRL Examples:</strong></p>
 
-<pre class="code-block code-block--xl"><code>altbind L say *41             // Now when pressing ALT + L simultaneously on your keyboard in-game, you will taunt the message: "Yes Sir!"
+<pre class="code-block code-block--xxl"><code>altbind L say *41             // Now when pressing ALT + L simultaneously on your keyboard in-game, you will taunt the message: "Yes Sir!"
 
 ctrlbind KP_PGDN say *43      // Now when pressing ALT + 9 simultaneously on your NUMPAD in-game, you will taunt the message: "Enemy Spotted."</code></pre>
 
@@ -461,7 +465,7 @@ ctrlbind KP_PGDN say *43      // Now when pressing ALT + 9 simultaneously on you
   Remember; every bind below needs the word <strong style="color:#FFD700;">‘bind’</strong> in front of it in order for it to work.
 </p>
 
-<pre class="code-block code-block--wide"><code>Key        Setting/Command                               Information
+<pre class="code-block code-block--xl"><code>Key        Setting/Command                               Information
 
 1          useweaponclass pistol                         Switch to Pistol
 2          useweaponclass rifle                          Switch to Rifle
